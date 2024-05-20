@@ -1,0 +1,5 @@
+dotnet tool install --global dotnet-ef --version 7.*
+dotnet ef dbcontext scaffold "Server=(local);Database=SAM;Uid=sa;Pwd=12345;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models -f
+
+
+--config

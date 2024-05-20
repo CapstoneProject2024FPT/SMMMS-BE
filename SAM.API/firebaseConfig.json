@@ -1,0 +1,13 @@
+//{
+//  "type": "service_account",
+//  "project_id": "campingtogether-9e4d5",
+//  "private_key_id": "0f99f4498dfa1cc41a26b8440ba1587963f3f6d3",
+//  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDmcAQuite31lCk\nGp0ikWY4cs6l0saT41Lkx5z2Y9so0tOj85q4fLzP8YLJ3iS41HLhgPexjtPIgsWS\nJnwSAE52JsYHatojGwTiY0dVNQ/6Yvf12GrYvHMAOjyL9KSqIqIx46flxu3sqJrU\n6T48K0MvwY5NffvNRihqy4CHUGcr8AOS2SB+yfUevAaZfTX1fKmTrSWHC2sSsAXu\n4n4xX6SsIMQwM1DltITrtpaVZs+hmhYTQLlivRwzK/J7M6eStu+/N+X1yEkw+TtG\nyWtQDCkEdfNdO+QUoyCfnrajQ29z6JSARKR/OWiZky/6zbNLaWFIOg6kJLoLp5fC\nNXI+StsfAgMBAAECggEAIeeITfrCq3s+aS67QOtIsXR+4BoHepnfR+bwurXNeI+w\ncPZ2JL/BngzINABZwdIMRw6NIxRDJ8TJ4euEpLdj0/F3gH7hsnmWueJmi+xfOfVW\ny1a4vcPYXcezwdnQYnHvEE0RFncy6XeTNFFPBVZOL9gYImGvay/v4WqosgAL9gQ2\nXrB0E4aG43wr0EBH9O25VqfADQD5336kPf1aw3NVtqNRlYc0x60tDAtGHWOo5XoK\nyj0oAFRfbhdAPE0jrZVJ+yz/H/FdmOlBxSI0f5257sGLnrmoHhr9CyymrSNtXtk+\nPFTNRdd8qfxVVgzV88EYMWWjbYPQyHL9Y112uJO2IQKBgQD3NehFQerUhTK8Trm1\nUIfOYX/a7guo1i09n716zm9QxLFKtnkvXxMoEMIgWAO6zVMM+dNZFAndkE3yFn3k\nDBIajq/Hpp0ouVsGLDWMoFFRTrmG+bJth0FqJtClTY6gBMXZMH/mEdw5BabTbWlm\nlDIRXBDUA4qKbwEgCJ6dKNRqYQKBgQDuoXE6SMNK+MsBMOpkN8t/tf2yVOZav6Zg\n6PsgEJFHCq22iuWLPAB7eU/dxu5Ivg63vs2fqtQ5no+53T8TkNAlXm+Nbqfu5+y4\nwCblPE0xg0etR+6KMRFKn//kIJDBnwpiRvCgdnM/fqhSIoboCftTaff1XrAHK6nH\nASgDlWQ1fwKBgC3ymhJNVy1a+HwhkcjOh/9nBdGWTxp5fH0otJofxnbXqDA/zDRu\n0muu+bXzRfYxdY9C2/KBk/fXe3VUkt+REshW3vsXz7wi/3UdQHK71YFsRXV98ZkD\n+7eUMVGYIbtCR9e/ePY1OZ5rm39OpbmIL+okF4igg96JFUdz8q85SInhAoGBANt6\nZz7ZL63j+CrnR53XZ3bV9zmvNpNe0/MsNdT/B++UVcOgKpGOJU9re1aaog0LqVO8\nzTi+kSVRvhWP9XTUa20DV4x4q0Jj0+j06pFKjiEtAp7QmwhFKwc888lpXlqHIbDU\nWHrtlwBeSQgKM5R1oc/Nlj760OI3eZbMbHYnUByXAoGANJn2GPCRltykmQUxKevH\nThRMJWyhD2skydH4DIVS1tsyXlIXZUkqMLivwK7WFZI6gEkwQY57TYIpUDfnMtVI\nyvSLmEQOxwQ3S9710DYFoI8GCymGRtKusuKBXssPmIHWZlC+xe1tBd//0PI5v3Sf\nc4UXR3p+aQGfZ9woOxemRts=\n-----END PRIVATE KEY-----\n",
+//  "client_email": "firebase-adminsdk-vjxi3@campingtogether-9e4d5.iam.gserviceaccount.com",
+//  "client_id": "117925976162697036637",
+//  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+//  "token_uri": "https://oauth2.googleapis.com/token",
+//  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+//  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-vjxi3%40campingtogether-9e4d5.iam.gserviceaccount.com",
+//  "universe_domain": "googleapis.com"
+//}
