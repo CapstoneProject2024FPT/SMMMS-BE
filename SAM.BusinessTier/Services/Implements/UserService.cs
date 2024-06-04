@@ -133,7 +133,7 @@ namespace SAM.BusinessTier.Services.Implements
             user.PhoneNumber = string.IsNullOrEmpty(updateRequest.PhoneNumber) ? user.PhoneNumber : updateRequest.PhoneNumber;
             user.Address = string.IsNullOrEmpty(updateRequest.Address) ? user.Address : updateRequest.Address;
             user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
-            user.YearsOfExperience = (updateRequest.YearsOfExperience < 0) ? user.YearsOfExperience : updateRequest.YearsOfExperience;
+            user.YearsOfExperience = (updateRequest.YearsOfExperience >= 0) ? user.YearsOfExperience : updateRequest.YearsOfExperience;
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
