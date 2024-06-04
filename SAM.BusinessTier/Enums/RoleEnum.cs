@@ -9,6 +9,9 @@ namespace SAM.BusinessTier.Enums
     public enum RoleEnum
     {
         Admin,
-        User
+        User,
+        Manager,
+        Sale,
+        Technical
     }
 }

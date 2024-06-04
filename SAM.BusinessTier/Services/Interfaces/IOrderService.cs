@@ -18,6 +18,6 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<IPaginate<GetOrderResponse>> GetOrderList(OrderFilter filter, PagingModel pagingModel);
         Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request);
 
-        Task<IEnumerable<GetOrderHistoriesResponse>> GetOrderHistories(Guid orderId);
+        //Task<IEnumerable<GetOrderHistoriesResponse>> GetOrderHistories(Guid orderId);
     }
 }

@@ -110,14 +110,14 @@ namespace SAM.BusinessTier.Services.Implements
                         },
                         predicate: x => x.OrderId.Equals(id)
                     ),
-                UserInfo = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+                UserInfo = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                     selector: x => new OrderUserResponse()
                     {
                         Id = x.Id,
                         FullName = x.FullName,
                         Role = EnumUtil.ParseEnum<RoleEnum>(x.Role)
                     },
-                    predicate: x => x.Id.Equals(order.CustomerId))
+                    predicate: x => x.Id.Equals(order.AccountId))
                 
             };
             return orderDetailResponse;
@@ -208,14 +208,14 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
-        public async Task<IEnumerable<GetOrderHistoriesResponse>> GetOrderHistories(Guid orderId)
-        {
-            IEnumerable<GetOrderHistoriesResponse> respone = await _unitOfWork.GetRepository<OrderHistory>().GetListAsync(
-               selector: x => _mapper.Map<GetOrderHistoriesResponse>(x),
-               include: x => x.Include(x => x.User),
-               orderBy: x => x.OrderByDescending(x => x.CreateDate));
-            return respone;
-        }
+        //public async Task<IEnumerable<GetOrderHistoriesResponse>> GetOrderHistories(Guid orderId)
+        //{
+        //    IEnumerable<GetOrderHistoriesResponse> respone = await _unitOfWork.GetRepository<OrderHistory>().GetListAsync(
+        //       selector: x => _mapper.Map<GetOrderHistoriesResponse>(x),
+        //       include: x => x.Include(x => x.User),
+        //       orderBy: x => x.OrderByDescending(x => x.CreateDate));
+        //    return respone;
+        //}
     }
 }
 

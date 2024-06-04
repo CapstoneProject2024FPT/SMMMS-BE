@@ -31,7 +31,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Id = Guid.NewGuid(),
                 Username = request.Username,
                 Password = PasswordUtil.HashPassword(request.Password),
-                Role = request.Role.GetDescriptionFromEnum(),
+                Role = RoleEnum.User.GetDescriptionFromEnum(),
                 FullName = request.FullName,
                 PhoneNumber = request.PhoneNumber,
                 Address = request.Address,
