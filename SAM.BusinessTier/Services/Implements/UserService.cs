@@ -12,6 +12,8 @@ using SAM.BusinessTier.Utils;
 using SAM.DataTier.Paginate;
 using SAM.DataTier.Repository.Interfaces;
 using SAM.DataTier.Models;
+using SAM.BusinessTier.Payload.Category;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -104,6 +106,20 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
+        //public async Task<bool> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest)
+        //{
+        //    if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
+        //    Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+        //        predicate: x => x.Id.Equals(id))
+        //        ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
+        //    user.Password = string.IsNullOrEmpty(updateRequest.Password) ? user.Password : PasswordUtil.HashPassword(updateRequest.Password);
+        //    user.Role = updateRequest.Role.GetDescriptionFromEnum();
+        //    user.Status = updateRequest.Status.GetDescriptionFromEnum();
+        //    _unitOfWork.GetRepository<Account>().UpdateAsync(user);
+        //    bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+        //    return isSuccessful;
+        //}
+
         public async Task<bool> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest)
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
@@ -113,6 +129,11 @@ namespace SAM.BusinessTier.Services.Implements
             user.Password = string.IsNullOrEmpty(updateRequest.Password) ? user.Password : PasswordUtil.HashPassword(updateRequest.Password);
             user.Role = updateRequest.Role.GetDescriptionFromEnum();
             user.Status = updateRequest.Status.GetDescriptionFromEnum();
+            user.FullName = string.IsNullOrEmpty(updateRequest.FullName) ? user.FullName : updateRequest.FullName;
+            user.PhoneNumber = string.IsNullOrEmpty(updateRequest.PhoneNumber) ? user.PhoneNumber : updateRequest.PhoneNumber;
+            user.Address = string.IsNullOrEmpty(updateRequest.Address) ? user.Address : updateRequest.Address;
+            user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
+            user.YearsOfExperience = (updateRequest.YearsOfExperience < 0) ? user.YearsOfExperience : updateRequest.YearsOfExperience;
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;

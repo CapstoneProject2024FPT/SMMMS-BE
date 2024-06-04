@@ -14,7 +14,7 @@ namespace SAM.API.Controllers
     [ApiController]
     public class UserController : BaseController<UserController>
     {
-       private readonly IUserService _userService;
+        private readonly IUserService _userService;
 
         public UserController(ILogger<UserController> logger, IUserService userService) : base(logger)
         {
@@ -52,19 +52,19 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.User.UsersEndPoint)]
-        public async Task<IActionResult> GetAllUsers ([FromQuery]UserFilter filter, [FromQuery]PagingModel pagingModel)
+        public async Task<IActionResult> GetAllUsers([FromQuery] UserFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _userService.GetAllUsers(filter, pagingModel);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.User.UserEndPoint)]
-        public async Task<IActionResult> GetUserById (Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             var response = await _userService.GetUserById(id);
             return Ok(response);
         }
         [HttpPut(ApiEndPointConstant.User.UserEndPoint)]
-        public async Task<IActionResult> UpdateUserInfor (Guid id, UpdateUserInforRequest updateRequest)
+        public async Task<IActionResult> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest)
         {
             var isSuccessful = await _userService.UpdateUserInfor(id, updateRequest);
             if (!isSuccessful) return Ok(MessageConstant.User.UpdateStatusFailedMessage);

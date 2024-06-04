@@ -18,6 +18,7 @@ public static class ApiEndPointConstant
     {
         public const string UsersEndPoint = ApiEndpoint + "/users";
         public const string UserEndPoint = UsersEndPoint + "/{id}";
+        public const string UserEndPointMember = UsersEndPoint + "/{id}";
     }
 
     public static class Category
