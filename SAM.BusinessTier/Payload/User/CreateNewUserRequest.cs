@@ -22,7 +22,7 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Email { get; set; }
 
-        public List<AccountRank>? AccountList { get; set; } = new List<AccountRank>();
+        //public int Rank { get; set; }
 
         public double? Amount { get; set; }
 

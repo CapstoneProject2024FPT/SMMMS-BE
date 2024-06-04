@@ -111,6 +111,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
             user.Password = string.IsNullOrEmpty(updateRequest.Password) ? user.Password : PasswordUtil.HashPassword(updateRequest.Password);
+            user.Role = updateRequest.Role.GetDescriptionFromEnum();
             user.Status = updateRequest.Status.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

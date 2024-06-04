@@ -11,7 +11,7 @@ namespace SAM.BusinessTier.Payload.User
     {
         public string? Username { get; set; }
 
-        public string? Role { get; set; }
+        public RoleEnum? Role { get; set; }
 
         public string? FullName { get; set; }
 
@@ -19,11 +19,11 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Address { get; set; }
 
-        public string? Status { get; set; }
+        public UserStatus? Status { get; set; }
 
         public string? Email { get; set; }
 
-        public int Rank { get; set; }
+        //public int? Rank { get; set; }
 
         public int? YearsOfExperience { get; set; }
     }
