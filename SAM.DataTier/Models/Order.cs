@@ -7,6 +7,8 @@ public partial class Order
 {
     public Guid Id { get; set; }
 
+    public string? InvoiceCode { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
     public DateTime? CompletedDate { get; set; }
@@ -17,7 +19,7 @@ public partial class Order
 
     public double? FinalAmount { get; set; }
 
-    public double? Total { get; set; }
+    public double? TotalAmount { get; set; }
 
     public Guid? AccountId { get; set; }
 

@@ -14,7 +14,7 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Password { get; set; }
 
-        public string? Role { get; set; }
+        public RoleEnum? Role { get; set; }
 
         public string? FullName { get; set; }
 
@@ -22,12 +22,11 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Address { get; set; }
 
-        public string? Status { get; set; }
+        public UserStatus? Status { get; set; }
 
         public string? Email { get; set; }
-        public List<AccountRank> ProductList { get; set; } = new List<AccountRank>();
 
-        public Guid? Rank { get; set; }
+        public List<AccountRank>? AccountList { get; set; } = new List<AccountRank>();
 
         public double? Amount { get; set; }
 

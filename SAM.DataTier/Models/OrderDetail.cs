@@ -11,6 +11,8 @@ public partial class OrderDetail
 
     public double? SellingPrice { get; set; }
 
+    public double? TotalAmount { get; set; }
+
     public Guid? OrderId { get; set; }
 
     public Guid? MachineryId { get; set; }

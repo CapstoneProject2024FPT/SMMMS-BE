@@ -23,8 +23,5 @@ namespace SAM.BusinessTier.Payload.User
             Role = role;
         }
 
-        public GetUsersResponse()
-        {
-        }
     }
 }

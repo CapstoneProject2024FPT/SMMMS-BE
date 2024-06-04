@@ -23,22 +23,30 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<Guid> CreateNewUser(CreateNewUserRequest request)
         {
-            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(request.Username));
-            if (user != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
-            user = new Account()
+            if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
+            account = new Account()
             {
                 Id = Guid.NewGuid(),
                 Username = request.Username,
                 Password = PasswordUtil.HashPassword(request.Password),
                 Role = request.Role.GetDescriptionFromEnum(),
-                Status = UserStatus.Activate.GetDescriptionFromEnum()
+                FullName = request.FullName,
+                PhoneNumber = request.PhoneNumber,
+                Address = request.Address,
+                Status = UserStatus.Activate.GetDescriptionFromEnum(),
+                Email = request.Email,
+                Amount = request.Amount,
+                YearsOfExperience = request.YearsOfExperience,
+
             };
 
-            await _unitOfWork.GetRepository<Account>().InsertAsync(user);
+
+            await _unitOfWork.GetRepository<Account>().InsertAsync(account);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.User.CreateFailedMessage);
-            return user.Id;
+            return account.Id;
         }
 
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)

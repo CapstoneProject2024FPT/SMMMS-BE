@@ -44,7 +44,7 @@ namespace SAM.BusinessTier.Services.Implements
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
                 Status = OrderStatus.PENDING.GetDescriptionFromEnum(),
-                CustomerId = request.CustomerId
+                AccountId = request.AccountId
             };
 
             var orderDetails = new List<OrderDetail>();
@@ -55,26 +55,26 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     Id = Guid.NewGuid(),
                     OrderId = newOrder.Id,
-                    ProductId = product.ProductId,
+                    MachineryId = product.MachineryId,
                     Quantity = product.Quantity,
                     SellingPrice = product.SellingPrice,
                     TotalAmount = totalProductAmount
                 });
 
             };
-            OrderHistory history = new OrderHistory()
-            {
-                Id = Guid.NewGuid() ,
-                Status = OrderHistoryStatus.PENDING.GetDescriptionFromEnum(),
-                Note = request.Note,
-                CreateDate = currentTime,
-                OrderId = newOrder.Id,
-                UserId = account.UserId,
-            };
+            //OrderHistory history = new OrderHistory()
+            //{
+            //    Id = Guid.NewGuid() ,
+            //    Status = OrderHistoryStatus.PENDING.GetDescriptionFromEnum(),
+            //    Note = request.Note,
+            //    CreateDate = currentTime,
+            //    OrderId = newOrder.Id,
+            //    UserId = account.UserId,
+            //};
 
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
-            await _unitOfWork.GetRepository<OrderHistory>().InsertAsync(history);
+            //await _unitOfWork.GetRepository<OrderHistory>().InsertAsync(history);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Order.CreateOrderFailedMessage);
             return newOrder.Id;
@@ -102,8 +102,8 @@ namespace SAM.BusinessTier.Services.Implements
                         selector: x => new OrderDetailResponse()
                         {
                             OrderDetailId = x.Id,
-                            ProductId = x.ProductId,
-                            ProductName = x.Product.Name,
+                            ProductId = x.MachineryId,
+                            ProductName = x.Machinery.Name,
                             Quantity = x.Quantity,
                             SellingPrice = x.SellingPrice,  
                             TotalAmount = x.TotalAmount,
@@ -194,16 +194,16 @@ namespace SAM.BusinessTier.Services.Implements
                 default:
                     return false;
             }
-            OrderHistory history = new OrderHistory()
-            {
-                Id = Guid.NewGuid(),
-                Status = request.Status.GetDescriptionFromEnum(),
-                Note = request.Note,
-                CreateDate = currentTime,
-                OrderId = orderId,
-                UserId = userId,
-            };
-            await _unitOfWork.GetRepository<OrderHistory>().InsertAsync(history);
+            //OrderHistory history = new OrderHistory()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Status = request.Status.GetDescriptionFromEnum(),
+            //    Note = request.Note,
+            //    CreateDate = currentTime,
+            //    OrderId = orderId,
+            //    UserId = userId,
+            //};
+            //await _unitOfWork.GetRepository<OrderHistory>().InsertAsync(history);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
