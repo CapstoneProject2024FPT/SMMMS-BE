@@ -9,11 +9,13 @@ namespace SAM.BusinessTier.Payload.Category
 {
     public class GetCategoriesResponse
     {
-        public Guid? Id { get; set; }
+
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public CategoryStatus Status { get; set; }
-        public int Priority { get; set; }
+        public CategoryType Type { get; set; }
+        public Guid? ParentCategoryId { get; set; }
 
     }
 }

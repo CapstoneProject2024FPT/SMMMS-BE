@@ -9,10 +9,10 @@ namespace SAM.BusinessTier.Payload.Category
 {
     public class CategoryFilter
     {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public CategoryStatus? Status { get; set; }
-        public int? Priority { get; set; }
+        public string? name { get; set; }
+        public CategoryStatus? status { get; set; }
+        public CategoryType? type { get; set; }
+        public Guid? parentCategoryId { get; set; }
 
     }
 }

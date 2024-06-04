@@ -26,16 +26,28 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public async Task<Guid> CreateNewCategory(CreateNewCategoryRequest createNewCategoryRequest)
+        public async Task<Guid> CreateNewCategory(CreateNewCategoryRequest request)
         {
-            Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                predicate: x => x.Name.Equals(createNewCategoryRequest.Name));
-            if (category != null) throw new BadHttpRequestException(MessageConstant.Category.CategoryExistedMessage);
-            category = _mapper.Map<Category>(createNewCategoryRequest);
-            await _unitOfWork.GetRepository<Category>().InsertAsync(category);
-            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
-            if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Category.CreateCategoryFailedMessage);
-            return category.Id;
+            _logger.LogInformation($"Start create new category: {request}");
+
+            Category newCategory = _mapper.Map<Category>(request);
+
+            if (request.ParentCategoryId != null)
+            {
+                var parentCategory = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(request.ParentCategoryId))
+                    ?? throw new BadHttpRequestException(MessageConstant.Category.Parent_NotFoundFailedMessage);
+                newCategory.Type = CategoryType.Child.GetDescriptionFromEnum();
+            }
+            else newCategory.Type = CategoryType.Parent.GetDescriptionFromEnum();
+
+
+            await _unitOfWork.GetRepository<Category>().InsertAsync(newCategory);
+
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Category.CreateCategoryFailedMessage);
+
+            return newCategory.Id;
         }
 
         public async Task<IPaginate<GetCategoriesResponse>> GetCategories(CategoryFilter filter, PagingModel pagingModel)
