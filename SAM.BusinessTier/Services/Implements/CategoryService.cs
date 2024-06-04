@@ -32,10 +32,10 @@ namespace SAM.BusinessTier.Services.Implements
 
             Category newCategory = _mapper.Map<Category>(request);
 
-            if (request.ParentCategoryId != null)
+            if (request.MasterCategoryId != null)
             {
                 var parentCategory = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                    predicate: x => x.Id.Equals(request.ParentCategoryId))
+                    predicate: x => x.Id.Equals(request.MasterCategoryId))
                     ?? throw new BadHttpRequestException(MessageConstant.Category.Parent_NotFoundFailedMessage);
                 newCategory.Type = CategoryType.Child.GetDescriptionFromEnum();
             }
@@ -81,19 +81,28 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
-        public async Task<bool> UpdateCategory(Guid id, UpdateCategoryRequest updateCategoryRequest)
-        {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Category.CategoryEmptyMessage);
-            Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id))
-            ?? throw new BadHttpRequestException(MessageConstant.Category.CategoryExistedMessage);
-            category.Name = string.IsNullOrEmpty(updateCategoryRequest.Name) ? category.Name : updateCategoryRequest.Name;
-            category.Description = string.IsNullOrEmpty(updateCategoryRequest.Description) ? category.Description : updateCategoryRequest.Description;
-            category.Status = updateCategoryRequest.Status.GetDescriptionFromEnum();
-            _unitOfWork.GetRepository<Category>().UpdateAsync(category);
-            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
-            return isSuccess;
 
+        public async Task<bool> UpdateCategory(Guid categoryId, UpdateCategoryRequest request)
+        {
+            _logger.LogInformation($"Start updating product: {categoryId}");
+            Category updateCategory = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(categoryId))
+                ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+
+            updateCategory.Name = string.IsNullOrEmpty(request.Name) ? updateCategory.Name : request.Name;
+            updateCategory.Description = string.IsNullOrEmpty(request.Description) ? updateCategory.Description : request.Description;
+            updateCategory.Status = request.Status.GetDescriptionFromEnum();
+            updateCategory.MasterCategoryId = request.MasterCategoryId;
+
+            if (request.MasterCategoryId != null)
+            {
+                updateCategory.Type = CategoryType.Child.GetDescriptionFromEnum();
+            }
+            else updateCategory.Type = CategoryType.Parent.GetDescriptionFromEnum();
+
+            _unitOfWork.GetRepository<Category>().UpdateAsync(updateCategory);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
     }
 }

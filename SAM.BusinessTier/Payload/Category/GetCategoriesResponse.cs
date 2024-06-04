@@ -15,7 +15,7 @@ namespace SAM.BusinessTier.Payload.Category
         public string Description { get; set; }
         public CategoryStatus Status { get; set; }
         public CategoryType Type { get; set; }
-        public Guid? ParentCategoryId { get; set; }
+        public Guid? MasterCategoryId { get; set; }
 
     }
 }

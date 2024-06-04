@@ -15,11 +15,11 @@ public partial class Category
 
     public string? Description { get; set; }
 
-    public Guid? MasterCategory { get; set; }
+    public Guid? MasterCategoryId { get; set; }
 
-    public virtual ICollection<Category> InverseMasterCategoryNavigation { get; set; } = new List<Category>();
+    public virtual ICollection<Category> InverseMasterCategory { get; set; } = new List<Category>();
 
     public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
 
-    public virtual Category? MasterCategoryNavigation { get; set; }
+    public virtual Category? MasterCategory { get; set; }
 }

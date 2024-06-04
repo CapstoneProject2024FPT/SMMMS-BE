@@ -88,8 +88,8 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Type).HasMaxLength(255);
 
-            entity.HasOne(d => d.MasterCategoryNavigation).WithMany(p => p.InverseMasterCategoryNavigation)
-                .HasForeignKey(d => d.MasterCategory)
+            entity.HasOne(d => d.MasterCategory).WithMany(p => p.InverseMasterCategory)
+                .HasForeignKey(d => d.MasterCategoryId)
                 .HasConstraintName("FK_Category_MasterCategory");
         });
 
