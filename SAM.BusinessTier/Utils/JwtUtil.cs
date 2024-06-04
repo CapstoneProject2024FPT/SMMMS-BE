@@ -14,7 +14,7 @@ public class JwtUtil
     {
     }
 
-    public static TokenModel GenerateJwtToken(User user)
+    public static TokenModel GenerateJwtToken(Account user)
     {
         JwtSecurityTokenHandler jwtHandler = new JwtSecurityTokenHandler();
         SymmetricSecurityKey secrectKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JsonUtil.GetFromAppSettings("Jwt:SecretKey")));
@@ -36,6 +36,11 @@ public class JwtUtil
             AccessToken = accessToken,
             RefreshToken = refreshToken,
         };
+    }
+
+    internal static TokenModel GenerateJwtToken()
+    {
+        throw new NotImplementedException();
     }
 
     private static string GenerateRefreshToken()

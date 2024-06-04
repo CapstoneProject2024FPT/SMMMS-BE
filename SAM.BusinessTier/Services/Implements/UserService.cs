@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
-using SAM.BusinessTier.Constants;
-using SAM.BusinessTier.Enums;
-using SAM.BusinessTier.Payload;
-using SAM.BusinessTier.Payload.Login;
-using SAM.BusinessTier.Payload.User;
-using SAM.BusinessTier.Services.Interfaces;
-using SAM.BusinessTier.Utils;
-using SAM.DataTier.Models;
-using SAM.DataTier.Paginate;
-using SAM.DataTier.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums;
+using SAM.BusinessTier.Payload.Login;
+using SAM.BusinessTier.Payload.User;
+using SAM.BusinessTier.Payload;
+using SAM.BusinessTier.Services.Interfaces;
+using SAM.BusinessTier.Services;
+using SAM.BusinessTier.Utils;
+using SAM.DataTier.Paginate;
+using SAM.DataTier.Repository.Interfaces;
+using SAM.DataTier.Models;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -22,27 +23,27 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<Guid> CreateNewUser(CreateNewUserRequest request)
         {
-            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(request.Username));
-            if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
-            account = new Account()
+            if (user != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
+            user = new Account()
             {
                 Id = Guid.NewGuid(),
                 Username = request.Username,
                 Password = PasswordUtil.HashPassword(request.Password),
-                //Role = request.Role.GetDescriptionFromEnum(),
-                //Status = UserStatus.Activate.GetDescriptionFromEnum()
+                Role = request.Role.GetDescriptionFromEnum(),
+                Status = UserStatus.Activate.GetDescriptionFromEnum()
             };
 
-            await _unitOfWork.GetRepository<User>().InsertAsync(user);
+            await _unitOfWork.GetRepository<Account>().InsertAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.User.CreateFailedMessage);
-            return account.Id;
+            return user.Id;
         }
 
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)
         {
-            IPaginate<GetUsersResponse> respone = await _unitOfWork.GetRepository<User>().GetPagingListAsync(
+            IPaginate<GetUsersResponse> respone = await _unitOfWork.GetRepository<Account>().GetPagingListAsync(
                selector: x => _mapper.Map<GetUsersResponse>(x),
                filter: filter,
                page: pagingModel.page,
@@ -54,7 +55,7 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<GetUsersResponse> GetUserById(Guid id)
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
-            User user = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
             return _mapper.Map<GetUsersResponse>(user);
@@ -62,7 +63,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
-            User user = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(loginRequest.Username));
             if (user == null || !PasswordUtil.VerifyHashedPassword(user.Password, loginRequest.Password))
             {
@@ -86,11 +87,11 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<bool> RemoveUserStatus(Guid id)
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
-            User user = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
             user.Status = UserStatus.Deactivate.GetDescriptionFromEnum();
-            _unitOfWork.GetRepository<User>().UpdateAsync(user);
+            _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
@@ -98,13 +99,13 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<bool> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest)
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
-            User user = await _unitOfWork.GetRepository<User>().SingleOrDefaultAsync(
+            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
             user.Password = string.IsNullOrEmpty(updateRequest.Password) ? user.Password : PasswordUtil.HashPassword(updateRequest.Password);
             user.Status = updateRequest.Status.GetDescriptionFromEnum();
-            _unitOfWork.GetRepository<User>().UpdateAsync(user);
-            bool isSuccessful  = await _unitOfWork.CommitAsync() > 0;
+            _unitOfWork.GetRepository<Account>().UpdateAsync(user);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
     }

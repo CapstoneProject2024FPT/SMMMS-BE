@@ -13,8 +13,8 @@ namespace SAM.BusinessTier.Mappers
     {
         public UserModule()
         {
-            CreateMap<User, GetUsersResponse>();
-            CreateMap<CreateNewUserRequest, User>();
+            CreateMap<Account, GetUsersResponse>();
+            CreateMap<CreateNewUserRequest, Account>();
             //CreateMap<Account, GetUsersResponse>()
             //    .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }

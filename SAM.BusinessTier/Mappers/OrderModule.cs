@@ -15,8 +15,8 @@ namespace SAM.BusinessTier.Mappers
         public OrderModule()
         {
             CreateMap<Order, GetOrderResponse>();
-            CreateMap<OrderHistory, GetOrderHistoriesResponse>()
-                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.FullName));
+            //CreateMap<OrderHistory, GetOrderHistoriesResponse>()
+            //    .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.FullName));
 
 
         }
