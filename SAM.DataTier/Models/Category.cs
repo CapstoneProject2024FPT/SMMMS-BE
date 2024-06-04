@@ -9,15 +9,17 @@ public partial class Category
 
     public string? Name { get; set; }
 
-    public string? Description { get; set; }
-
     public string? Status { get; set; }
 
-    public Guid? MasterCategoryId { get; set; }
+    public string? Type { get; set; }
 
-    public virtual ICollection<Category> InverseMasterCategory { get; set; } = new List<Category>();
+    public string? Description { get; set; }
 
-    public virtual Category? MasterCategory { get; set; }
+    public Guid? MasterCategory { get; set; }
 
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<Category> InverseMasterCategoryNavigation { get; set; } = new List<Category>();
+
+    public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
+
+    public virtual Category? MasterCategoryNavigation { get; set; }
 }

@@ -17,13 +17,15 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public virtual DbSet<Blog> Blogs { get; set; }
-
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<CategoryPromotion> CategoryPromotions { get; set; }
+    public virtual DbSet<Certification> Certifications { get; set; }
 
-    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<MachineComponent> MachineComponents { get; set; }
+
+    public virtual DbSet<MachinePartMachine> MachinePartMachines { get; set; }
+
+    public virtual DbSet<Machinery> Machineries { get; set; }
 
     public virtual DbSet<Maintenance> Maintenances { get; set; }
 
@@ -33,317 +35,265 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
 
-    public virtual DbSet<OrderDetailHistoy> OrderDetailHistoys { get; set; }
-
-    public virtual DbSet<OrderHistory> OrderHistories { get; set; }
-
     public virtual DbSet<Payment> Payments { get; set; }
-
-    public virtual DbSet<Product> Products { get; set; }
-
-    public virtual DbSet<ProductContract> ProductContracts { get; set; }
-
-    public virtual DbSet<Promotion> Promotions { get; set; }
 
     public virtual DbSet<Rank> Ranks { get; set; }
 
-    public virtual DbSet<Staff> Staff { get; set; }
-
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Specification> Specifications { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(local);Database=SAM;Uid=sa;Pwd=12345;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=14.225.204.144;Database=SAM;Uid=vinhuser;Pwd=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__Account__3213E83F086B1737");
+
             entity.ToTable("Account");
 
-            entity.HasIndex(e => e.UserId, "IX_Account").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Account__3213E83E68399404").IsUnique();
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Password)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.Username)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Address).HasMaxLength(255);
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.Password).HasMaxLength(255);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(255);
+            entity.Property(e => e.Role).HasMaxLength(255);
+            entity.Property(e => e.Status).HasMaxLength(255);
+            entity.Property(e => e.Username).HasMaxLength(255);
 
-            entity.HasOne(d => d.User).WithOne(p => p.Account)
-                .HasForeignKey<Account>(d => d.UserId)
-                .HasConstraintName("FK_Account_User");
-        });
-
-        modelBuilder.Entity<Blog>(entity =>
-        {
-            entity.ToTable("Blog");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Image).IsUnicode(false);
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-
-            entity.HasOne(d => d.Staff).WithMany(p => p.Blogs)
-                .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK_Blog_Staff");
+            entity.HasOne(d => d.RankNavigation).WithMany(p => p.Accounts)
+                .HasForeignKey(d => d.Rank)
+                .HasConstraintName("FK_Account_Rank");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_CategoryProduct");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3213E83F7BE3BF50");
 
             entity.ToTable("Category");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.HasIndex(e => e.Id, "UQ__Category__3213E83EEA87B891").IsUnique();
 
-            entity.HasOne(d => d.MasterCategory).WithMany(p => p.InverseMasterCategory)
-                .HasForeignKey(d => d.MasterCategoryId)
-                .HasConstraintName("FK_Category_Category");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status).HasMaxLength(255);
+            entity.Property(e => e.Type).HasMaxLength(255);
+
+            entity.HasOne(d => d.MasterCategoryNavigation).WithMany(p => p.InverseMasterCategoryNavigation)
+                .HasForeignKey(d => d.MasterCategory)
+                .HasConstraintName("FK_Category_MasterCategory");
         });
 
-        modelBuilder.Entity<CategoryPromotion>(entity =>
+        modelBuilder.Entity<Certification>(entity =>
         {
-            entity.ToTable("CategoryPromotion");
+            entity.HasKey(e => e.Id).HasName("PK__Certific__3213E83FDF35AFD7");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.HasIndex(e => e.Id, "UQ__Certific__3213E83EF9A93AFB").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.CertificationLink).HasMaxLength(255);
+            entity.Property(e => e.DateObtained).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Certifications)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Certifications_Account");
         });
 
-        modelBuilder.Entity<Customer>(entity =>
+        modelBuilder.Entity<MachineComponent>(entity =>
         {
-            entity.ToTable("Customer");
+            entity.HasKey(e => e.Id).HasName("PK__MachineC__3213E83F5465096D");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.UserIdd).HasColumnName("UserIDd");
+            entity.HasIndex(e => e.Id, "UQ__MachineC__3213E83E87F82CF5").IsUnique();
 
-            entity.HasOne(d => d.Rank).WithMany(p => p.Customers)
-                .HasForeignKey(d => d.RankId)
-                .HasConstraintName("FK_Customer_Rank");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
+        });
 
-            entity.HasOne(d => d.UserIddNavigation).WithMany(p => p.Customers)
-                .HasForeignKey(d => d.UserIdd)
-                .HasConstraintName("FK_Customer_User");
+        modelBuilder.Entity<MachinePartMachine>(entity =>
+        {
+            entity.HasKey(e => new { e.MachineComponentId, e.MachineryId }).HasName("PK__MachineP__274A8E5B58D90F4F");
+
+            entity.Property(e => e.Status).HasMaxLength(255);
+
+            entity.HasOne(d => d.MachineComponent).WithMany(p => p.MachinePartMachines)
+                .HasForeignKey(d => d.MachineComponentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MachinePartMachines_MachineComponents");
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.MachinePartMachines)
+                .HasForeignKey(d => d.MachineryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MachinePartMachines_Machinery");
+        });
+
+        modelBuilder.Entity<Machinery>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Machiner__3213E83F9BB76D03");
+
+            entity.ToTable("Machinery");
+
+            entity.HasIndex(e => e.Id, "UQ__Machiner__3213E83E14DE8756").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.ImageUrl).HasMaxLength(255);
+            entity.Property(e => e.Model).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Origin).HasMaxLength(255);
+            entity.Property(e => e.SerialNumber).HasMaxLength(255);
+            entity.Property(e => e.Status).HasMaxLength(255);
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Machineries)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("FK_Machinery_Category");
         });
 
         modelBuilder.Entity<Maintenance>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83F6DE72DA8");
+
             entity.ToTable("Maintenance");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CompletedTime).HasColumnType("datetime");
-            entity.Property(e => e.EstimatedTime).HasColumnType("datetime");
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83E3F83DECC").IsUnique();
 
-            entity.HasOne(d => d.Staff).WithMany(p => p.Maintenances)
-                .HasForeignKey(d => d.StaffId)
-                .HasConstraintName("FK_Maintenance_Staff");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Comments).HasMaxLength(255);
+            entity.Property(e => e.CompletionDate).HasColumnType("datetime");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(255);
+            entity.Property(e => e.Type).HasMaxLength(255);
         });
 
         modelBuilder.Entity<MaintenanceDetail>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83FA173BEC7");
+
             entity.ToTable("MaintenanceDetail");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.TypeMaintenance)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83EA2A43B7B").IsUnique();
 
-            entity.HasOne(d => d.Contract).WithMany(p => p.MaintenanceDetails)
-                .HasForeignKey(d => d.ContractId)
-                .HasConstraintName("FK_MaintenanceDetail_Contract");
-
-            entity.HasOne(d => d.Maintenance).WithMany(p => p.MaintenanceDetails)
-                .HasForeignKey(d => d.MaintenanceId)
-                .HasConstraintName("FK_MaintenanceDetail_Maintenance");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Comments).HasMaxLength(255);
+            entity.Property(e => e.CompletionDate).HasColumnType("datetime");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(255);
+            entity.Property(e => e.Type).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__Order__3213E83FA756148A");
+
             entity.ToTable("Order");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.HasIndex(e => e.Id, "UQ__Order__3213E83E5D13AB06").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.CompletedDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.InvoiceCode)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.Note).HasMaxLength(255);
+            entity.Property(e => e.Status).HasMaxLength(255);
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK_Order_Customer");
+            entity.HasOne(d => d.Account).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Order_Account");
 
             entity.HasOne(d => d.Payment).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.PaymentId)
                 .HasConstraintName("FK_Order_Payment");
-
-            entity.HasOne(d => d.Promotion).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.PromotionId)
-                .HasConstraintName("FK_Order_Promotion");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__OrderDet__3213E83F8642C5B0");
+
             entity.ToTable("OrderDetail");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.HasIndex(e => e.Id, "UQ__OrderDet__3213E83E76775357").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK_OrderDetail_Machinery");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK_OrderDetail_Order");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK_OrderDetail_Product");
-        });
-
-        modelBuilder.Entity<OrderDetailHistoy>(entity =>
-        {
-            entity.ToTable("OrderDetailHistoy");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-
-            entity.HasOne(d => d.OrderDetail).WithMany(p => p.OrderDetailHistoys)
-                .HasForeignKey(d => d.OrderDetailId)
-                .HasConstraintName("FK_OrderDetailHistoy_OrderDetail");
-        });
-
-        modelBuilder.Entity<OrderHistory>(entity =>
-        {
-            entity.ToTable("OrderHistory");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-
-            entity.HasOne(d => d.Order).WithMany(p => p.OrderHistories)
-                .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK_OrderHistory_Order");
-
-            entity.HasOne(d => d.User).WithMany(p => p.OrderHistories)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_OrderHistory_User");
         });
 
         modelBuilder.Entity<Payment>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__Payment__3213E83F12FA1E41");
+
             entity.ToTable("Payment");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Method)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-        });
+            entity.HasIndex(e => e.Id, "UQ__Payment__3213E83EAD52AFA3").IsUnique();
 
-        modelBuilder.Entity<Product>(entity =>
-        {
-            entity.ToTable("Product");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.ExpMaintanceDate).HasColumnType("datetime");
-            entity.Property(e => e.ImageUrl).IsUnicode(false);
-            entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.Origin).HasMaxLength(100);
-            entity.Property(e => e.SerialNumber)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Status)
-                .HasMaxLength(10)
-                .IsFixedLength();
-
-            entity.HasOne(d => d.Category).WithMany(p => p.Products)
-                .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK_Product_Category");
-        });
-
-        modelBuilder.Entity<ProductContract>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK_Contract");
-
-            entity.ToTable("ProductContract");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-
-            entity.HasOne(d => d.OrderDetail).WithMany(p => p.ProductContracts)
-                .HasForeignKey(d => d.OrderDetailId)
-                .HasConstraintName("FK_ProductContract_OrderDetail");
-        });
-
-        modelBuilder.Entity<Promotion>(entity =>
-        {
-            entity.ToTable("Promotion");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.Name).HasMaxLength(50);
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(50);
-
-            entity.HasOne(d => d.CategoryPromotion).WithMany(p => p.Promotions)
-                .HasForeignKey(d => d.CategoryPromotionId)
-                .HasConstraintName("FK_Promotion_CategoryPromotion");
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.PaymentMethod).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Rank>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__Rank__3213E83F232DAFF9");
+
             entity.ToTable("Rank");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.HasIndex(e => e.Id, "UQ__Rank__3213E83E30B80943").IsUnique();
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.RankName).HasMaxLength(255);
         });
 
-        modelBuilder.Entity<Staff>(entity =>
+        modelBuilder.Entity<Specification>(entity =>
         {
-            entity.Property(e => e.Id).ValueGeneratedNever();
-        });
+            entity.HasKey(e => e.Id).HasName("PK__Specific__3213E83FC7C484F7");
 
-        modelBuilder.Entity<User>(entity =>
-        {
-            entity.ToTable("User");
+            entity.HasIndex(e => e.Id, "UQ__Specific__3213E83EFEF4EEA4").IsUnique();
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Address).HasMaxLength(250);
-            entity.Property(e => e.Email).HasMaxLength(50);
-            entity.Property(e => e.FullName).HasMaxLength(100);
-            entity.Property(e => e.PhoneNumber)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Role)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Status)
-                .HasMaxLength(10)
-                .IsFixedLength();
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Name).HasMaxLength(255);
 
-            entity.HasOne(d => d.IdNavigation).WithOne(p => p.User)
-                .HasForeignKey<User>(d => d.Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_User_Staff");
+            entity.HasOne(d => d.Machinery).WithMany(p => p.Specifications)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK_Specifications_Machinery");
         });
 
         OnModelCreatingPartial(modelBuilder);

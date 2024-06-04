@@ -7,17 +7,27 @@ public partial class Maintenance
 {
     public Guid Id { get; set; }
 
+    public string? Type { get; set; }
+
+    public DateTime? CreateDate { get; set; }
+
     public DateTime? StartDate { get; set; }
 
-    public DateTime? EstimatedTime { get; set; }
-
-    public DateTime? CompletedTime { get; set; }
+    public DateTime? CompletionDate { get; set; }
 
     public string? Status { get; set; }
 
-    public Guid? StaffId { get; set; }
+    public string? Description { get; set; }
 
-    public virtual ICollection<MaintenanceDetail> MaintenanceDetails { get; set; } = new List<MaintenanceDetail>();
+    public string? Comments { get; set; }
 
-    public virtual Staff? Staff { get; set; }
+    public DateTime? NextMaintenanceDate { get; set; }
+
+    public int? Priority { get; set; }
+
+    public Guid? TechnicalId { get; set; }
+
+    public Guid? ComponentParts { get; set; }
+
+    public Guid? OrderDetailId { get; set; }
 }

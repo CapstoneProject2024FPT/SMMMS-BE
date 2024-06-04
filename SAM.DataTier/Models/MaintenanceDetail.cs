@@ -7,17 +7,25 @@ public partial class MaintenanceDetail
 {
     public Guid Id { get; set; }
 
-    public string? TypeMaintenance { get; set; }
+    public string? Type { get; set; }
 
-    public string? Description { get; set; }
+    public DateTime? CreateDate { get; set; }
+
+    public DateTime? StartDate { get; set; }
+
+    public DateTime? CompletionDate { get; set; }
 
     public string? Status { get; set; }
 
-    public Guid? MaintenanceId { get; set; }
+    public string? Description { get; set; }
 
-    public Guid? ContractId { get; set; }
+    public string? Comments { get; set; }
 
-    public virtual ProductContract? Contract { get; set; }
+    public DateTime? NextMaintenanceDate { get; set; }
 
-    public virtual Maintenance? Maintenance { get; set; }
+    public Guid? TechnicalId { get; set; }
+
+    public Guid? ComponentParts { get; set; }
+
+    public Guid? OrderDetailId { get; set; }
 }
