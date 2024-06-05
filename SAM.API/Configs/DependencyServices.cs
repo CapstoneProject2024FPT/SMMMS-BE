@@ -69,7 +69,7 @@ namespace SAM.API.Configs
         {
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo() { Title = "HiCamping Together", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo() { Title = "SMMMS", Version = "v1" });
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     In = ParameterLocation.Header,
