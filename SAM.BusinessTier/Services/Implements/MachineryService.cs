@@ -3,7 +3,6 @@ using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Category;
-using SAM.BusinessTier.Payload.Product;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
@@ -46,7 +45,7 @@ namespace SAM.BusinessTier.Services.Implements
             return _mapper.Map<GetMachinerysResponse>(product);
         }
 
-        public async Task<IPaginate<GetMachinerysResponse>> GetMachineryList(ProductFilter filter, PagingModel pagingModel)
+        public async Task<IPaginate<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
         {
             IPaginate<GetMachinerysResponse> respone = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync(
                selector: x => _mapper.Map<GetMachinerysResponse>(x),
@@ -57,10 +56,6 @@ namespace SAM.BusinessTier.Services.Implements
             return respone;
         }
 
-        public Task<IPaginate<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<ICollection<GetMachinerysResponse>> GetMachineryListNotIPaginate(MachineryFilter filter)
         {

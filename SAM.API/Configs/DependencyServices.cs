@@ -36,7 +36,7 @@ namespace SAM.API.Configs
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IMachineryService, MachineryService>();
             services.AddScoped<IOrderService, OrderService>();
 
             return services;

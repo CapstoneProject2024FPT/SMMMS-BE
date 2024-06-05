@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SAM.BusinessTier.Payload.Product;
 using SAM.BusinessTier.Payload.Machinery;
 
 namespace SAM.BusinessTier.Services.Interfaces

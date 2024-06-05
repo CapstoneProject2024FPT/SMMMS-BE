@@ -5,7 +5,6 @@ using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Extensions;
 using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Order;
-using SAM.BusinessTier.Payload.Product;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;

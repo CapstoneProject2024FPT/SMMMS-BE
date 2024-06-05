@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Payload.Category;
-using SAM.BusinessTier.Payload.Product;
+using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
 using System;

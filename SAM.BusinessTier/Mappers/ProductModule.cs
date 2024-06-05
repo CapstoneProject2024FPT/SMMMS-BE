@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Payload.Category;
-using SAM.BusinessTier.Payload.Product;
+using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
 using System;
@@ -16,7 +16,7 @@ namespace SAM.BusinessTier.Mappers
     {
         public ProductModule() {
             CreateMap<Machinery, GetMachinerysResponse>();
-            CreateMap<CreateNewProductRequest, Machinery>()
+            CreateMap<CreateNewMachineryRequest, Machinery>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => ProductStatus.Active.GetDescriptionFromEnum()));
         }
