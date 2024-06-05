@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.Machinery
 {
-    public class CreateNewMachineryRequest
+    public class GetMachinerySpecificationsRespone
     {
         public string? Name { get; set; }
 
@@ -17,27 +17,14 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public string? Description { get; set; }
 
-        public int? Quantity { get; set; }
+        public MachineryStatus? Status { get; set; }
 
-        public double? StockPrice { get; set; }
+        public string? SerialNumber { get; set; }
 
         public double? SellingPrice { get; set; }
 
         public int? Priority { get; set; }
 
-        public string? ImageUrl { get; set; }
-
-        public List<MachinerySpecifications> SpecificationList { get; set; } = new List<MachinerySpecifications>();
-
         public Guid? CategoryId { get; set; }
-
-
     }
-    public class MachinerySpecifications
-    {
-        public string Name { get; set; }
-        public float Value { get; set; }
-        public string Unit { get; set; }
-    }
-
 }
