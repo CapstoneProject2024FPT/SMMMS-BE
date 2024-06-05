@@ -11,6 +11,7 @@ using SAM.DataTier.Repository.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Payload.Machinery;
+using SAM.BusinessTier.Payload.Order;
 
 
 namespace SAM.BusinessTier.Services.Implements
@@ -128,6 +129,49 @@ namespace SAM.BusinessTier.Services.Implements
             return respone;
         }
 
+        public async Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id)
+        {
+            //Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+            //    predicate: x => x.Id.Equals(id))
+            //?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+
+            //var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone()
+            //{
+            //    OrderId = order.Id,
+            //    InvoiceCode = order.InvoiceCode,
+            //    CreateDate = order.CreateDate,
+            //    CompletedDate = order.CompletedDate,
+            //    TotalAmount = order.TotalAmount,
+            //    FinalAmount = order.FinalAmount,
+            //    Note = order.Note,
+            //    Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
+
+            //    ProductList = (List<OrderDetailResponse>)await _unitOfWork.GetRepository<OrderDetail>()
+            //        .GetListAsync(
+            //            selector: x => new OrderDetailResponse()
+            //            {
+            //                OrderDetailId = x.Id,
+            //                ProductId = x.MachineryId,
+            //                ProductName = x.Machinery.Name,
+            //                Quantity = x.Quantity,
+            //                SellingPrice = x.SellingPrice,
+            //                TotalAmount = x.TotalAmount,
+            //            },
+            //            predicate: x => x.OrderId.Equals(id)
+            //        ),
+            //    UserInfo = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+            //        selector: x => new OrderUserResponse()
+            //        {
+            //            Id = x.Id,
+            //            FullName = x.FullName,
+            //            Role = EnumUtil.ParseEnum<RoleEnum>(x.Role)
+            //        },
+            //        predicate: x => x.Id.Equals(order.AccountId))
+
+            //};
+            //return getMachinerySpecificationsRespone;
+            return null;
+        }
 
         public async Task<bool> RemoveMachineryStatus(Guid id)
         {
