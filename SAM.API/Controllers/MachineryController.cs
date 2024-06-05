@@ -21,43 +21,43 @@ namespace SAM.API.Controllers
         {
             _iMachineryService = machineryService;
         }
-        [HttpPost(ApiEndPointConstant.Product.ProductsEndPoint)]
+        [HttpPost(ApiEndPointConstant.Product.MechinerysEndPoint)]
         public async Task<IActionResult> CreateNewProducts(CreateNewMachineryRequest mechinery)
         {
             var response = await _iMachineryService.CreateNewMachinerys(mechinery);
             return Ok(response);
         }
-        [HttpGet(ApiEndPointConstant.Product.ProductsEndPoint)]
+        [HttpGet(ApiEndPointConstant.Product.MechinerysEndPoint)]
         public async Task<IActionResult> GetProductList([FromQuery] MachineryFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _iMachineryService.GetMachineryList(filter, pagingModel);
             return Ok(response);
         }
-        [HttpGet(ApiEndPointConstant.Product.ProductsEndPointNoPaginate)]
+        [HttpGet(ApiEndPointConstant.Product.MechinerysEndPointNoPaginate)]
         public async Task<IActionResult> GetProductListNotIPaginate([FromQuery] MachineryFilter filter)
         {
             var response = await _iMachineryService.GetMachineryListNotIPaginate(filter);
             return Ok(response);
         }
-        [HttpGet(ApiEndPointConstant.Product.ProductEndPoint)]
+        [HttpGet(ApiEndPointConstant.Product.MechineryEndPoint)]
         public async Task<IActionResult> GetProductById(Guid id)
         {
             var response = await _iMachineryService.GetMachineryById(id);
             return Ok(response);
         }
-        [HttpPut(ApiEndPointConstant.Product.ProductEndPoint)]
+        [HttpPut(ApiEndPointConstant.Product.MechineryEndPoint)]
         public async Task<IActionResult> UpdateProduct(Guid id, UpdateMachineryRequest updateProductRequest)
         {
             var response = await _iMachineryService.UpdateMachinery(id, updateProductRequest);
-            if (!response) return Ok(MessageConstant.Product.UpdateProductFailedMessage);
-            return Ok(MessageConstant.Product.UpdateStatusSuccessMessage);
+            if (!response) return Ok(MessageConstant.Mechinery.UpdateMechinerytFailedMessage);
+            return Ok(MessageConstant.Mechinery.UpdateStatusSuccessMessage);
         }
-        [HttpDelete(ApiEndPointConstant.Product.ProductEndPoint)]
+        [HttpDelete(ApiEndPointConstant.Product.MechineryEndPoint)]
         public async Task<IActionResult> RemoveProductStatus(Guid id)
         {
             var response = await _iMachineryService.RemoveMachineryStatus(id);
-            if (!response) return Ok(MessageConstant.Product.UpdateProductFailedMessage);
-            return Ok(MessageConstant.Product.UpdateStatusSuccessMessage);
+            if (!response) return Ok(MessageConstant.Mechinery.UpdateMechinerytFailedMessage);
+            return Ok(MessageConstant.Mechinery.UpdateStatusSuccessMessage);
 
         }
     }

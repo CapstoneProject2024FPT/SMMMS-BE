@@ -32,12 +32,12 @@ public static class MessageConstant
 
     public static class Mechinery
     {
-        public const string ProductNameExisted = "Mechinery đã tồn tại";
-        public const string CreateNewProductFailedMessage = "Tạo mới mechinery thất bại";
-        public const string UpdateProductFailedMessage = "Cập nhật thông tin mechinery thất bại";
-        public const string UpdateProductSuccessMessage = "Cập nhật thông tin mechinery thành công";
-        public const string EmptyProductIdMessage = "Mechinery Id không hợp lệ";
-        public const string ProductNotFoundMessage = "Mechinery không tồn tại trong hệ thống";
+        public const string MechineryNameExisted = "Mechinery đã tồn tại";
+        public const string CreateNewMechineryFailedMessage = "Tạo mới mechinery thất bại";
+        public const string UpdateMechinerytFailedMessage = "Cập nhật thông tin mechinery thất bại";
+        public const string UpdateMechinerySuccessMessage = "Cập nhật thông tin mechinery thành công";
+        public const string EmptyMechineryIdMessage = "Mechinery Id không hợp lệ";
+        public const string MechineryNotFoundMessage = "Mechinery không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";

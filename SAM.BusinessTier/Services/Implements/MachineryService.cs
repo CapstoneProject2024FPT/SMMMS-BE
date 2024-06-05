@@ -25,20 +25,20 @@ namespace SAM.BusinessTier.Services.Implements
         {
             Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Name.Equals(createNewMachineryRequest.Name));
-            if (machinery != null) throw new BadHttpRequestException(MessageConstant.Mechinery.ProductNameExisted);
+            if (machinery != null) throw new BadHttpRequestException(MessageConstant.Mechinery.MechineryNameExisted);
             Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(createNewMachineryRequest.CategoryId));
             if (category == null) throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
             machinery = _mapper.Map<Machinery>(createNewMachineryRequest);
             await _unitOfWork.GetRepository<Machinery>().InsertAsync(machinery);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
-            if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Mechinery.CreateNewProductFailedMessage);
+            if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Mechinery.CreateNewMechineryFailedMessage);
             return machinery.Id;
         }
 
         public async Task<GetMachinerysResponse> GetMachineryById(Guid id)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Mechinery.EmptyProductIdMessage);
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Mechinery.EmptyMechineryIdMessage);
             Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
@@ -69,10 +69,10 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<bool> RemoveMachineryStatus(Guid id)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Mechinery.EmptyProductIdMessage);
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Mechinery.EmptyMechineryIdMessage);
             Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException(MessageConstant.Mechinery.ProductNotFoundMessage);
+                ?? throw new BadHttpRequestException(MessageConstant.Mechinery.MechineryNotFoundMessage);
             product.Status = ProductStatus.Inactive.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
@@ -81,10 +81,10 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<bool> UpdateMachinery(Guid id, UpdateMachineryRequest updateProductRequest)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Mechinery.EmptyProductIdMessage);
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Mechinery.EmptyMechineryIdMessage);
             Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-            ?? throw new BadHttpRequestException(MessageConstant.Mechinery.ProductNameExisted);
+            ?? throw new BadHttpRequestException(MessageConstant.Mechinery.MechineryNameExisted);
             Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateProductRequest.CategoryId))
             ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
