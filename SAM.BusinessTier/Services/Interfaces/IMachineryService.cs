@@ -18,5 +18,6 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<ICollection<GetMachinerysResponse>> GetMachineryListNotIPaginate(MachineryFilter filter);
         Task<GetMachinerysResponse> GetMachineryById(Guid id);
         Task<bool> RemoveMachineryStatus(Guid id);
+        
     }
 }
