@@ -17,7 +17,7 @@ namespace SAM.BusinessTier.Mappers
 
         public CategoryModule() {
             CreateMap<Category, GetCategoriesResponse>();
-            CreateMap<Category, GetProductsResponse>();
+            CreateMap<Category, GetMachinerysResponse>();
             CreateMap<CreateNewCategoryRequest, Category>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => CategoryStatus.Active.GetDescriptionFromEnum()));

@@ -15,7 +15,7 @@ namespace SAM.BusinessTier.Mappers
     public class ProductModule : Profile
     {
         public ProductModule() {
-            CreateMap<Machinery, GetProductsResponse>();
+            CreateMap<Machinery, GetMachinerysResponse>();
             CreateMap<CreateNewProductRequest, Machinery>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => ProductStatus.Active.GetDescriptionFromEnum()));

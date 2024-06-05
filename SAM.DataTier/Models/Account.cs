@@ -11,6 +11,8 @@ public partial class Account
 
     public string? Password { get; set; }
 
+    public string? Image { get; set; }
+
     public string? Role { get; set; }
 
     public string? FullName { get; set; }

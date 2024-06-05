@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Payload.Product
+namespace SAM.BusinessTier.Payload.Machinery
 {
-    public class ProductFilter
+    public class MachineryFilter
     {
         public string? Name { get; set; }
 
