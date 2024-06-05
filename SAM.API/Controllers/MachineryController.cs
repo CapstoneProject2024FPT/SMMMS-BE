@@ -13,11 +13,11 @@ using SAM.BusinessTier.Payload.Machinery;
 namespace SAM.API.Controllers
 {
     [ApiController]
-    public class ProductController : BaseController<ProductController>
+    public class MachineryController : BaseController<MachineryController>
     {
         private readonly IMachineryService _iMachineryService;
 
-        public ProductController(ILogger<ProductController> logger, IMachineryService machineryService) : base(logger)
+        public MachineryController(ILogger<MachineryController> logger, IMachineryService machineryService) : base(logger)
         {
             _iMachineryService = machineryService;
         }
