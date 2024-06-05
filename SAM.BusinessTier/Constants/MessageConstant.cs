@@ -30,7 +30,7 @@ public static class MessageConstant
         public const string CategoryEmptyMessage = "Category không hợp lệ";
     }
 
-    public static class Product
+    public static class Mechinery
     {
         public const string ProductNameExisted = "Mechinery đã tồn tại";
         public const string CreateNewProductFailedMessage = "Tạo mới mechinery thất bại";
