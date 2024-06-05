@@ -19,8 +19,6 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Quantity { get; set; }
 
-        public MachineryStatus? Status { get; set; }
-
         public string? SerialNumber { get; set; }
 
         public double? StockPrice { get; set; }
@@ -31,6 +29,17 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public string? ImageUrl { get; set; }
 
+        public List<MachinerySpecifications> ProductList { get; set; } = new List<MachinerySpecifications>();
+
         public Guid? CategoryId { get; set; }
+
+
     }
+    public class MachinerySpecifications
+    {
+        public string Name { get; set; }
+        public float Value { get; set; }
+        public string Unit { get; set; }
+    }
+
 }

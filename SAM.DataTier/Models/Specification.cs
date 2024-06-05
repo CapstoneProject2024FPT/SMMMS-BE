@@ -11,6 +11,8 @@ public partial class Specification
 
     public double? Value { get; set; }
 
+    public string? Unit { get; set; }
+
     public Guid? MachineryId { get; set; }
 
     public virtual Machinery? Machinery { get; set; }

@@ -294,6 +294,7 @@ public partial class SamContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Unit).HasMaxLength(50);
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.Specifications)
                 .HasForeignKey(d => d.MachineryId)

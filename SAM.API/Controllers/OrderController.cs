@@ -38,7 +38,7 @@ namespace SAM.API.Controllers
             var response = await _orderService.GetOrderList(filter, pagingModel);
             return Ok(response);
         }
-        [HttpPatch(ApiEndPointConstant.Order.OrderEndPoint)]
+        [HttpPut(ApiEndPointConstant.Order.OrderEndPoint)]
         [ProducesResponseType(typeof(GetOrderDetailResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateOrder(Guid id, UpdateOrderRequest request)
         {

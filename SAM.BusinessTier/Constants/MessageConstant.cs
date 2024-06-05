@@ -30,18 +30,30 @@ public static class MessageConstant
         public const string CategoryEmptyMessage = "Category không hợp lệ";
     }
 
-    public static class Mechinery
+    public static class Machinery
     {
-        public const string MechineryNameExisted = "Mechinery đã tồn tại";
-        public const string CreateNewMechineryFailedMessage = "Tạo mới mechinery thất bại";
-        public const string UpdateMechinerytFailedMessage = "Cập nhật thông tin mechinery thất bại";
-        public const string UpdateMechinerySuccessMessage = "Cập nhật thông tin mechinery thành công";
-        public const string EmptyMechineryIdMessage = "Mechinery Id không hợp lệ";
-        public const string MechineryNotFoundMessage = "Mechinery không tồn tại trong hệ thống";
+        public const string MachineryNameExisted = "Machinery đã tồn tại";
+        public const string CreateNewMachineryFailedMessage = "Tạo mới machinery thất bại";
+        public const string UpdateMachinerytFailedMessage = "Cập nhật thông tin machinery thất bại";
+        public const string UpdateMachinerySuccessMessage = "Cập nhật thông tin machinery thành công";
+        public const string EmptyMachineryIdMessage = "Machinery Id không hợp lệ";
+        public const string MachineryNotFoundMessage = "Machinery không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
 
+    }
+    public static class Specification
+    {
+        public const string SpecificationNameExisted = "Specification đã tồn tại";
+        public const string CreateNewSpecificationFailedMessage = "Tạo mới Specification thất bại";
+        public const string UpdateSpecificationFailedMessage = "Cập nhật thông tin Specification thất bại";
+        public const string UpdateSpecificationSuccessMessage = "Cập nhật thông tin Specification thành công";
+        public const string EmptySpecificationIdMessage = "Specification Id không hợp lệ";
+        public const string MachineryNotFoundMessage = "Specification không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
     
     public static class ProductRetail
