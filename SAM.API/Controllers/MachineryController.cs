@@ -22,9 +22,9 @@ namespace SAM.API.Controllers
             _iMachineryService = machineryService;
         }
         [HttpPost(ApiEndPointConstant.Product.ProductsEndPoint)]
-        public async Task<IActionResult> CreateNewProducts(CreateNewMachineryRequest product)
+        public async Task<IActionResult> CreateNewProducts(CreateNewMachineryRequest mechinery)
         {
-            var response = await _iMachineryService.CreateNewMachinerys(product);
+            var response = await _iMachineryService.CreateNewMachinerys(mechinery);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Product.ProductsEndPoint)]
