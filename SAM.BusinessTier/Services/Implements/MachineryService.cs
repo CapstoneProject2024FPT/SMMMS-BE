@@ -74,7 +74,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             // Create a list for the machinery specifications
             var specification = new List<Specification>();
-            foreach (var spec in request.ProductList)
+            foreach (var spec in request.SpecificationList)
             {
                 specification.Add(new Specification
                 {

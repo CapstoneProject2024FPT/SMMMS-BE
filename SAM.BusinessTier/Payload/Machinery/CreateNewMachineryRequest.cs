@@ -29,7 +29,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public string? ImageUrl { get; set; }
 
-        public List<MachinerySpecifications> ProductList { get; set; } = new List<MachinerySpecifications>();
+        public List<MachinerySpecifications> SpecificationList { get; set; } = new List<MachinerySpecifications>();
 
         public Guid? CategoryId { get; set; }
 
