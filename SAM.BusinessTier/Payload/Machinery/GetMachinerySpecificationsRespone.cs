@@ -28,10 +28,11 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Priority { get; set; }
 
-        public CategoryResponse? CategoryId { get; set; }
+        public CategoryResponse? Category { get; set; }
     }
     public class SpecificationsResponse
     {
+        public Guid? SpecificationId { get; set; }
         public Guid? MachineryId { get; set; }
         public string Name { get; set; }
         public float Value { get; set; }
@@ -39,7 +40,6 @@ namespace SAM.BusinessTier.Payload.Machinery
 
 
     }
-
     public class CategoryResponse
     {
         public Guid? Id { get; set; }

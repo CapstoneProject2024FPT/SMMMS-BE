@@ -131,46 +131,45 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id)
         {
-            //Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-            //    predicate: x => x.Id.Equals(id))
-            //?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
-            //var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone()
-            //{
-            //    OrderId = order.Id,
-            //    InvoiceCode = order.InvoiceCode,
-            //    CreateDate = order.CreateDate,
-            //    CompletedDate = order.CompletedDate,
-            //    TotalAmount = order.TotalAmount,
-            //    FinalAmount = order.FinalAmount,
-            //    Note = order.Note,
-            //    Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
+            var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
-            //    ProductList = (List<OrderDetailResponse>)await _unitOfWork.GetRepository<OrderDetail>()
-            //        .GetListAsync(
-            //            selector: x => new OrderDetailResponse()
-            //            {
-            //                OrderDetailId = x.Id,
-            //                ProductId = x.MachineryId,
-            //                ProductName = x.Machinery.Name,
-            //                Quantity = x.Quantity,
-            //                SellingPrice = x.SellingPrice,
-            //                TotalAmount = x.TotalAmount,
-            //            },
-            //            predicate: x => x.OrderId.Equals(id)
-            //        ),
-            //    UserInfo = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-            //        selector: x => new OrderUserResponse()
-            //        {
-            //            Id = x.Id,
-            //            FullName = x.FullName,
-            //            Role = EnumUtil.ParseEnum<RoleEnum>(x.Role)
-            //        },
-            //        predicate: x => x.Id.Equals(order.AccountId))
+            var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone
+            {
+                Name = machinery.Name,
+                Origin = machinery.Origin,
+                Model = machinery.Model,
+                Description = machinery.Description,
+                Specifications = (List<SpecificationsResponse>)await _unitOfWork.GetRepository<Specification>()
+                    .GetListAsync(
+                        selector: x => new SpecificationsResponse()
+                        {
+                            SpecificationId = x.Id,
+                            MachineryId = x.MachineryId,
+                            Name = x.Name,
+                            Value = (float)x.Value,
+                            Unit = x.Unit,
+                        },
+                        predicate: x => x.MachineryId.Equals(id)
+                    ),
+                SerialNumber = machinery.SerialNumber,
+                SellingPrice = machinery.SellingPrice,
+                Priority = machinery.Priority,
+                Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
+                Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                        selector: x => new CategoryResponse()
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Type = EnumUtil.ParseEnum<CategoryType>(x.Type),
+                        },
+                        predicate: x => x.Id.Equals(machinery.CategoryId)
+                    )
+            };
 
-            //};
-            //return getMachinerySpecificationsRespone;
-            return null;
+            return getMachinerySpecificationsRespone;
         }
 
         public async Task<bool> RemoveMachineryStatus(Guid id)

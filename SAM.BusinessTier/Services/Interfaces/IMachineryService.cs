@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SAM.BusinessTier.Payload.Machinery;
+using SAM.BusinessTier.Payload.Order;
 
 namespace SAM.BusinessTier.Services.Interfaces
 {
@@ -18,6 +19,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<ICollection<GetMachinerysResponse>> GetMachineryListNotIPaginate(MachineryFilter filter);
         Task<GetMachinerysResponse> GetMachineryById(Guid id);
         Task<bool> RemoveMachineryStatus(Guid id);
-        
+
+        Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id);
     }
 }

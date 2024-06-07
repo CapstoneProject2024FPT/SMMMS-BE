@@ -9,6 +9,7 @@ using SAM.DataTier.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Payload.Machinery;
+using SAM.BusinessTier.Payload.Order;
 
 namespace SAM.API.Controllers
 {
@@ -60,5 +61,12 @@ namespace SAM.API.Controllers
             return Ok(MessageConstant.Machinery.UpdateStatusSuccessMessage);
 
         }
+        [HttpGet(ApiEndPointConstant.Product.MachinerysEndPointDetail)]
+        public async Task<IActionResult> GetMachinerySpecificationsDetail(Guid id)
+        {
+            var response = await _iMachineryService.GetMachinerySpecificationsDetail(id);
+            return Ok(response);
+        }
+
     }
 }

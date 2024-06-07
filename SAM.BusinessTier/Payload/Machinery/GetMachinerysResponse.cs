@@ -9,6 +9,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 {
     public class GetMachinerysResponse
     {
+        public Guid? Id { get; set; }
         public string? Name { get; set; }
 
         public string? Origin { get; set; }
