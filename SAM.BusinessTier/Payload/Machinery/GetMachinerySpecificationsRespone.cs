@@ -22,6 +22,8 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
 
+        public int? Quantity { get; set; }
+
         public string? SerialNumber { get; set; }
 
         public double? SellingPrice { get; set; }

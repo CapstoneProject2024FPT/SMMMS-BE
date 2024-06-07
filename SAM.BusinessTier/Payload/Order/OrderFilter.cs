@@ -11,9 +11,20 @@ namespace SAM.BusinessTier.Payload.Order
 {
     public class OrderFilter
     {
+        public Guid Id { get; set; }
+
         public string? InvoiceCode { get; set; }
-        public DateTime? fromDate { get; set; }
-        public DateTime? toDate { get; set; }
+
+        public DateTime? CreateDate { get; set; }
+
+        public DateTime? CompletedDate { get; set; }
+
+        public string? Note { get; set; }
+
         public OrderStatus? status { get; set; }
+
+        public Guid? AccountId { get; set; }
+
+        //public Guid? PaymentId { get; set; }
     }
 }

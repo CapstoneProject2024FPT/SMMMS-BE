@@ -38,7 +38,8 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 Id = Guid.NewGuid(),
                 InvoiceCode = TimeUtils.GetTimestamp(currentTime),
-                CreateDate = currentTime,
+                CreateDate = DateTime.Now,
+                CompletedDate = DateTime.Now,
                 TotalAmount = request.TotalAmount,
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
@@ -47,16 +48,16 @@ namespace SAM.BusinessTier.Services.Implements
             };
 
             var orderDetails = new List<OrderDetail>();
-            foreach (var product in request.ProductList)
+            foreach (var machinery in request.MachineryList)
             {
-                double totalProductAmount = product.SellingPrice * product.Quantity;
+                double totalProductAmount = (double)(machinery.SellingPrice * machinery.Quantity);
                 orderDetails.Add(new OrderDetail
                 {
                     Id = Guid.NewGuid(),
                     OrderId = newOrder.Id,
-                    MachineryId = product.MachineryId,
-                    Quantity = product.Quantity,
-                    SellingPrice = product.SellingPrice,
+                    MachineryId = machinery.MachineryId,
+                    Quantity = machinery.Quantity,
+                    SellingPrice = machinery.SellingPrice,
                     TotalAmount = totalProductAmount
                 });
 
@@ -81,6 +82,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetOrderDetailResponse> GetOrderDetail(Guid id)
         {
+            DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Order order = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
@@ -121,45 +123,45 @@ namespace SAM.BusinessTier.Services.Implements
             };
             return orderDetailResponse;
         }
-        private static Expression<Func<Order, bool>> BuildGetOrderQuery(OrderFilter filter)
-        {
-            Expression<Func<Order, bool>> filterQuery = x => true;
+        //private static Expression<Func<Order, bool>> BuildGetOrderQuery(OrderFilter filter)
+        //{
+        //    Expression<Func<Order, bool>> filterQuery = x => true;
 
-            var InvoiceCode = filter.InvoiceCode;
-            var fromDate = filter.fromDate;
-            var toDate = filter.toDate;
-            var status = filter.status;
+        //    var InvoiceCode = filter.InvoiceCode;
+        //    var fromDate = filter.fromDate;
+        //    var toDate = filter.toDate;
+        //    var status = filter.status;
 
-            if (InvoiceCode != null)
-            {
-                filterQuery = filterQuery.AndAlso(x => x.InvoiceCode.Contains(InvoiceCode));
-            }
+        //    if (InvoiceCode != null)
+        //    {
+        //        filterQuery = filterQuery.AndAlso(x => x.InvoiceCode.Contains(InvoiceCode));
+        //    }
 
-            if (fromDate.HasValue)
-            {
-                filterQuery = filterQuery.AndAlso(x => x.CreateDate >= fromDate);
-            }
+        //    if (fromDate.HasValue)
+        //    {
+        //        filterQuery = filterQuery.AndAlso(x => x.CreateDate >= fromDate);
+        //    }
 
-            if (toDate.HasValue)
-            {
-                filterQuery = filterQuery.AndAlso(x => x.CreateDate <= toDate);
-            }
+        //    if (toDate.HasValue)
+        //    {
+        //        filterQuery = filterQuery.AndAlso(x => x.CreateDate <= toDate);
+        //    }
 
-            if (status != null)
-            {
-                filterQuery = filterQuery.AndAlso(x => x.Status.Equals(status.GetDescriptionFromEnum()));
-            }
+        //    if (status != null)
+        //    {
+        //        filterQuery = filterQuery.AndAlso(x => x.Status.Equals(status.GetDescriptionFromEnum()));
+        //    }
 
 
-            return filterQuery;
-        }
+        //    return filterQuery;
+        //}
 
 
         public async Task<IPaginate<GetOrderResponse>> GetOrderList(OrderFilter filter, PagingModel pagingModel)
         {
             IPaginate<GetOrderResponse> response = await _unitOfWork.GetRepository<Order>().GetPagingListAsync(
                 selector: x => _mapper.Map<GetOrderResponse>(x),
-                predicate: BuildGetOrderQuery(filter),
+                filter: filter,
                 orderBy: x => x.OrderByDescending(x => x.CreateDate),
                 page: pagingModel.page,
                 size: pagingModel.size
