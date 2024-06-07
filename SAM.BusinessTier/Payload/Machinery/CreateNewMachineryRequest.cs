@@ -25,9 +25,9 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Priority { get; set; }
 
-        public string? ImageUrl { get; set; }
+        public List<MachineryImages>? ImageURL { get; set; } = new List<MachineryImages>();
 
-        public List<MachinerySpecifications> SpecificationList { get; set; } = new List<MachinerySpecifications>();
+        public List<MachinerySpecifications>? SpecificationList { get; set; } = new List<MachinerySpecifications>();
 
         public Guid? CategoryId { get; set; }
 
@@ -38,6 +38,10 @@ namespace SAM.BusinessTier.Payload.Machinery
         public string Name { get; set; }
         public float Value { get; set; }
         public string Unit { get; set; }
+    }
+    public class MachineryImages
+    {
+        public string ImageURL { get; set; }
     }
 
 }

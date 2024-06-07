@@ -27,11 +27,11 @@ public partial class Machinery
 
     public int? Priority { get; set; }
 
-    public string? ImageUrl { get; set; }
-
     public Guid? CategoryId { get; set; }
 
     public virtual Category? Category { get; set; }
+
+    public virtual ICollection<ImagesAll> ImagesAlls { get; set; } = new List<ImagesAll>();
 
     public virtual ICollection<MachinePartMachine> MachinePartMachines { get; set; } = new List<MachinePartMachine>();
 

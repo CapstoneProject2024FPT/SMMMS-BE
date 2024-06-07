@@ -20,8 +20,9 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public MachineryStatus? Status { get; set; }
 
-        public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
+        public List<MachineryImagesResponse>? ImageURL { get; set; } = new List<MachineryImagesResponse>();
 
+        public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
         public int? Quantity { get; set; }
 
         public string? SerialNumber { get; set; }
@@ -47,5 +48,12 @@ namespace SAM.BusinessTier.Payload.Machinery
         public Guid? Id { get; set; }
         public string? Name { get; set; }
         public CategoryType? Type { get; set; }
+    }
+    public class MachineryImagesResponse
+    {
+        public Guid? Id { get; set; }
+        public string ImageURL { get; set; }
+
+        public Guid? MachineryId { get; set; }
     }
 }

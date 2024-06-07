@@ -21,6 +21,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Certification> Certifications { get; set; }
 
+    public virtual DbSet<ImagesAll> ImagesAlls { get; set; }
+
     public virtual DbSet<MachineComponent> MachineComponents { get; set; }
 
     public virtual DbSet<MachinePartMachine> MachinePartMachines { get; set; }
@@ -113,6 +115,23 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK_Certifications_Account");
         });
 
+        modelBuilder.Entity<ImagesAll>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Images__3214EC074E69D041");
+
+            entity.ToTable("ImagesAll");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("ImageURL");
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.ImagesAlls)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK__Images__Machiner__45BE5BA9");
+        });
+
         modelBuilder.Entity<MachineComponent>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__MachineC__3213E83F5465096D");
@@ -155,7 +174,6 @@ public partial class SamContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.Description).HasMaxLength(255);
-            entity.Property(e => e.ImageUrl).HasMaxLength(255);
             entity.Property(e => e.Model).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Origin).HasMaxLength(255);

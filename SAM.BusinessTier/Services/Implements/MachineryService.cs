@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.Order;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace SAM.BusinessTier.Services.Implements
@@ -69,7 +70,6 @@ namespace SAM.BusinessTier.Services.Implements
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
-                ImageUrl = request.ImageUrl,
                 CategoryId = request.CategoryId
             };
 
@@ -84,6 +84,17 @@ namespace SAM.BusinessTier.Services.Implements
                     Name = spec.Name,
                     Value = spec.Value,
                     Unit = spec.Unit
+                });
+            };
+            var imagesUrl = new List<MachineryImagesResponse>();
+            foreach (var img in request.ImageURL)
+            {
+                imagesUrl.Add(new MachineryImagesResponse
+                {
+                    Id = Guid.NewGuid(),
+                    ImageURL = img.ImageURL,
+                    MachineryId = newMachinery.Id,
+                    
                 });
             };
 
@@ -166,6 +177,16 @@ namespace SAM.BusinessTier.Services.Implements
                             Type = EnumUtil.ParseEnum<CategoryType>(x.Type),
                         },
                         predicate: x => x.Id.Equals(machinery.CategoryId)
+                    ),
+                ImageURL = (List<MachineryImagesResponse>)await _unitOfWork.GetRepository<ImagesAll>()
+                    .GetListAsync(
+                        selector: x => new MachineryImagesResponse()
+                        {
+                            Id = x.Id, 
+                            ImageURL = x.ImageUrl,
+                            MachineryId = x.MachineryId,
+                        },
+                        predicate: x => x.MachineryId.Equals(id)
                     )
             };
 
