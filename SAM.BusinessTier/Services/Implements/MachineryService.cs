@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.Order;
 using static System.Net.Mime.MediaTypeNames;
+using Azure.Core;
 
 
 namespace SAM.BusinessTier.Services.Implements
@@ -128,7 +129,6 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<ICollection<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter)
         {
-            // Fetch all machinery records that match the filter criteria
             var machineryList = await _unitOfWork.GetRepository<Machinery>()
                 .GetListAsync(
                     selector: x => x,
@@ -193,11 +193,8 @@ namespace SAM.BusinessTier.Services.Implements
                      
                 };
 
-                // Add the response object to the list
                 getMachinerysResponseList.Add(getMachinerysResponse);
             }
-
-            // Return the list of response objects
             return getMachinerysResponseList;
         }
 
@@ -284,11 +281,9 @@ namespace SAM.BusinessTier.Services.Implements
             Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
-            //Category category = (await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-            //    predicate: x => x.Id.Equals(updateProductRequest.CategoryId))) != null
-            //    ? await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-            //        predicate: x => x.Id.Equals(updateProductRequest.CategoryId))
-            //    : throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+            Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateProductRequest.CategoryId))
+            ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
 
             product.Name = string.IsNullOrEmpty(updateProductRequest.Name) ? product.Name : updateProductRequest.Name;
             product.Origin = string.IsNullOrEmpty(updateProductRequest.Origin) ? product.Origin : updateProductRequest.Origin;
@@ -296,10 +291,8 @@ namespace SAM.BusinessTier.Services.Implements
             product.SellingPrice = (updateProductRequest.SellingPrice >= 0) ? product.SellingPrice : updateProductRequest.SellingPrice;
             product.StockPrice = (updateProductRequest.StockPrice >= 0) ? product.StockPrice : updateProductRequest.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
-            product.Status = string.IsNullOrEmpty(updateProductRequest.Status.GetDescriptionFromEnum())
-                ? updateProductRequest.Status.ToString()
-                : updateProductRequest.Status.GetDescriptionFromEnum();
-            
+            product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
+
             product.Priority = (updateProductRequest.Priority >= 0) ? product.Priority : updateProductRequest.Priority;
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;

@@ -23,38 +23,38 @@ namespace SAM.API.Controllers
             _iMachineryService = machineryService;
         }
         [HttpPost(ApiEndPointConstant.Product.MachinerysEndPoint)]
-        public async Task<IActionResult> CreateNewProducts(CreateNewMachineryRequest mechinery)
+        public async Task<IActionResult> CreateNewMachinerys(CreateNewMachineryRequest mechinery)
         {
             var response = await _iMachineryService.CreateNewMachinerys(mechinery);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Product.MachinerysEndPoint)]
-        public async Task<IActionResult> GetProductList([FromQuery] MachineryFilter filter)
+        public async Task<IActionResult> GetMachineryList([FromQuery] MachineryFilter filter)
         {
             var response = await _iMachineryService.GetMachineryList(filter);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Product.MachinerysEndPointNoPaginate)]
-        public async Task<IActionResult> GetProductListNotIPaginate([FromQuery] MachineryFilter filter)
+        public async Task<IActionResult> GetMachineryListNotIPaginate([FromQuery] MachineryFilter filter)
         {
             var response = await _iMachineryService.GetMachineryListNotIPaginate(filter);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Product.MachineryEndPoint)]
-        public async Task<IActionResult> GetProductById(Guid id)
+        public async Task<IActionResult> GetMachineryById(Guid id)
         {
             var response = await _iMachineryService.GetMachineryById(id);
             return Ok(response);
         }
         [HttpPut(ApiEndPointConstant.Product.MachineryEndPoint)]
-        public async Task<IActionResult> UpdateProduct(Guid id, UpdateMachineryRequest updateProductRequest)
+        public async Task<IActionResult> UpdateMachinery(Guid id, UpdateMachineryRequest updateProductRequest)
         {
             var response = await _iMachineryService.UpdateMachinery(id, updateProductRequest);
             if (!response) return Ok(MessageConstant.Machinery.UpdateMachinerytFailedMessage);
             return Ok(MessageConstant.Machinery.UpdateStatusSuccessMessage);
         }
         [HttpDelete(ApiEndPointConstant.Product.MachineryEndPoint)]
-        public async Task<IActionResult> RemoveProductStatus(Guid id)
+        public async Task<IActionResult> RemoveMachineryStatus(Guid id)
         {
             var response = await _iMachineryService.RemoveMachineryStatus(id);
             if (!response) return Ok(MessageConstant.Machinery.UpdateMachinerytFailedMessage);

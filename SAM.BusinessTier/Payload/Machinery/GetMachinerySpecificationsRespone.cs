@@ -43,9 +43,9 @@ namespace SAM.BusinessTier.Payload.Machinery
     {
         public Guid? SpecificationId { get; set; }
         public Guid? MachineryId { get; set; }
-        public string Name { get; set; }
-        public float Value { get; set; }
-        public string Unit { get; set; }
+        public string? Name { get; set; }
+        public float? Value { get; set; }
+        public string? Unit { get; set; }
 
 
     }
