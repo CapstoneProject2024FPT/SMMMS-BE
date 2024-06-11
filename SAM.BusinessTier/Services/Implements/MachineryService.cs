@@ -291,7 +291,7 @@ namespace SAM.BusinessTier.Services.Implements
             product.SellingPrice = (updateProductRequest.SellingPrice >= 0) ? product.SellingPrice : updateProductRequest.SellingPrice;
             product.StockPrice = (updateProductRequest.StockPrice >= 0) ? product.StockPrice : updateProductRequest.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
-            product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
+            //product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
 
             product.Priority = (updateProductRequest.Priority >= 0) ? product.Priority : updateProductRequest.Priority;
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);

@@ -46,7 +46,7 @@ namespace SAM.API.Controllers
             var response = await _iMachineryService.GetMachineryById(id);
             return Ok(response);
         }
-        [HttpPatch(ApiEndPointConstant.Product.MachineryEndPoint)]
+        [HttpPut(ApiEndPointConstant.Product.MachineryEndPoint)]
         public async Task<IActionResult> UpdateMachinery(Guid id, UpdateMachineryRequest updateProductRequest)
         {
             var response = await _iMachineryService.UpdateMachinery(id, updateProductRequest);
