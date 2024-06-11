@@ -72,7 +72,6 @@ namespace SAM.BusinessTier.Services.Implements
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
                 Brand = request.Brand,
-                ControlSystem = request.ControlSystem,
                 TimeWarranty = request.TimeWarranty,
                 CategoryId = request.CategoryId,
                 CreateDate = DateTime.Now,
@@ -89,7 +88,6 @@ namespace SAM.BusinessTier.Services.Implements
                     MachineryId = newMachinery.Id,
                     Name = spec.Name,
                     Value = spec.Value,
-                    Unit = spec.Unit
                 });
             };
             var imagesUrl = new List<ImagesAll>();
@@ -146,8 +144,7 @@ namespace SAM.BusinessTier.Services.Implements
                             SpecificationId = x.Id,
                             MachineryId = x.MachineryId,
                             Name = x.Name,
-                            Value = (float)x.Value,
-                            Unit = x.Unit,
+                            Value = x.Value,
                         },
                         predicate: x => x.MachineryId.Equals(machinery.Id)
                     );
@@ -185,7 +182,6 @@ namespace SAM.BusinessTier.Services.Implements
                     SellingPrice = machinery.SellingPrice,
                     Priority = machinery.Priority,
                     Brand = machinery.Brand,
-                    ControlSystem = machinery.ControlSystem,
                     TimeWarranty = machinery.TimeWarranty,
                     Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                     Category = category,
@@ -230,16 +226,13 @@ namespace SAM.BusinessTier.Services.Implements
                             SpecificationId = x.Id,
                             MachineryId = x.MachineryId,
                             Name = x.Name,
-                            Value = (float)x.Value,
-                            Unit = x.Unit,
+                            Value = x.Value,
                         },
                         predicate: x => x.MachineryId.Equals(id)
                     ),
                 SerialNumber = machinery.SerialNumber,
                 SellingPrice = machinery.SellingPrice,
                 Priority = machinery.Priority,
-                Brand = machinery.Brand,
-                ControlSystem = machinery.ControlSystem,
                 TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                 Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
@@ -293,6 +286,8 @@ namespace SAM.BusinessTier.Services.Implements
             product.SellingPrice = (updateProductRequest.SellingPrice < 0) ? product.SellingPrice : updateProductRequest.SellingPrice;
             product.StockPrice = (updateProductRequest.StockPrice < 0) ? product.StockPrice : updateProductRequest.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
+            product.Brand = string.IsNullOrEmpty(updateProductRequest.Brand) ? product.Brand : updateProductRequest.Brand;
+            product.TimeWarranty = (updateProductRequest.TimeWarranty < 0) ? product.TimeWarranty : updateProductRequest.TimeWarranty;
             //product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
 
             product.Priority = (updateProductRequest.Priority < 0) ? product.Priority : updateProductRequest.Priority;

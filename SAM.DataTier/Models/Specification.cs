@@ -9,9 +9,7 @@ public partial class Specification
 
     public string? Name { get; set; }
 
-    public double? Value { get; set; }
-
-    public string? Unit { get; set; }
+    public string? Value { get; set; }
 
     public Guid? MachineryId { get; set; }
 

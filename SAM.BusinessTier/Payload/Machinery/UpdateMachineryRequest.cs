@@ -26,6 +26,10 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Priority { get; set; }
 
+        public string? Brand { get; set; }
+
+        public int? TimeWarranty { get; set; }
+
         public Guid? CategoryId { get; set; }
     }
 }

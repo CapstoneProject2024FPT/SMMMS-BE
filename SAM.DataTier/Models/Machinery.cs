@@ -31,8 +31,6 @@ public partial class Machinery
 
     public string? Brand { get; set; }
 
-    public string? ControlSystem { get; set; }
-
     public int? TimeWarranty { get; set; }
 
     public Guid? CategoryId { get; set; }

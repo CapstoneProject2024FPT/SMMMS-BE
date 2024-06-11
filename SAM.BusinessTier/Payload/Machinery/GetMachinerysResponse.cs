@@ -32,7 +32,6 @@ namespace SAM.BusinessTier.Payload.Machinery
         public int? Priority { get; set; }
         public string? Brand { get; set; }
 
-        public string? ControlSystem { get; set; }
 
         public int? TimeWarranty { get; set; }
 
@@ -43,9 +42,8 @@ namespace SAM.BusinessTier.Payload.Machinery
     {
         public Guid? SpecificationId { get; set; }
         public Guid? MachineryId { get; set; }
-        public string Name { get; set; }
-        public float Value { get; set; }
-        public string Unit { get; set; }
+        public string? Name { get; set; }
+        public string? Value { get; set; }
 
 
     }

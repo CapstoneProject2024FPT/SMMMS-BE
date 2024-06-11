@@ -175,7 +175,6 @@ public partial class SamContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.Brand).HasMaxLength(50);
-            entity.Property(e => e.ControlSystem).HasMaxLength(250);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Model).HasMaxLength(255);
@@ -316,7 +315,7 @@ public partial class SamContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Unit).HasMaxLength(50);
+            entity.Property(e => e.Value).HasMaxLength(250);
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.Specifications)
                 .HasForeignKey(d => d.MachineryId)

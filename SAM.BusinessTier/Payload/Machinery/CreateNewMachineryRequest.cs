@@ -27,7 +27,6 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public string? Brand { get; set; }
 
-        public string? ControlSystem { get; set; }
 
         public int? TimeWarranty { get; set; }
 
@@ -42,8 +41,7 @@ namespace SAM.BusinessTier.Payload.Machinery
     public class MachinerySpecifications
     {
         public string? Name { get; set; }
-        public float? Value { get; set; }
-        public string? Unit { get; set; }
+        public string? Value { get; set; }
     }
     public class MachineryImages
     {
