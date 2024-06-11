@@ -37,6 +37,7 @@ namespace SAM.BusinessTier.Payload.Machinery
         public int? TimeWarranty { get; set; }
 
         public CategoryResponse? Category { get; set; }
+        public DateTime? CreateDate { get; set; }
     }
     public class SpecificationsResponse
     {

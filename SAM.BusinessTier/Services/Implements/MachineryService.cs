@@ -74,6 +74,7 @@ namespace SAM.BusinessTier.Services.Implements
                 ControlSystem = request.ControlSystem,
                 TimeWarranty = request.TimeWarranty,
                 CategoryId = request.CategoryId,
+                
 
             };
 
@@ -125,16 +126,6 @@ namespace SAM.BusinessTier.Services.Implements
             return _mapper.Map<GetMachinerysResponse>(product);
         }
 
-        //        public async Task<IPaginate<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
-        //        {
-        //            IPaginate<GetMachinerysResponse> respone = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync(
-        //               selector: x => _mapper.Map<GetMachinerysResponse>(x),
-        //               filter: filter,
-        //               page: pagingModel.page,
-        //               size: pagingModel.size
-        ///*               orderBy: x => x.OrderBy(x => x.Priority)*/);
-        //            return respone;
-        //        }
         public async Task<ICollection<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter)
         {
             // Fetch all machinery records that match the filter criteria
@@ -197,7 +188,9 @@ namespace SAM.BusinessTier.Services.Implements
                     TimeWarranty = machinery.TimeWarranty,
                     Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                     Category = category,
-                    Image = images.ToList()
+                    Image = images.ToList(),
+                    CreateDate = machinery.CreateDate,
+                     
                 };
 
                 // Add the response object to the list
