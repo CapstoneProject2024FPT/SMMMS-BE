@@ -29,7 +29,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public string? ControlSystem { get; set; }
 
-        //public DateTime? TimeWarranty { get; set; }
+        public int? TimeWarranty { get; set; }
 
         public List<MachineryImages>? Image { get; set; } = new List<MachineryImages>();
 

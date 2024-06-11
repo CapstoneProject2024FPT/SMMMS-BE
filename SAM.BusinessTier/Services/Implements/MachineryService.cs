@@ -72,7 +72,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Priority = request.Priority,
                 Brand = request.Brand,
                 ControlSystem = request.ControlSystem,
-                TimeWarranty = DateTime.Now,
+                TimeWarranty = request.TimeWarranty,
                 CategoryId = request.CategoryId,
 
             };
@@ -174,6 +174,9 @@ namespace SAM.BusinessTier.Services.Implements
                 SerialNumber = machinery.SerialNumber,
                 SellingPrice = machinery.SellingPrice,
                 Priority = machinery.Priority,
+                Brand = machinery.Brand,
+                ControlSystem = machinery.ControlSystem,
+                TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                 Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                         selector: x => new CategoryResponse()

@@ -33,7 +33,7 @@ public partial class Machinery
 
     public string? ControlSystem { get; set; }
 
-    public DateTime? TimeWarranty { get; set; }
+    public int? TimeWarranty { get; set; }
 
     public Guid? CategoryId { get; set; }
 

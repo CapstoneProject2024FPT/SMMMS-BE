@@ -183,7 +183,6 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Origin).HasMaxLength(255);
             entity.Property(e => e.SerialNumber).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
-            entity.Property(e => e.TimeWarranty).HasColumnType("datetime");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.CategoryId)
