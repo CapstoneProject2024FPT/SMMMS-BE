@@ -75,7 +75,7 @@ namespace SAM.BusinessTier.Services.Implements
                 ControlSystem = request.ControlSystem,
                 TimeWarranty = request.TimeWarranty,
                 CategoryId = request.CategoryId,
-                
+                CreateDate = DateTime.Now,
 
             };
 
