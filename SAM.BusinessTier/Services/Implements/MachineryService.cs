@@ -296,10 +296,11 @@ namespace SAM.BusinessTier.Services.Implements
             ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
             
             product.Name = string.IsNullOrEmpty(updateProductRequest.Name) ? product.Name : updateProductRequest.Name;
-            product.StockPrice = updateProductRequest.StockPrice;
+            product.SellingPrice = (updateProductRequest.SellingPrice >= 0) ? product.SellingPrice : updateProductRequest.SellingPrice;
+            product.StockPrice = (updateProductRequest.StockPrice >= 0) ? product.StockPrice : updateProductRequest.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
             product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
-            //product.Priority = updateProductRequest.Priority;
+            product.Priority = (updateProductRequest.Priority >= 0) ? product.Priority : updateProductRequest.Priority;
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
