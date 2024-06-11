@@ -17,7 +17,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public string? Description { get; set; }
 
-        public MachineryStatus? Status { get; set; }
+        //public MachineryStatus? Status { get; set; }
 
 
         public double? StockPrice { get; set; }

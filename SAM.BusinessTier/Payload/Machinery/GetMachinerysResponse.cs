@@ -51,6 +51,7 @@ namespace SAM.BusinessTier.Payload.Machinery
     }
     public class CategoryAllResponse
     {
+        public Guid? Id { get; set; }
         public string? Name { get; set; }
         public CategoryType? Type { get; set; }
     }

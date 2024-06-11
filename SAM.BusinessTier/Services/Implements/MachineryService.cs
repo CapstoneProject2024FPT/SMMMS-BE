@@ -156,6 +156,7 @@ namespace SAM.BusinessTier.Services.Implements
                     .SingleOrDefaultAsync(
                         selector: x => new CategoryAllResponse
                         {
+                            Id = x.Id,
                             Name = x.Name,
                             Type = EnumUtil.ParseEnum<CategoryType>(x.Type),
                         },
