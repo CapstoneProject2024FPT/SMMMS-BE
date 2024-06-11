@@ -29,9 +29,9 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Product.MachinerysEndPoint)]
-        public async Task<IActionResult> GetProductList([FromQuery] MachineryFilter filter, [FromQuery] PagingModel pagingModel)
+        public async Task<IActionResult> GetProductList([FromQuery] MachineryFilter filter)
         {
-            var response = await _iMachineryService.GetMachineryList(filter, pagingModel);
+            var response = await _iMachineryService.GetMachineryList(filter);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Product.MachinerysEndPointNoPaginate)]

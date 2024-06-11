@@ -125,15 +125,87 @@ namespace SAM.BusinessTier.Services.Implements
             return _mapper.Map<GetMachinerysResponse>(product);
         }
 
-        public async Task<IPaginate<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
+//        public async Task<IPaginate<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
+//        {
+//            IPaginate<GetMachinerysResponse> respone = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync(
+//               selector: x => _mapper.Map<GetMachinerysResponse>(x),
+//               filter: filter,
+//               page: pagingModel.page,
+//               size: pagingModel.size
+///*               orderBy: x => x.OrderBy(x => x.Priority)*/);
+//            return respone;
+//        }
+        public async Task<ICollection<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter)
         {
-            IPaginate<GetMachinerysResponse> respone = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync(
-               selector: x => _mapper.Map<GetMachinerysResponse>(x),
-               filter: filter,
-               page: pagingModel.page,
-               size: pagingModel.size
-/*               orderBy: x => x.OrderBy(x => x.Priority)*/);
-            return respone;
+            // Fetch all machinery records that match the filter criteria
+            var machineryList = await _unitOfWork.GetRepository<Machinery>()
+                .GetListAsync(
+                    selector: x => x,
+                    filter: filter
+                );
+
+            var getMachinerysResponseList = new List<GetMachinerysResponse>();
+
+            foreach (var machinery in machineryList)
+            {
+                var specifications = await _unitOfWork.GetRepository<Specification>()
+                    .GetListAsync(
+                        selector: x => new SpecificationsResponse
+                        {
+                            SpecificationId = x.Id,
+                            MachineryId = x.MachineryId,
+                            Name = x.Name,
+                            Value = (float)x.Value,
+                            Unit = x.Unit,
+                        },
+                        predicate: x => x.MachineryId.Equals(machinery.Id)
+                    );
+
+                var category = await _unitOfWork.GetRepository<Category>()
+                    .SingleOrDefaultAsync(
+                        selector: x => new CategoryResponse
+                        {
+                            Name = x.Name,
+                            Type = EnumUtil.ParseEnum<CategoryType>(x.Type),
+                        },
+                        predicate: x => x.Id.Equals(machinery.CategoryId)
+                    );
+
+                var images = await _unitOfWork.GetRepository<ImagesAll>()
+                    .GetListAsync(
+                        selector: x => new MachineryImagesResponse
+                        {
+                            ImageURL = x.ImageUrl,
+                            CreateDate = x.CreateDate,
+                        },
+                        predicate: x => x.MachineryId.Equals(machinery.Id)
+                    );
+
+                var getMachinerysResponse = new GetMachinerysResponse
+                {
+                    Id = machinery.Id,
+                    Name = machinery.Name,
+                    Origin = machinery.Origin,
+                    Model = machinery.Model,
+                    Description = machinery.Description,
+                    Specifications = specifications.ToList(),
+                    SerialNumber = machinery.SerialNumber,
+                    SellingPrice = machinery.SellingPrice,
+                    Priority = machinery.Priority,
+                    Brand = machinery.Brand,
+                    ControlSystem = machinery.ControlSystem,
+                    TimeWarranty = machinery.TimeWarranty,
+                    Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
+                    Category = category,
+                    Image = images.ToList()
+                };
+
+                // Add the response object to the list
+                getMachinerysResponseList.Add(getMachinerysResponse);
+            }
+
+            // Return the list of response objects
+            return getMachinerysResponseList;
         }
 
 
