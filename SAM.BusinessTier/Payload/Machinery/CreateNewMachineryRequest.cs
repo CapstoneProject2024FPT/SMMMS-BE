@@ -48,7 +48,6 @@ namespace SAM.BusinessTier.Payload.Machinery
     public class MachineryImages
     {
         public string? ImageURL { get; set; }
-        public DateTime? CreateDate { get; set; }
 
     }
 

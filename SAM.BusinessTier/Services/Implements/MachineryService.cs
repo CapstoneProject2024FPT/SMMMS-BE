@@ -137,6 +137,7 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
+
         public async Task<ICollection<GetMachinerysResponse>> GetMachineryListNotIPaginate(MachineryFilter filter)
         {
             ICollection<GetMachinerysResponse> respone = await _unitOfWork.GetRepository<Machinery>().GetListAsync(
