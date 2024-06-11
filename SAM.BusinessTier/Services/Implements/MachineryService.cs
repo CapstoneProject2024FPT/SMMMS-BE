@@ -70,7 +70,8 @@ namespace SAM.BusinessTier.Services.Implements
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
-                CategoryId = request.CategoryId
+                CategoryId = request.CategoryId,
+
             };
 
             // Create a list for the machinery specifications
@@ -86,13 +87,13 @@ namespace SAM.BusinessTier.Services.Implements
                     Unit = spec.Unit
                 });
             };
-            var imagesUrl = new List<MachineryImagesResponse>();
-            foreach (var img in request.ImageURL)
+            var imagesUrl = new List<ImagesAll>();
+            foreach (var img in request.Image)
             {
-                imagesUrl.Add(new MachineryImagesResponse
+                imagesUrl.Add(new ImagesAll
                 {
                     Id = Guid.NewGuid(),
-                    ImageURL = img.ImageURL,
+                    ImageUrl = img.ImageURL,
                     MachineryId = newMachinery.Id,
                     
                 });
@@ -101,6 +102,7 @@ namespace SAM.BusinessTier.Services.Implements
             // Insert the new machinery and its specifications into the database
             await _unitOfWork.GetRepository<Machinery>().InsertAsync(newMachinery);
             await _unitOfWork.GetRepository<Specification>().InsertRangeAsync(specification);
+            await _unitOfWork.GetRepository<ImagesAll>().InsertRangeAsync(imagesUrl);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Specification.CreateNewSpecificationFailedMessage);
 
@@ -172,19 +174,16 @@ namespace SAM.BusinessTier.Services.Implements
                 Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                         selector: x => new CategoryResponse()
                         {
-                            Id = x.Id,
                             Name = x.Name,
                             Type = EnumUtil.ParseEnum<CategoryType>(x.Type),
                         },
                         predicate: x => x.Id.Equals(machinery.CategoryId)
                     ),
-                ImageURL = (List<MachineryImagesResponse>)await _unitOfWork.GetRepository<ImagesAll>()
+                Image = (List<MachineryImagesResponse>)await _unitOfWork.GetRepository<ImagesAll>()
                     .GetListAsync(
                         selector: x => new MachineryImagesResponse()
                         {
-                            Id = x.Id, 
-                            ImageURL = x.ImageUrl,
-                            MachineryId = x.MachineryId,
+                            ImageURL = x.ImageUrl
                         },
                         predicate: x => x.MachineryId.Equals(id)
                     )

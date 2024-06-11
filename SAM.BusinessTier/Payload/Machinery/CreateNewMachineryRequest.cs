@@ -25,7 +25,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Priority { get; set; }
 
-        public List<MachineryImages>? ImageURL { get; set; } = new List<MachineryImages>();
+        public List<MachineryImages>? Image { get; set; } = new List<MachineryImages>();
 
         public List<MachinerySpecifications>? SpecificationList { get; set; } = new List<MachinerySpecifications>();
 
