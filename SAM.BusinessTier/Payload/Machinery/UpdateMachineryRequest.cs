@@ -19,15 +19,12 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public MachineryStatus? Status { get; set; }
 
-        public int? Quantity { get; set; }
 
         public double? StockPrice { get; set; }
 
         public double? SellingPrice { get; set; }
 
         public int? Priority { get; set; }
-
-        public string? ImageUrl { get; set; }
 
         public Guid? CategoryId { get; set; }
     }
