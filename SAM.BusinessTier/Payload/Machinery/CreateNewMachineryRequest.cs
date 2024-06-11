@@ -25,6 +25,12 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Priority { get; set; }
 
+        public string? Brand { get; set; }
+
+        public string? ControlSystem { get; set; }
+
+        //public DateTime? TimeWarranty { get; set; }
+
         public List<MachineryImages>? Image { get; set; } = new List<MachineryImages>();
 
         public List<MachinerySpecifications>? SpecificationList { get; set; } = new List<MachinerySpecifications>();
@@ -35,13 +41,15 @@ namespace SAM.BusinessTier.Payload.Machinery
     }
     public class MachinerySpecifications
     {
-        public string Name { get; set; }
-        public float Value { get; set; }
-        public string Unit { get; set; }
+        public string? Name { get; set; }
+        public float? Value { get; set; }
+        public string? Unit { get; set; }
     }
     public class MachineryImages
     {
-        public string ImageURL { get; set; }
+        public string? ImageURL { get; set; }
+        public DateTime? CreateDate { get; set; }
+
     }
 
 }

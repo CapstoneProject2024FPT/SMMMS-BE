@@ -70,6 +70,9 @@ namespace SAM.BusinessTier.Services.Implements
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
+                Brand = request.Brand,
+                ControlSystem = request.ControlSystem,
+                TimeWarranty = DateTime.Now,
                 CategoryId = request.CategoryId,
 
             };
@@ -94,6 +97,7 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     Id = Guid.NewGuid(),
                     ImageUrl = img.ImageURL,
+                    CreateDate = DateTime.Now,
                     MachineryId = newMachinery.Id,
                     
                 });
@@ -183,7 +187,8 @@ namespace SAM.BusinessTier.Services.Implements
                     .GetListAsync(
                         selector: x => new MachineryImagesResponse()
                         {
-                            ImageURL = x.ImageUrl
+                            ImageURL = x.ImageUrl,
+                            CreateDate = x.CreateDate,
                         },
                         predicate: x => x.MachineryId.Equals(id)
                     )

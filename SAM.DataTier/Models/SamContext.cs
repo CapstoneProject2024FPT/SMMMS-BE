@@ -122,6 +122,7 @@ public partial class SamContext : DbContext
             entity.ToTable("ImagesAll");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -173,12 +174,16 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("id");
+            entity.Property(e => e.Brand).HasMaxLength(50);
+            entity.Property(e => e.ControlSystem).HasMaxLength(250);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Model).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Origin).HasMaxLength(255);
             entity.Property(e => e.SerialNumber).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
+            entity.Property(e => e.TimeWarranty).HasColumnType("datetime");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.CategoryId)

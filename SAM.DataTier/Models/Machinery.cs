@@ -27,6 +27,14 @@ public partial class Machinery
 
     public int? Priority { get; set; }
 
+    public DateTime? CreateDate { get; set; }
+
+    public string? Brand { get; set; }
+
+    public string? ControlSystem { get; set; }
+
+    public DateTime? TimeWarranty { get; set; }
+
     public Guid? CategoryId { get; set; }
 
     public virtual Category? Category { get; set; }

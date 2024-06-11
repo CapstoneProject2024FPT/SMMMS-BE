@@ -9,6 +9,8 @@ public partial class ImagesAll
 
     public string? ImageUrl { get; set; }
 
+    public DateTime? CreateDate { get; set; }
+
     public Guid? MachineryId { get; set; }
 
     public virtual Machinery? Machinery { get; set; }

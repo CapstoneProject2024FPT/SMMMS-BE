@@ -30,6 +30,11 @@ namespace SAM.BusinessTier.Payload.Machinery
         public double? SellingPrice { get; set; }
 
         public int? Priority { get; set; }
+        public string? Brand { get; set; }
+
+        public string? ControlSystem { get; set; }
+
+        public DateTime? TimeWarranty { get; set; }
 
         public CategoryResponse? Category { get; set; }
     }
@@ -50,7 +55,8 @@ namespace SAM.BusinessTier.Payload.Machinery
     }
     public class MachineryImagesResponse
     {
-        public string ImageURL { get; set; }
+        public string? ImageURL { get; set; }
+        public DateTime? CreateDate { get; set; }
 
     }
 }
