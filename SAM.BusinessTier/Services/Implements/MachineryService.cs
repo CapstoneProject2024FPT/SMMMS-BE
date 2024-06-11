@@ -141,7 +141,7 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 var specifications = await _unitOfWork.GetRepository<Specification>()
                     .GetListAsync(
-                        selector: x => new SpecificationsResponse
+                        selector: x => new SpecificationsAllResponse
                         {
                             SpecificationId = x.Id,
                             MachineryId = x.MachineryId,
@@ -154,7 +154,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 var category = await _unitOfWork.GetRepository<Category>()
                     .SingleOrDefaultAsync(
-                        selector: x => new CategoryResponse
+                        selector: x => new CategoryAllResponse
                         {
                             Name = x.Name,
                             Type = EnumUtil.ParseEnum<CategoryType>(x.Type),
@@ -164,7 +164,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 var images = await _unitOfWork.GetRepository<ImagesAll>()
                     .GetListAsync(
-                        selector: x => new MachineryImagesResponse
+                        selector: x => new MachineryImagesAllResponse
                         {
                             ImageURL = x.ImageUrl,
                             CreateDate = x.CreateDate,
@@ -284,11 +284,11 @@ namespace SAM.BusinessTier.Services.Implements
             Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
-            Category category = (await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(updateProductRequest.CategoryId))) != null
-                ? await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                    predicate: x => x.Id.Equals(updateProductRequest.CategoryId))
-                : throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+            //Category category = (await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+            //    predicate: x => x.Id.Equals(updateProductRequest.CategoryId))) != null
+            //    ? await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+            //        predicate: x => x.Id.Equals(updateProductRequest.CategoryId))
+            //    : throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
 
             product.Name = string.IsNullOrEmpty(updateProductRequest.Name) ? product.Name : updateProductRequest.Name;
             product.Origin = string.IsNullOrEmpty(updateProductRequest.Origin) ? product.Origin : updateProductRequest.Origin;

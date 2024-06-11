@@ -20,9 +20,9 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public MachineryStatus? Status { get; set; }
 
-        public List<MachineryImagesResponse>? Image { get; set; } = new List<MachineryImagesResponse>();
+        public List<MachineryImagesAllResponse>? Image { get; set; } = new List<MachineryImagesAllResponse>();
 
-        public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
+        public List<SpecificationsAllResponse>? Specifications { get; set; } = new List<SpecificationsAllResponse>();
         public int? Quantity { get; set; }
 
         public string? SerialNumber { get; set; }
@@ -36,7 +36,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? TimeWarranty { get; set; }
 
-        public CategoryResponse? Category { get; set; }
+        public CategoryAllResponse? Category { get; set; }
         public DateTime? CreateDate { get; set; }
     }
     public class SpecificationsAllResponse
