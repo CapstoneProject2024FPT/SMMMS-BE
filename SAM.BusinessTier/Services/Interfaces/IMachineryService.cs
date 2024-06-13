@@ -21,5 +21,6 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> RemoveMachineryStatus(Guid id);
 
         Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id);
+        Task<bool> AddSpecifyToMachinery(Guid id, List<Guid> request);
     }
 }

@@ -67,6 +67,13 @@ namespace SAM.API.Controllers
             var response = await _iMachineryService.GetMachinerySpecificationsDetail(id);
             return Ok(response);
         }
+        [HttpPost(ApiEndPointConstant.Product.MachinerysEndPointSpecify)]
+        public async Task<IActionResult> AddSpecifyToMachinery(Guid id, List<Guid> request)
+        {
+            var response = await _iMachineryService.AddSpecifyToMachinery(id, request);
+            return Ok(response);
+        }
+
 
     }
 }

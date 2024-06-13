@@ -11,7 +11,9 @@ public partial class Specification
 
     public string? Value { get; set; }
 
-    public Guid? MachineryId { get; set; }
+    public Guid? CategoryId { get; set; }
 
-    public virtual Machinery? Machinery { get; set; }
+    public virtual Category? Category { get; set; }
+
+    public virtual ICollection<MachinerySpecification> MachinerySpecifications { get; set; } = new List<MachinerySpecification>();
 }

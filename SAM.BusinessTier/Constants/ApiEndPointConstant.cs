@@ -28,11 +28,11 @@ public static class ApiEndPointConstant
     }
     public static class Product
     {
-        public const string MachinerysEndPoint = ApiEndpoint + "/Machinery";
-        public const string MachinerysEndPointNoPaginate = ApiEndpoint + "/Machinery/noPaginate";
+        public const string MachinerysEndPoint = ApiEndpoint + "/machinery";
+        public const string MachinerysEndPointNoPaginate = ApiEndpoint + "/machinery/noPaginate";
         public const string MachineryEndPoint = MachinerysEndPoint + "/{id}";
-        public const string MachinerysEndPointDetail = ApiEndpoint + "/Machinery/Detail/{id}";
-
+        public const string MachinerysEndPointDetail = ApiEndpoint + "/machinery/detail/{id}";
+        public const string MachinerysEndPointSpecify = ApiEndpoint + "/machinery/{id}/specification";
     }
    
     

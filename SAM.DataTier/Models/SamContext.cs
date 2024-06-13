@@ -29,6 +29,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Machinery> Machineries { get; set; }
 
+    public virtual DbSet<MachinerySpecification> MachinerySpecifications { get; set; }
+
     public virtual DbSet<Maintenance> Maintenances { get; set; }
 
     public virtual DbSet<MaintenanceDetail> MaintenanceDetails { get; set; }
@@ -45,7 +47,7 @@ public partial class SamContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=14.225.204.144;Database=SAM;Uid=vinhuser;Pwd=12345;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=(local);Database=SAM;Uid=sa;Pwd=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,11 +81,13 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3213E83F7BE3BF50");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3213E83F393C175D");
 
             entity.ToTable("Category");
 
-            entity.HasIndex(e => e.Id, "UQ__Category__3213E83EEA87B891").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Category__3213E83E1B55FAB3").IsUnique();
+
+            entity.HasIndex(e => e.Id, "UQ__Category__3213E83EEAA7491B").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -100,9 +104,11 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Certification>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Certific__3213E83FDF35AFD7");
+            entity.HasKey(e => e.Id).HasName("PK__Certific__3213E83F77F08C71");
 
-            entity.HasIndex(e => e.Id, "UQ__Certific__3213E83EF9A93AFB").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Certific__3213E83E976F3F26").IsUnique();
+
+            entity.HasIndex(e => e.Id, "UQ__Certific__3213E83ED6B0368A").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -135,9 +141,11 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<MachineComponent>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MachineC__3213E83F5465096D");
+            entity.HasKey(e => e.Id).HasName("PK__MachineC__3213E83FF0C6F7C4");
 
-            entity.HasIndex(e => e.Id, "UQ__MachineC__3213E83E87F82CF5").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__MachineC__3213E83EC4AB2828").IsUnique();
+
+            entity.HasIndex(e => e.Id, "UQ__MachineC__3213E83ECE028A8E").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -148,7 +156,7 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<MachinePartMachine>(entity =>
         {
-            entity.HasKey(e => new { e.MachineComponentId, e.MachineryId }).HasName("PK__MachineP__274A8E5B58D90F4F");
+            entity.HasKey(e => new { e.MachineComponentId, e.MachineryId }).HasName("PK__MachineP__274A8E5B4A303BF0");
 
             entity.Property(e => e.Status).HasMaxLength(255);
 
@@ -188,13 +196,30 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK_Machinery_Category");
         });
 
+        modelBuilder.Entity<MachinerySpecification>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.MachinerySpecifications)
+                .HasForeignKey(d => d.MachineryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MachinerySpecifications_Machinery");
+
+            entity.HasOne(d => d.Specifications).WithMany(p => p.MachinerySpecifications)
+                .HasForeignKey(d => d.SpecificationsId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MachinerySpecifications_Specifications");
+        });
+
         modelBuilder.Entity<Maintenance>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83F6DE72DA8");
+            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83FE59F2BB9");
 
             entity.ToTable("Maintenance");
 
-            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83E3F83DECC").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83E548C3240").IsUnique();
+
+            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83EF002431C").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -211,11 +236,13 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<MaintenanceDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83FA173BEC7");
+            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83F7EE66E4B");
 
             entity.ToTable("MaintenanceDetail");
 
-            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83EA2A43B7B").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83E0C7482FB").IsUnique();
+
+            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83E2F186A36").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -279,11 +306,13 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Payment__3213E83F12FA1E41");
+            entity.HasKey(e => e.Id).HasName("PK__Payment__3213E83F4D2355DE");
 
             entity.ToTable("Payment");
 
-            entity.HasIndex(e => e.Id, "UQ__Payment__3213E83EAD52AFA3").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Payment__3213E83E36AEDBF4").IsUnique();
+
+            entity.HasIndex(e => e.Id, "UQ__Payment__3213E83ED90A51BB").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -293,11 +322,13 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Rank>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Rank__3213E83F232DAFF9");
+            entity.HasKey(e => e.Id).HasName("PK__Rank__3213E83F32DB8CB4");
 
             entity.ToTable("Rank");
 
-            entity.HasIndex(e => e.Id, "UQ__Rank__3213E83E30B80943").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Rank__3213E83E789336F2").IsUnique();
+
+            entity.HasIndex(e => e.Id, "UQ__Rank__3213E83ED5FD52AC").IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -317,9 +348,9 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Value).HasMaxLength(250);
 
-            entity.HasOne(d => d.Machinery).WithMany(p => p.Specifications)
-                .HasForeignKey(d => d.MachineryId)
-                .HasConstraintName("FK_Specifications_Machinery");
+            entity.HasOne(d => d.Category).WithMany(p => p.Specifications)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("FK_Specifications_Category");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -14,6 +14,7 @@ using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.Order;
 using static System.Net.Mime.MediaTypeNames;
 using Azure.Core;
+using static SAM.BusinessTier.Constants.ApiEndPointConstant;
 
 
 namespace SAM.BusinessTier.Services.Implements
@@ -24,20 +25,68 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        //public async Task<Guid> CreateNewMachinerys(CreateNewMachineryRequest createNewMachineryRequest)
-        //{
-        //    Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-        //        predicate: x => x.Name.Equals(createNewMachineryRequest.Name));
-        //    if (machinery != null) throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
-        //    Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-        //        predicate: x => x.Id.Equals(createNewMachineryRequest.CategoryId));
-        //    if (category == null) throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
-        //    machinery = _mapper.Map<Machinery>(createNewMachineryRequest);
+        public async Task<bool> AddSpecifyToMachinery(Guid machineryId, List<Guid> request)
+        {
+            _logger.LogInformation($"Add Specify to Normal Mechinery: {machineryId}");
 
-        //    await _unitOfWork.GetRepository<Machinery>().InsertAsync(machinery);
-        //    bool isSuccess = await _unitOfWork.CommitAsync() > 0;
-        //    if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Machinery.CreateNewMachineryFailedMessage);
-        //    return machinery.Id;
+            Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(machineryId))
+                ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+
+            List<Guid> currentExtraProductIds = (List<Guid>)await _unitOfWork.GetRepository<MachinerySpecification>().GetListAsync(
+                selector: x => x.SpecificationsId,
+                predicate: x => x.MachineryId.Equals(machineryId));
+
+            (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedExtraProductIds =
+                CustomListUtil.splitidstoaddandremove(currentExtraProductIds, request);
+
+            if (splittedExtraProductIds.idsToAdd.Count > 0)
+            {
+                List<MachinerySpecification> extraProductsToInsert = new List<MachinerySpecification>();
+                splittedExtraProductIds.idsToAdd.ForEach(id => extraProductsToInsert.Add(new MachinerySpecification
+                {
+                    Id = Guid.NewGuid(),
+                    MachineryId = machineryId,
+                    SpecificationsId = id,
+                }));
+                await _unitOfWork.GetRepository<MachinerySpecification>().InsertRangeAsync(extraProductsToInsert);
+            }
+
+            if (splittedExtraProductIds.idsToRemove.Count > 0)
+            {
+                List<MachinerySpecification> extraCategoriesToDelete = new List<MachinerySpecification>();
+                extraCategoriesToDelete = (List<MachinerySpecification>)await _unitOfWork.GetRepository<MachinerySpecification>()
+                    .GetListAsync(predicate: x =>
+                        x.MachineryId.Equals(machineryId) &&
+                        splittedExtraProductIds.idsToRemove.Contains(x.SpecificationsId));
+
+                _unitOfWork.GetRepository<MachinerySpecification>().DeleteRangeAsync(extraCategoriesToDelete);
+            }
+
+            bool isSuccesful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccesful;
+        }
+        //public async Task<IPaginate<GetProductResponse>> GetExtraProductsByProductId(Guid productId, PagingModel pagingModel)
+        //{
+        //    _logger.LogInformation($"Get ExtraProducts from ProductId: {productId}");
+
+        //    Product product = await _unitOfWork.GetRepository<Product>().SingleOrDefaultAsync(
+        //        predicate: x => x.Id.Equals(productId))
+        //        ?? throw new BadHttpRequestException(MessageConstant.Product.ProductNotFoundMessage);
+
+        //    List<Guid> extraProductIds = (List<Guid>)await _unitOfWork.GetRepository<ExtraProduct>().GetListAsync(
+        //        selector: x => x.ExtraProductId,
+        //        predicate: x => x.ProductId.Equals(productId)
+        //        );
+
+        //    IPaginate<GetProductResponse> response = await _unitOfWork.GetRepository<Product>().GetPagingListAsync(
+        //        selector: x => _mapper.Map<GetProductResponse>(x),
+        //        predicate: x => extraProductIds.Contains(x.Id),
+        //        orderBy: x => x.OrderByDescending(x => x.DisplayOrder),
+        //        page: pagingModel.page,
+        //        size: pagingModel.size);
+
+        //    return response;
         //}
         public async Task<Guid> CreateNewMachinerys(CreateNewMachineryRequest request)
         {
@@ -85,7 +134,6 @@ namespace SAM.BusinessTier.Services.Implements
                 specification.Add(new Specification
                 {
                     Id = Guid.NewGuid(),
-                    MachineryId = newMachinery.Id,
                     Name = spec.Name,
                     Value = spec.Value,
                 });
@@ -142,11 +190,9 @@ namespace SAM.BusinessTier.Services.Implements
                         selector: x => new SpecificationsAllResponse
                         {
                             SpecificationId = x.Id,
-                            MachineryId = x.MachineryId,
                             Name = x.Name,
                             Value = x.Value,
-                        },
-                        predicate: x => x.MachineryId.Equals(machinery.Id)
+                        }
                     );
 
                 var category = await _unitOfWork.GetRepository<Category>()
@@ -224,11 +270,9 @@ namespace SAM.BusinessTier.Services.Implements
                         selector: x => new SpecificationsResponse()
                         {
                             SpecificationId = x.Id,
-                            MachineryId = x.MachineryId,
                             Name = x.Name,
                             Value = x.Value,
-                        },
-                        predicate: x => x.MachineryId.Equals(id)
+                        }
                     ),
                 SerialNumber = machinery.SerialNumber,
                 SellingPrice = machinery.SellingPrice,

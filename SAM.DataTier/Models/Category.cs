@@ -22,4 +22,6 @@ public partial class Category
     public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
 
     public virtual Category? MasterCategory { get; set; }
+
+    public virtual ICollection<Specification> Specifications { get; set; } = new List<Specification>();
 }
