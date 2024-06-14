@@ -297,6 +297,18 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccess;
         }
 
+        public async Task<bool> UpdateStatusMachineryResponse(Guid id, UpdateStatusMachineryResponse updateStatusMachineryResponse)
+        {
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Machinery.EmptyMachineryIdMessage);
+            Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+            ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
 
+            product.Status = updateStatusMachineryResponse.Status.GetDescriptionFromEnum();
+
+            _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
+        }
     }
 }

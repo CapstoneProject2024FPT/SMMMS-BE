@@ -32,6 +32,7 @@ public static class ApiEndPointConstant
         public const string MachinerysEndPointNoPaginate = ApiEndpoint + "/Machinery/noPaginate";
         public const string MachineryEndPoint = MachinerysEndPoint + "/{id}";
         public const string MachinerysEndPointDetail = ApiEndpoint + "/Machinery/Detail/{id}";
+        public const string MachineriesUpdateStatusEndPoint = ApiEndpoint + "/{id}";
 
     }
    

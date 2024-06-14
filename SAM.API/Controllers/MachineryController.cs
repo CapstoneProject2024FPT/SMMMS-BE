@@ -53,6 +53,13 @@ namespace SAM.API.Controllers
             if (!response) return Ok(MessageConstant.Machinery.UpdateMachinerytFailedMessage);
             return Ok(MessageConstant.Machinery.UpdateStatusSuccessMessage);
         }
+        [HttpPut(ApiEndPointConstant.Product.MachineriesUpdateStatusEndPoint)]
+        public async Task<IActionResult> UpdateStatusMachineryResponse(Guid id, UpdateStatusMachineryResponse updateStatusMachineryResponse)
+        {
+            var response = await _iMachineryService.UpdateStatusMachineryResponse(id, updateStatusMachineryResponse);
+            if (!response) return Ok(MessageConstant.Machinery.UpdateMachinerytFailedMessage);
+            return Ok(MessageConstant.Machinery.UpdateStatusSuccessMessage);
+        }
         [HttpDelete(ApiEndPointConstant.Product.MachineryEndPoint)]
         public async Task<IActionResult> RemoveMachineryStatus(Guid id)
         {
