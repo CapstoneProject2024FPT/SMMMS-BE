@@ -235,6 +235,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
+                Brand = machinery.Brand,
                 Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                         selector: x => new CategoryResponse()
                         {
