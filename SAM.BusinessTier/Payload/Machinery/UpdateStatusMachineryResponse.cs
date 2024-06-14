@@ -9,6 +9,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 {
     public class UpdateStatusMachineryResponse
     {
-        public MachineryStatus Status { get; set; }
+        public MachineryStatus? Status { get; set; }
+
     }
 }

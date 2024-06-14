@@ -304,7 +304,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
 
-            product.Status = updateStatusMachineryResponse.Status.GetDescriptionFromEnum();
+            product.Status = ProductStatus.Active.GetDescriptionFromEnum();
 
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
