@@ -33,6 +33,10 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<MaintenanceDetail> MaintenanceDetails { get; set; }
 
+    public virtual DbSet<News> News { get; set; }
+
+    public virtual DbSet<NewsImage> NewsImages { get; set; }
+
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
@@ -148,8 +152,7 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<MachinePartMachine>(entity =>
         {
-            entity.HasKey(e => new { e.MachineComponentId, e.MachineryId }).HasName("PK__MachineP__274A8E5B58D90F4F");
-
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Status).HasMaxLength(255);
 
             entity.HasOne(d => d.MachineComponent).WithMany(p => p.MachinePartMachines)
@@ -228,6 +231,36 @@ public partial class SamContext : DbContext
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Type).HasMaxLength(255);
+        });
+
+        modelBuilder.Entity<News>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Cover)
+                .HasMaxLength(250)
+                .IsUnicode(false);
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.NewsContent).HasColumnType("text");
+            entity.Property(e => e.Title).HasColumnType("text");
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.News)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK_News_Machinery");
+        });
+
+        modelBuilder.Entity<NewsImage>(entity =>
+        {
+            entity.ToTable("NewsImage");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.ImgUrl).HasColumnType("text");
+            entity.Property(e => e.Name)
+                .HasMaxLength(250)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.News).WithMany(p => p.NewsImages)
+                .HasForeignKey(d => d.NewsId)
+                .HasConstraintName("FK_NewsImage_News");
         });
 
         modelBuilder.Entity<Order>(entity =>
