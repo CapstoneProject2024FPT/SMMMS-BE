@@ -284,14 +284,14 @@ namespace SAM.BusinessTier.Services.Implements
             product.Name = string.IsNullOrEmpty(updateProductRequest.Name) ? product.Name : updateProductRequest.Name;
             product.Origin = string.IsNullOrEmpty(updateProductRequest.Origin) ? product.Origin : updateProductRequest.Origin;
             product.Model = string.IsNullOrEmpty(updateProductRequest.Model) ? product.Model : updateProductRequest.Model;
-            product.SellingPrice = (updateProductRequest.SellingPrice < 0) ? product.SellingPrice : updateProductRequest.SellingPrice;
-            product.StockPrice = (updateProductRequest.StockPrice < 0) ? product.StockPrice : updateProductRequest.StockPrice;
+            product.SellingPrice = updateProductRequest.SellingPrice.HasValue ? updateProductRequest.SellingPrice.Value : product.SellingPrice;
+            product.StockPrice = updateProductRequest.StockPrice.HasValue ? updateProductRequest.StockPrice.Value : product.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
             product.Brand = string.IsNullOrEmpty(updateProductRequest.Brand) ? product.Brand : updateProductRequest.Brand;
-            product.TimeWarranty = (updateProductRequest.TimeWarranty < 0) ? product.TimeWarranty : updateProductRequest.TimeWarranty;
+            product.TimeWarranty = updateProductRequest.TimeWarranty.HasValue ? updateProductRequest.TimeWarranty.Value : product.TimeWarranty;
             //product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
 
-            product.Priority = (updateProductRequest.Priority < 0) ? product.Priority : updateProductRequest.Priority;
+            product.Priority = updateProductRequest.Priority.HasValue ? updateProductRequest.Priority.Value : product.Priority;
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;

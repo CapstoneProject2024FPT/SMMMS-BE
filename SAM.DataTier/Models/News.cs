@@ -15,6 +15,8 @@ public partial class News
 
     public string? Cover { get; set; }
 
+    public string? Status { get; set; }
+
     public Guid? MachineryId { get; set; }
 
     public Guid? AccountId { get; set; }

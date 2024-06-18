@@ -38,6 +38,7 @@ namespace SAM.API.Configs
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IMachineryService, MachineryService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<INewsService, NewsService>();
 
             return services;
         }

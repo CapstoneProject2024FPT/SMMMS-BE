@@ -241,6 +241,9 @@ public partial class SamContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.NewsContent).HasColumnType("text");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Title).HasColumnType("text");
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.News)

@@ -40,12 +40,12 @@ namespace SAM.API.Controllers
             var response = await _iMachineryService.GetMachineryListNotIPaginate(filter);
             return Ok(response);
         }
-        [HttpGet(ApiEndPointConstant.Product.MachineryEndPoint)]
-        public async Task<IActionResult> GetMachineryById(Guid id)
-        {
-            var response = await _iMachineryService.GetMachineryById(id);
-            return Ok(response);
-        }
+        //[HttpGet(ApiEndPointConstant.Product.MachineryEndPoint)]
+        //public async Task<IActionResult> GetMachineryById(Guid id)
+        //{
+        //    var response = await _iMachineryService.GetMachineryById(id);
+        //    return Ok(response);
+        //}
         [HttpPut(ApiEndPointConstant.Product.MachineryEndPoint)]
         public async Task<IActionResult> UpdateMachinery(Guid id, UpdateMachineryRequest updateProductRequest)
         {
