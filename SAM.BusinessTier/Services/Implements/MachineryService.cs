@@ -290,6 +290,7 @@ namespace SAM.BusinessTier.Services.Implements
             product.Brand = string.IsNullOrEmpty(updateProductRequest.Brand) ? product.Brand : updateProductRequest.Brand;
             product.TimeWarranty = updateProductRequest.TimeWarranty.HasValue ? updateProductRequest.TimeWarranty.Value : product.TimeWarranty;
             //product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
+            product.Quantity = updateProductRequest.Quantity.HasValue ? updateProductRequest.Quantity.Value : product.Quantity;
 
             product.Priority = updateProductRequest.Priority.HasValue ? updateProductRequest.Priority.Value : product.Priority;
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);

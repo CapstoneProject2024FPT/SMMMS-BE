@@ -19,7 +19,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         //public MachineryStatus? Status { get; set; }
 
-
+        public int? Quantity { get; set; }
         public double? StockPrice { get; set; }
 
         public double? SellingPrice { get; set; }
