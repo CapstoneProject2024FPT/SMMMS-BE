@@ -125,12 +125,14 @@ namespace SAM.BusinessTier.Services.Implements
             return _mapper.Map<GetMachinerysResponse>(product);
         }
 
+       
         public async Task<ICollection<GetMachinerysResponse>> GetMachineryList(MachineryFilter filter)
         {
             var machineryList = await _unitOfWork.GetRepository<Machinery>()
                 .GetListAsync(
                     selector: x => x,
-                    filter: filter
+                    filter: filter,
+                    orderBy: x => x.OrderBy(x => x.Priority)
                 );
 
             var getMachinerysResponseList = new List<GetMachinerysResponse>();
@@ -186,18 +188,18 @@ namespace SAM.BusinessTier.Services.Implements
                     Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                     Category = category,
                     Image = images.ToList(),
-                    CreateDate = machinery.CreateDate,
-                     
+                    CreateDate = machinery.CreateDate
                 };
 
                 getMachinerysResponseList.Add(getMachinerysResponse);
             }
+
             return getMachinerysResponseList;
         }
 
 
 
-        public async Task<ICollection<GetMachinerysResponse>> GetMachineryListNotIPaginate(MachineryFilter filter)
+    public async Task<ICollection<GetMachinerysResponse>> GetMachineryListNotIPaginate(MachineryFilter filter)
         {
             ICollection<GetMachinerysResponse> respone = await _unitOfWork.GetRepository<Machinery>().GetListAsync(
                selector: x => _mapper.Map<GetMachinerysResponse>(x),

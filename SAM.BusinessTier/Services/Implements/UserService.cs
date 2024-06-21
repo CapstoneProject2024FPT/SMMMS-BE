@@ -14,6 +14,7 @@ using SAM.DataTier.Repository.Interfaces;
 using SAM.DataTier.Models;
 using SAM.BusinessTier.Payload.Category;
 using Microsoft.IdentityModel.Tokens;
+using static SAM.BusinessTier.Constants.ApiEndPointConstant;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -38,9 +39,7 @@ namespace SAM.BusinessTier.Services.Implements
                 PhoneNumber = request.PhoneNumber,
                 Address = request.Address,
                 Status = UserStatus.Activate.GetDescriptionFromEnum(),
-                Email = request.Email,
-                Amount = request.Amount,
-                YearsOfExperience = request.YearsOfExperience,
+                Email = request.Email
 
             };
 
@@ -133,7 +132,7 @@ namespace SAM.BusinessTier.Services.Implements
             user.PhoneNumber = string.IsNullOrEmpty(updateRequest.PhoneNumber) ? user.PhoneNumber : updateRequest.PhoneNumber;
             user.Address = string.IsNullOrEmpty(updateRequest.Address) ? user.Address : updateRequest.Address;
             user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
-            user.YearsOfExperience = (updateRequest.YearsOfExperience <= 0) ? user.YearsOfExperience : updateRequest.YearsOfExperience;
+            user.YearsOfExperience = updateRequest.YearsOfExperience.HasValue ? updateRequest.YearsOfExperience.Value : user.YearsOfExperience;
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;

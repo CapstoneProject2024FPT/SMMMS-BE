@@ -9,11 +9,11 @@ namespace SAM.BusinessTier.Payload.Machinery
 {
     public class MachineryFilter
     {
-        public string? Name { get; set; }
+        public List<string>? Name { get; set; }
 
-        public string? Origin { get; set; }
+        public List<string>? Origin { get; set; }
 
-        public string? Model { get; set; }
+        public List<string>? Model { get; set; }
 
         public MachineryStatus? Status { get; set; }
 
@@ -25,7 +25,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Priority { get; set; }
 
-        public string? Brand { get; set; }
+        public List<string>? Brand { get; set; }
 
         public int? TimeWarranty { get; set; }
 

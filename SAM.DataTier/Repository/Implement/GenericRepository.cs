@@ -76,19 +76,34 @@ namespace SAM.DataTier.Repository.Implement
             return await query.AsNoTracking().ToListAsync();
         }
 
-        public virtual async Task<ICollection<TResult>> GetListAsync<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null, object filter = null)
+        public virtual async Task<ICollection<TResult>> GetListAsync<TResult>(
+        Expression<Func<T, TResult>> selector,
+        Expression<Func<T, bool>> predicate = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+        Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+        object filter = null)
         {
             IQueryable<T> query = _dbSet;
 
-            if (include != null) query = include(query);
-            if (filter != null)
+            if (include != null)
             {
-                query = query.DynamicFilter(filter);
+                query = include(query);
             }
 
-            if (predicate != null) query = query.Where(predicate);
+            if (filter != null)
+            {
+                query = query.ApplyFilter(filter); // Áp dụng filter bằng cách gọi extension method ApplyFilter
+            }
 
-            if (orderBy != null) return await orderBy(query).AsNoTracking().Select(selector).ToListAsync();
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            if (orderBy != null)
+            {
+                return await orderBy(query).AsNoTracking().Select(selector).ToListAsync();
+            }
 
             return await query.AsNoTracking().Select(selector).ToListAsync();
         }

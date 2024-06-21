@@ -40,5 +40,17 @@ namespace SAM.BusinessTier.Payload.User
             Email = email;
             YearsOfExperience = yearsOfExperience;
         }
+
+        public GetUsersResponse(Guid id, string? username, RoleEnum? role, string? fullName, string? phoneNumber, string? address, UserStatus? status, string? email)
+        {
+            Id = id;
+            Username = username;
+            Role = role;
+            FullName = fullName;
+            PhoneNumber = phoneNumber;
+            Address = address;
+            Status = status;
+            Email = email;
+        }
     }
 }
