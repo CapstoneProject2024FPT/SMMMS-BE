@@ -125,8 +125,8 @@ namespace SAM.DataTier.Repository.Implement
             if (include != null) query = include(query);
             if (filter != null)
             {
-                query = query.DynamicFilter(filter);
-            }           
+                query = query.ApplyFilter(filter); // Áp dụng filter bằng cách gọi extension method ApplyFilter
+            }
             if (predicate != null) query = query.Where(predicate);
             if (orderBy != null) return orderBy(query).Select(selector).ToPaginateAsync(page, size, 1);
             return query.AsNoTracking().Select(selector).ToPaginateAsync(page, size, 1);
@@ -170,7 +170,7 @@ namespace SAM.DataTier.Repository.Implement
         {
             _dbSet.RemoveRange(entities);
         }
-      
+
         #endregion
     }
 }

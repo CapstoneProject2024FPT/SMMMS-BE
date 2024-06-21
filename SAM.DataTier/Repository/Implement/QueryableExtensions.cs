@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,12 +32,23 @@ namespace SAM.DataTier.Repository.Implement
                     {
                         query = query.Where(x => stringListValue.Contains(EF.Property<string>(x, propertyInfo.Name).ToLower()));
                     }
+                    else if (propertyValue is int intValue)
+                    {
+                        query = query.Where(x => EF.Property<int>(x, propertyInfo.Name) == intValue);
+                    }
+                    else if (propertyValue is int[] intArrayValue && intArrayValue.Length == 2)
+                    {
+                        int minValue = intArrayValue[0];
+                        int maxValue = intArrayValue[1];
+                        query = query.Where(x => EF.Property<int>(x, propertyInfo.Name) >= minValue && EF.Property<int>(x, propertyInfo.Name) <= maxValue);
+                    }
                     // Add other types of filters here as needed
                 }
             }
 
             return query;
         }
+
     }
 
 }
