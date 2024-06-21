@@ -17,21 +17,27 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
+    public virtual DbSet<AccountRank> AccountRanks { get; set; }
+
+    public virtual DbSet<Area> Areas { get; set; }
+
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Certification> Certifications { get; set; }
 
+    public virtual DbSet<Discount> Discounts { get; set; }
+
+    public virtual DbSet<DiscountMachinery> DiscountMachineries { get; set; }
+
     public virtual DbSet<ImagesAll> ImagesAlls { get; set; }
+
+    public virtual DbSet<Inventory> Inventories { get; set; }
 
     public virtual DbSet<MachineComponent> MachineComponents { get; set; }
 
     public virtual DbSet<MachinePartMachine> MachinePartMachines { get; set; }
 
     public virtual DbSet<Machinery> Machineries { get; set; }
-
-    public virtual DbSet<Maintenance> Maintenances { get; set; }
-
-    public virtual DbSet<MaintenanceDetail> MaintenanceDetails { get; set; }
 
     public virtual DbSet<News> News { get; set; }
 
@@ -47,6 +53,12 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Specification> Specifications { get; set; }
 
+    public virtual DbSet<TransactionPayment> TransactionPayments { get; set; }
+
+    public virtual DbSet<Warranty> Warranties { get; set; }
+
+    public virtual DbSet<WarrantyDetail> WarrantyDetails { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=14.225.204.144;Database=SAM;Uid=vinhuser;Pwd=12345;TrustServerCertificate=True");
@@ -61,9 +73,7 @@ public partial class SamContext : DbContext
 
             entity.HasIndex(e => e.Id, "UQ__Account__3213E83E68399404").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
@@ -75,10 +85,38 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Role).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Username).HasMaxLength(255);
+        });
 
-            entity.HasOne(d => d.RankNavigation).WithMany(p => p.Accounts)
-                .HasForeignKey(d => d.Rank)
-                .HasConstraintName("FK_Account_Rank");
+        modelBuilder.Entity<AccountRank>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AccountR__3214EC079F9B2174");
+
+            entity.ToTable("AccountRank");
+
+            entity.HasIndex(e => e.Id, "UQ__AccountR__3214EC06DB6D44D9").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Account).WithMany(p => p.AccountRanks)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_AccountRank_Account");
+
+            entity.HasOne(d => d.Rank).WithMany(p => p.AccountRanks)
+                .HasForeignKey(d => d.RankId)
+                .HasConstraintName("FK_AccountRank_Rank");
+        });
+
+        modelBuilder.Entity<Area>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Area__3214EC07A29447FC");
+
+            entity.ToTable("Area");
+
+            entity.HasIndex(e => e.Id, "UQ__Area__3214EC068CA0ED2E").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasColumnType("text");
+            entity.Property(e => e.Status).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -89,9 +127,7 @@ public partial class SamContext : DbContext
 
             entity.HasIndex(e => e.Id, "UQ__Category__3213E83EEA87B891").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
@@ -104,19 +140,48 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Certification>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Certific__3213E83FDF35AFD7");
+            entity.HasKey(e => e.Id).HasName("PK__Certific__3213E83F64018812");
 
-            entity.HasIndex(e => e.Id, "UQ__Certific__3213E83EF9A93AFB").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Certific__3213E83E23FA8FE2").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.CertificationLink).HasMaxLength(255);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CertificationLink).HasColumnType("text");
             entity.Property(e => e.DateObtained).HasColumnType("datetime");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Certifications)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK_Certifications_Account");
+        });
+
+        modelBuilder.Entity<Discount>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC076BF8A8B1");
+
+            entity.ToTable("Discount");
+
+            entity.HasIndex(e => e.Id, "UQ__Discount__3214EC06339CFF00").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Type).HasColumnType("text");
+        });
+
+        modelBuilder.Entity<DiscountMachinery>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC076F9C4689");
+
+            entity.ToTable("DiscountMachinery");
+
+            entity.HasIndex(e => e.Id, "UQ__Discount__3214EC06E4C28458").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Discount).WithMany(p => p.DiscountMachineries)
+                .HasForeignKey(d => d.DiscountId)
+                .HasConstraintName("FK_DiscountMachinery_Discount");
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.DiscountMachineries)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK_DiscountMachinery_Machinery");
         });
 
         modelBuilder.Entity<ImagesAll>(entity =>
@@ -137,32 +202,48 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK__Images__Machiner__45BE5BA9");
         });
 
+        modelBuilder.Entity<Inventory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Inventor__3214EC0771CF7A52");
+
+            entity.ToTable("Inventory");
+
+            entity.HasIndex(e => e.Id, "UQ__Inventor__3214EC068D7C4137").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.SerialNumber).HasMaxLength(255);
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.Inventories)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK_Inventory_Machinery");
+        });
+
         modelBuilder.Entity<MachineComponent>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MachineC__3213E83F5465096D");
+            entity.HasKey(e => e.Id).HasName("PK__MachineC__3213E83F77140DB9");
 
-            entity.HasIndex(e => e.Id, "UQ__MachineC__3213E83E87F82CF5").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__MachineC__3213E83E4C386BCF").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(255);
         });
 
         modelBuilder.Entity<MachinePartMachine>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__MachineP__3214EC07DFE70D19");
+
+            entity.HasIndex(e => e.Quantity, "UQ__MachineP__DC4401B25E041C9A").IsUnique();
+
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Status).HasMaxLength(255);
 
             entity.HasOne(d => d.MachineComponent).WithMany(p => p.MachinePartMachines)
                 .HasForeignKey(d => d.MachineComponentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MachinePartMachines_MachineComponents");
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.MachinePartMachines)
                 .HasForeignKey(d => d.MachineryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MachinePartMachines_Machinery");
         });
 
@@ -174,9 +255,7 @@ public partial class SamContext : DbContext
 
             entity.HasIndex(e => e.Id, "UQ__Machiner__3213E83E14DE8756").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Brand).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(255);
@@ -191,59 +270,16 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK_Machinery_Category");
         });
 
-        modelBuilder.Entity<Maintenance>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83F6DE72DA8");
-
-            entity.ToTable("Maintenance");
-
-            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83E3F83DECC").IsUnique();
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.Comments).HasMaxLength(255);
-            entity.Property(e => e.CompletionDate).HasColumnType("datetime");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasMaxLength(255);
-            entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(255);
-            entity.Property(e => e.Type).HasMaxLength(255);
-        });
-
-        modelBuilder.Entity<MaintenanceDetail>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Maintena__3213E83FA173BEC7");
-
-            entity.ToTable("MaintenanceDetail");
-
-            entity.HasIndex(e => e.Id, "UQ__Maintena__3213E83EA2A43B7B").IsUnique();
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.Comments).HasMaxLength(255);
-            entity.Property(e => e.CompletionDate).HasColumnType("datetime");
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasMaxLength(255);
-            entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(255);
-            entity.Property(e => e.Type).HasMaxLength(255);
-        });
-
         modelBuilder.Entity<News>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__News__3214EC0778DA6714");
+
+            entity.HasIndex(e => e.Id, "UQ__News__3214EC06084685DB").IsUnique();
+
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Cover)
-                .HasMaxLength(250)
-                .IsUnicode(false);
+            entity.Property(e => e.Cover).HasMaxLength(255);
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.NewsContent).HasColumnType("text");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Title).HasColumnType("text");
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.News)
@@ -253,13 +289,15 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<NewsImage>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK__NewsImag__3214EC0706006152");
+
             entity.ToTable("NewsImage");
+
+            entity.HasIndex(e => e.Id, "UQ__NewsImag__3214EC0630722A48").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.ImgUrl).HasColumnType("text");
-            entity.Property(e => e.Name)
-                .HasMaxLength(250)
-                .IsUnicode(false);
+            entity.Property(e => e.Name).HasMaxLength(255);
 
             entity.HasOne(d => d.News).WithMany(p => p.NewsImages)
                 .HasForeignKey(d => d.NewsId)
@@ -274,9 +312,7 @@ public partial class SamContext : DbContext
 
             entity.HasIndex(e => e.Id, "UQ__Order__3213E83E5D13AB06").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CompletedDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.InvoiceCode).HasMaxLength(255);
@@ -287,9 +323,9 @@ public partial class SamContext : DbContext
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK_Order_Account");
 
-            entity.HasOne(d => d.Payment).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.PaymentId)
-                .HasConstraintName("FK_Order_Payment");
+            entity.HasOne(d => d.Area).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.AreaId)
+                .HasConstraintName("FK_Order_Area");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
@@ -300,9 +336,7 @@ public partial class SamContext : DbContext
 
             entity.HasIndex(e => e.Id, "UQ__OrderDet__3213E83E76775357").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).ValueGeneratedNever();
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.MachineryId)
@@ -315,30 +349,33 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Payment__3213E83F12FA1E41");
+            entity.HasKey(e => e.Id).HasName("PK__Payment__3214EC076CC98BFD");
 
             entity.ToTable("Payment");
 
-            entity.HasIndex(e => e.Id, "UQ__Payment__3213E83EAD52AFA3").IsUnique();
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.PaymentDate).HasColumnType("date");
+            entity.Property(e => e.PaymentMethod)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.PaymentMethod).HasMaxLength(255);
+            entity.HasOne(d => d.Order).WithMany(p => p.Payments)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK_Payment_Order");
         });
 
         modelBuilder.Entity<Rank>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Rank__3213E83F232DAFF9");
+            entity.HasKey(e => e.Id).HasName("PK__Rank__3214EC0743A197B9");
 
             entity.ToTable("Rank");
 
-            entity.HasIndex(e => e.Id, "UQ__Rank__3213E83E30B80943").IsUnique();
+            entity.HasIndex(e => e.Id, "UQ__Rank__3214EC06B0ABDC2C").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.RankName).HasMaxLength(255);
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasColumnType("text");
         });
 
         modelBuilder.Entity<Specification>(entity =>
@@ -347,15 +384,84 @@ public partial class SamContext : DbContext
 
             entity.HasIndex(e => e.Id, "UQ__Specific__3213E83EFEF4EEA4").IsUnique();
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Value).HasMaxLength(250);
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.Specifications)
                 .HasForeignKey(d => d.MachineryId)
                 .HasConstraintName("FK_Specifications_Machinery");
+        });
+
+        modelBuilder.Entity<TransactionPayment>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC07F977F44E");
+
+            entity.ToTable("TransactionPayment");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Description)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.TransactionDate).HasColumnType("date");
+
+            entity.HasOne(d => d.Payment).WithMany(p => p.TransactionPayments)
+                .HasForeignKey(d => d.PaymentId)
+                .HasConstraintName("FK_TransactionPayment_Payment");
+        });
+
+        modelBuilder.Entity<Warranty>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Warranty__3213E83F1EFA27B6");
+
+            entity.ToTable("Warranty");
+
+            entity.HasIndex(e => e.Id, "UQ__Warranty__3213E83EE0585EB4").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Comments).HasColumnType("text");
+            entity.Property(e => e.CompletionDate).HasColumnType("datetime");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(255);
+            entity.Property(e => e.Type).HasMaxLength(255);
+
+            entity.HasOne(d => d.Inventory).WithMany(p => p.Warranties)
+                .HasForeignKey(d => d.InventoryId)
+                .HasConstraintName("FK_Warranty_Inventory");
+        });
+
+        modelBuilder.Entity<WarrantyDetail>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Warranty__3213E83F4FF2A95E");
+
+            entity.ToTable("WarrantyDetail");
+
+            entity.HasIndex(e => e.Id, "UQ__Warranty__3213E83E2C58FC35").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Comments).HasColumnType("text");
+            entity.Property(e => e.CompletionDate).HasColumnType("datetime");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(255);
+            entity.Property(e => e.Type).HasMaxLength(255);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.WarrantyDetails)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_WarrantyDetail_Account");
+
+            entity.HasOne(d => d.Warranty).WithMany(p => p.WarrantyDetails)
+                .HasForeignKey(d => d.WarrantyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_WarrantyDetail_Warranty");
         });
 
         OnModelCreatingPartial(modelBuilder);

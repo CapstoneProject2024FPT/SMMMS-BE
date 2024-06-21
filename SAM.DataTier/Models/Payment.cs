@@ -7,7 +7,17 @@ public partial class Payment
 {
     public Guid Id { get; set; }
 
+    public int? UserId { get; set; }
+
+    public decimal? Amount { get; set; }
+
+    public DateTime? PaymentDate { get; set; }
+
     public string? PaymentMethod { get; set; }
 
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public Guid? OrderId { get; set; }
+
+    public virtual Order? Order { get; set; }
+
+    public virtual ICollection<TransactionPayment> TransactionPayments { get; set; } = new List<TransactionPayment>();
 }

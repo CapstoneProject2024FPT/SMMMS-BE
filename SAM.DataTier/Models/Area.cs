@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace SAM.DataTier.Models;
 
-public partial class Rank
+public partial class Area
 {
     public Guid Id { get; set; }
 
     public string? Name { get; set; }
 
-    public int? Range { get; set; }
+    public string? Status { get; set; }
 
-    public virtual ICollection<AccountRank> AccountRanks { get; set; } = new List<AccountRank>();
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

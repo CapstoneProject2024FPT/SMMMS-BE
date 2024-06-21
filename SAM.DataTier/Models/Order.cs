@@ -23,11 +23,13 @@ public partial class Order
 
     public Guid? AccountId { get; set; }
 
-    public Guid? PaymentId { get; set; }
+    public Guid? AreaId { get; set; }
 
     public virtual Account? Account { get; set; }
 
+    public virtual Area? Area { get; set; }
+
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
-    public virtual Payment? Payment { get; set; }
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }

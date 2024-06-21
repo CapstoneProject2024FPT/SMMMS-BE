@@ -25,15 +25,15 @@ public partial class Account
 
     public string? Email { get; set; }
 
-    public Guid? Rank { get; set; }
-
     public double? Amount { get; set; }
 
     public int? YearsOfExperience { get; set; }
+
+    public virtual ICollection<AccountRank> AccountRanks { get; set; } = new List<AccountRank>();
 
     public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-    public virtual Rank? RankNavigation { get; set; }
+    public virtual ICollection<WarrantyDetail> WarrantyDetails { get; set; } = new List<WarrantyDetail>();
 }

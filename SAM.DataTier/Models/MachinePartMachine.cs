@@ -7,17 +7,17 @@ public partial class MachinePartMachine
 {
     public Guid Id { get; set; }
 
-    public int? Quantity { get; set; }
-
     public string? Status { get; set; }
 
     public double? Price { get; set; }
 
-    public Guid MachineComponentId { get; set; }
+    public int? Quantity { get; set; }
 
-    public Guid MachineryId { get; set; }
+    public Guid? MachineComponentId { get; set; }
 
-    public virtual MachineComponent MachineComponent { get; set; } = null!;
+    public Guid? MachineryId { get; set; }
 
-    public virtual Machinery Machinery { get; set; } = null!;
+    public virtual MachineComponent? MachineComponent { get; set; }
+
+    public virtual Machinery? Machinery { get; set; }
 }
