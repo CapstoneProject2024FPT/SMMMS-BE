@@ -12,7 +12,7 @@ namespace SAM.API.Controllers
     [ApiController]
     public class OrderController : BaseController<OrderController>
     {
-        readonly IOrderService _orderService;
+        private readonly IOrderService _orderService;
 
         public OrderController(ILogger<OrderController> logger, IOrderService orderService) : base(logger)
         {

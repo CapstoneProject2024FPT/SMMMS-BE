@@ -92,4 +92,65 @@ public static class MessageConstant
         public const string CreateFailedMessage = "Tạo mới review thất bại";
 
     }
+    public static class Warranty
+    {
+        public const string WarrantyNameExisted = "Warranty đã tồn tại";
+        public const string CreateNewWarrantyFailedMessage = "Tạo mới Warranty thất bại";
+        public const string UpdateWarrantyFailedMessage = "Cập nhật thông tin Warranty thất bại";
+        public const string UpdateWarrantySuccessMessage = "Cập nhật thông tin Warranty thành công";
+        public const string EmptyWarrantyIdMessage = "Warranty Id không hợp lệ";
+        public const string WarrantyNotFoundMessage = "Warranty không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
+
+    public static class Rank
+    {
+        public const string RankNameExisted = "Rank đã tồn tại";
+        public const string CreateNewRankFailedMessage = "Tạo mới Rank thất bại";
+        public const string UpdateRankFailedMessage = "Cập nhật thông tin Rank thất bại";
+        public const string UpdateRankSuccessMessage = "Cập nhật thông tin Rank thành công";
+        public const string EmptyRankIdMessage = "Rank Id không hợp lệ";
+        public const string RankNotFoundMessage = "Rank không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
+    public static class MachineryComponents
+    {
+        public const string MachineryComponentsNameExisted = "MachineryComponents đã tồn tại";
+        public const string CreateNewMachineryComponentsFailedMessage = "Tạo mới MachineryComponents thất bại";
+        public const string UpdateMachineryComponentsFailedMessage = "Cập nhật thông tin MachineryComponents thất bại";
+        public const string UpdateMachineryComponentsSuccessMessage = "Cập nhật thông tin MachineryComponents thành công";
+        public const string EmptyMachineryComponentsIdMessage = "MachineryComponents Id không hợp lệ";
+        public const string MachineryComponentsNotFoundMessage = "MachineryComponents không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
+    public static class News
+    {
+        public const string NewsNameExisted = "News đã tồn tại";
+        public const string CreateNewNewsFailedMessage = "Tạo mới News thất bại";
+        public const string UpdateNewsFailedMessage = "Cập nhật thông tin News thất bại";
+        public const string UpdateNewsSuccessMessage = "Cập nhật thông tin News thành công";
+        public const string EmptyNewsIdMessage = "News Id không hợp lệ";
+        public const string NewsNotFoundMessage = "News không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
+    public static class Discount
+    {
+        public const string DiscountNameExisted = "Discount đã tồn tại";
+        public const string CreateNewDiscountFailedMessage = "Tạo mới Discount thất bại";
+        public const string UpdateDiscountFailedMessage = "Cập nhật thông tin Discount thất bại";
+        public const string UpdateDiscountSuccessMessage = "Cập nhật thông tin Discount thành công";
+        public const string EmptyDiscountIdMessage = "Discount Id không hợp lệ";
+        public const string DiscountNotFoundMessage = "Discount không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
 }

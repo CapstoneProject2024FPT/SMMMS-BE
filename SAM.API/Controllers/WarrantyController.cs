@@ -8,7 +8,7 @@ namespace SAM.API.Controllers
     [ApiController]
     public class WarrantyController : BaseController<WarrantyController>
     {
-        readonly IWarrantyService _warrantyService;
+        private readonly IWarrantyService _warrantyService;
 
         public WarrantyController(ILogger<WarrantyController> logger, IWarrantyService warrantyService) : base(logger)
         {
