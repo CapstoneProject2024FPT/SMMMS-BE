@@ -1,6 +1,5 @@
 ﻿using DentalLabManagement.API.Controllers;
 using SAM.BusinessTier.Constants;
-using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Error;
 using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Login;
@@ -8,6 +7,7 @@ using SAM.BusinessTier.Payload.User;
 using SAM.BusinessTier.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SAM.BusinessTier.Enums.EnumStatus;
 
 namespace SAM.API.Controllers
 {

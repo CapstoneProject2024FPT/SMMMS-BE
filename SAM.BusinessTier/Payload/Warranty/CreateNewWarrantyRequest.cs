@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Enums
+namespace SAM.BusinessTier.Payload.Warranty
 {
-    public enum NewsStatus
+    public class CreateNewWarrantyRequest
     {
-        Active,
-        Inactive
     }
 }

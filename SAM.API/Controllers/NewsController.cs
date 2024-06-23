@@ -5,6 +5,7 @@ using SAM.BusinessTier.Services.Interfaces;
 
 namespace SAM.API.Controllers
 {
+    [ApiController]
     public class NewsController : BaseController<NewsController>
     {
         private readonly INewsService _newsService;

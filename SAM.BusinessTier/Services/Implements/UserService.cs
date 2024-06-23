@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
-using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Payload.Login;
 using SAM.BusinessTier.Payload.User;
 using SAM.BusinessTier.Payload;
@@ -15,6 +14,7 @@ using SAM.DataTier.Models;
 using SAM.BusinessTier.Payload.Category;
 using Microsoft.IdentityModel.Tokens;
 using static SAM.BusinessTier.Constants.ApiEndPointConstant;
+using SAM.BusinessTier.Enums.EnumStatus;
 
 namespace SAM.BusinessTier.Services.Implements
 {

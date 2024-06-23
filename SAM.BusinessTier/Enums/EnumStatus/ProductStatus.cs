@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Enums
+namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public enum UserStatus
+    public enum ProductStatus
     {
-        Activate,
-        Deactivate
+        Active,
+        Inactive
     }
 }

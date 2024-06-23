@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Enums
+namespace SAM.BusinessTier.Enums.EnumTypes
 {
-    public enum CategoryStatus { 
-        Active,
-        Inactive
+    public enum CategoryType
+    {
+        Child,
+        Parent
     }
-
 }

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SAM.BusinessTier.Constants;
-using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Category;
 using SAM.BusinessTier.Services.Interfaces;
@@ -14,6 +13,8 @@ using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.Order;
 using static System.Net.Mime.MediaTypeNames;
 using Azure.Core;
+using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Enums.EnumStatus;
 
 
 namespace SAM.BusinessTier.Services.Implements

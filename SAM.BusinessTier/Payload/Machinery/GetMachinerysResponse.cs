@@ -1,4 +1,5 @@
-﻿using SAM.BusinessTier.Enums;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

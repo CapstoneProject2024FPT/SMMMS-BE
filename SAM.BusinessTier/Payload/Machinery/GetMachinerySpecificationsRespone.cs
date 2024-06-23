@@ -1,4 +1,5 @@
-﻿using SAM.BusinessTier.Enums;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Order;
 using System;
 using System.Collections.Generic;

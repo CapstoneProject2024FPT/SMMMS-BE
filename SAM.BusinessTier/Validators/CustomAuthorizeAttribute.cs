@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using SAM.BusinessTier.Utils;
-using SAM.BusinessTier.Enums;
+using SAM.BusinessTier.Enums.EnumStatus;
 
 namespace SAM.BusinessTier.Validators;
 

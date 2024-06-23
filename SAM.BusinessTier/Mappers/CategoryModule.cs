@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SAM.BusinessTier.Enums;
+using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Category;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Utils;

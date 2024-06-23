@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Core;
 using SAM.BusinessTier.Constants;
-using SAM.BusinessTier.Enums;
 using SAM.BusinessTier.Extensions;
 using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Order;
@@ -19,6 +18,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using SAM.BusinessTier.Enums.EnumStatus;
 
 namespace SAM.BusinessTier.Services.Implements
 {
