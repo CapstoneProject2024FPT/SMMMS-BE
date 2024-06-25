@@ -12,8 +12,8 @@ namespace SAM.BusinessTier.Services.Interfaces
     {
         Task<Guid> CreateNewOrigin(CreateNewOriginRequest createNewOriginRequest);
         Task<bool> UpdateOrigin(Guid id, UpdateOriginRequest updateOriginRequest);
-        Task<ICollection<GetOriginResponse>> GetOrigins(OriginFilter filter);
-        Task<GetOriginResponse> GetOrigin(Guid id);
+        Task<ICollection<GetOriginResponse>> GetOriginList(OriginFilter filter);
+        Task<GetOriginResponse> GetOriginById(Guid id);
         Task<bool> RemoveOriginStatus(Guid id);
     }
 }

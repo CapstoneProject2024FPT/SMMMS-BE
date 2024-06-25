@@ -24,12 +24,12 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<GetOriginResponse> GetOrigin(Guid id)
+        public Task<GetOriginResponse> GetOriginById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<GetOriginResponse>> GetOrigins(OriginFilter filter)
+        public Task<ICollection<GetOriginResponse>> GetOriginList(OriginFilter filter)
         {
             throw new NotImplementedException();
         }

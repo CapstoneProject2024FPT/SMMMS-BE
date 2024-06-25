@@ -29,7 +29,7 @@ public static class ApiEndPointConstant
     public static class Origin
     {
         public const string OriginsEndPoint = ApiEndpoint + "/origin";
-        public const string originEndPoint = OriginsEndPoint + "/{id}";
+        public const string OriginEndPoint = OriginsEndPoint + "/{id}";
     }
     public static class Brand
     {
