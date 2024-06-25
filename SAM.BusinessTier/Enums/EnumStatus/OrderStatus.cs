@@ -11,6 +11,7 @@ namespace SAM.BusinessTier.Enums.EnumStatus
         Pending,
         Confirmed,
         Paid,
+        UnPaid,
         Completed,
         Canceled
 
