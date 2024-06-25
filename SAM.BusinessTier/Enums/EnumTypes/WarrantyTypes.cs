@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public enum WarrantyStatus
+    public enum WarrantyTypes
     {
         NoWarranty,  // Không bảo hành
         Limited,      // Bảo hành có giới hạn
