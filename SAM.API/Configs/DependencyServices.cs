@@ -43,6 +43,8 @@ namespace SAM.API.Configs
             services.AddScoped<IRankService, RankService>();
             services.AddScoped<IDiscountService, DiscountService>();
             services.AddScoped<IMachineryComponentService, MachineryComponentService>();
+            services.AddScoped<IOriginService, OriginService>();
+            services.AddScoped<IBrandService, BrandService>();
 
 
             return services;
