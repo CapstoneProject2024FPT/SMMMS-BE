@@ -43,7 +43,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TotalAmount = request.TotalAmount,
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
-                Status = OrderStatus.PENDING.GetDescriptionFromEnum(),
+                Status = OrderStatus.Pending.GetDescriptionFromEnum(),
                 AccountId = request.AccountId
             };
 
@@ -181,14 +181,14 @@ namespace SAM.BusinessTier.Services.Implements
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             switch (request.Status)
             {
-                case OrderStatus.COMPLETED:
+                case OrderStatus.Completed:
                     break;
-                case OrderStatus.CONFIRMED:
+                case OrderStatus.Confirmed:
                     break;
-                case OrderStatus.PAID:
+                case OrderStatus.Paid:
                     break;
-                case OrderStatus.CANCELED:
-                    updateOrder.Status = OrderStatus.CANCELED.GetDescriptionFromEnum();
+                case OrderStatus.Canceled:
+                    updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);
                     
                     break;

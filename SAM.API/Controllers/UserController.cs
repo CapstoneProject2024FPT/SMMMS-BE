@@ -33,7 +33,7 @@ namespace SAM.API.Controllers
                     TimeStamp = DateTime.Now
                 });
             }
-            if (response.Status == UserStatus.Deactivate)
+            if (response.Status == UserStatus.InActivate)
             {
                 return Unauthorized(new ErrorResponse
                 {

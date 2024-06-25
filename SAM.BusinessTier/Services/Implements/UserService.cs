@@ -99,7 +99,7 @@ namespace SAM.BusinessTier.Services.Implements
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
-            user.Status = UserStatus.Deactivate.GetDescriptionFromEnum();
+            user.Status = UserStatus.InActivate.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;

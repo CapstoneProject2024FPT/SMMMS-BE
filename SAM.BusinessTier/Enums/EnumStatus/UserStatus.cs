@@ -9,6 +9,7 @@ namespace SAM.BusinessTier.Enums.EnumStatus
     public enum UserStatus
     {
         Activate,
-        Deactivate
+        InActivate,
+        Banned
     }
 }
