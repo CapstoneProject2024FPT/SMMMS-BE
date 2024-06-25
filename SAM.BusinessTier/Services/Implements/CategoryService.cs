@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Machinery;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -51,14 +52,13 @@ namespace SAM.BusinessTier.Services.Implements
             return newCategory.Id;
         }
 
-        public async Task<IPaginate<GetCategoriesResponse>> GetCategories(CategoryFilter filter, PagingModel pagingModel)
+        public async Task<ICollection<GetCategoriesResponse>> GetCategories(CategoryFilter filter)
         {
-            IPaginate<GetCategoriesResponse> respone = await _unitOfWork.GetRepository<Category>().GetPagingListAsync(
+            ICollection<GetCategoriesResponse> respone = await _unitOfWork.GetRepository<Category>().GetListAsync(
                selector: x => _mapper.Map<GetCategoriesResponse>(x),
-               filter: filter,
-               page: pagingModel.page,
-               size: pagingModel.size);
+               filter: filter);
             return respone;
+
         }
 
         public async Task<GetCategoriesResponse> GetCategory(Guid id)

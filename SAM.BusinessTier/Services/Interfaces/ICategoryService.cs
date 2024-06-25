@@ -14,7 +14,7 @@ namespace SAM.BusinessTier.Services.Implements
     {
         Task<Guid> CreateNewCategory(CreateNewCategoryRequest createNewCategoryRequest);
         Task<bool> UpdateCategory(Guid id, UpdateCategoryRequest updateCategoryRequest);
-        Task<IPaginate<GetCategoriesResponse>> GetCategories(CategoryFilter filter, PagingModel pagingModel);
+        Task<ICollection<GetCategoriesResponse>> GetCategories(CategoryFilter filter);
         Task<GetCategoriesResponse> GetCategory(Guid id);
         Task<bool> RemoveCategoryStatus(Guid id);
     }

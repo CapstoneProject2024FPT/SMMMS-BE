@@ -26,9 +26,9 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Category.CategoriesEndPoint)]
-        public async Task<IActionResult> GetAllCategories([FromQuery] CategoryFilter filter, [FromQuery] PagingModel pagingModel)
+        public async Task<IActionResult> GetAllCategories([FromQuery] CategoryFilter filter)
         {
-            var response = await _categoryService.GetCategories(filter, pagingModel);
+            var response = await _categoryService.GetCategories(filter);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Category.CategoryEndPoint)]
