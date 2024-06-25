@@ -57,22 +57,39 @@ namespace SAM.BusinessTier.Services.Implements
                     throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
                 }
             }
+            if (request.OriginId.HasValue)
+            {
+                var origin = await _unitOfWork.GetRepository<Origin>().SingleOrDefaultAsync(
+                    predicate: c => c.Id == request.OriginId.Value);
+                if (origin == null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.Origin.NotFoundFailedMessage);
+                }
+            }
+            if (request.BrandId.HasValue)
+            {
+                var brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
+                    predicate: c => c.Id == request.OriginId.Value);
+                if (brand == null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
+                }
+            }
 
             // Create a new Machinery entity
             Machinery newMachinery = new()
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
-                Origin = request.Origin,
+                OriginId = request.OriginId,
+                BrandId = request.BrandId,
                 Model = request.Model,
                 Description = request.Description,
-                Quantity = request.Quantity,
                 SerialNumber = TimeUtils.GetTimestamp(currentTime),
                 Status = MachineryStatus.Available.GetDescriptionFromEnum(),
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
-                Brand = request.Brand,
                 TimeWarranty = request.TimeWarranty,
                 CategoryId = request.CategoryId,
                 CreateDate = DateTime.Now,
@@ -162,6 +179,24 @@ namespace SAM.BusinessTier.Services.Implements
                         },
                         predicate: x => x.Id.Equals(machinery.CategoryId)
                     );
+                var origin = await _unitOfWork.GetRepository<Origin>()
+                    .SingleOrDefaultAsync(
+                        selector: x => new GetOriginAllResponse
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                        },
+                        predicate: x => x.Id.Equals(machinery.OriginId)
+                    );
+                var brand = await _unitOfWork.GetRepository<Brand>()
+                    .SingleOrDefaultAsync(
+                        selector: x => new GetBrandResponse
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                        },
+                        predicate: x => x.Id.Equals(machinery.BrandId)
+                    );
 
                 var images = await _unitOfWork.GetRepository<ImagesAll>()
                     .GetListAsync(
@@ -177,14 +212,12 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     Id = machinery.Id,
                     Name = machinery.Name,
-                    Origin = machinery.Origin,
                     Model = machinery.Model,
                     Description = machinery.Description,
                     Specifications = specifications.ToList(),
                     SerialNumber = machinery.SerialNumber,
                     SellingPrice = machinery.SellingPrice,
                     Priority = machinery.Priority,
-                    Brand = machinery.Brand,
                     TimeWarranty = machinery.TimeWarranty,
                     Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                     Category = category,
@@ -219,28 +252,31 @@ namespace SAM.BusinessTier.Services.Implements
             var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone
             {
                 Name = machinery.Name,
-                Origin = machinery.Origin,
+                Brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
+                        selector: x => new GetBrandResponse()
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                        },
+                        predicate: x => x.Id.Equals(machinery.BrandId)
+                    ),
                 Model = machinery.Model,
                 Description = machinery.Description,
-                Specifications = (List<SpecificationsResponse>)await _unitOfWork.GetRepository<Specification>()
-                    .GetListAsync(
-                        selector: x => new SpecificationsResponse()
-                        {
-                            SpecificationId = x.Id,
-                            MachineryId = x.MachineryId,
-                            Name = x.Name,
-                            Value = x.Value,
-                        },
-                        predicate: x => x.MachineryId.Equals(id)
-                    ),
                 SerialNumber = machinery.SerialNumber,
                 SellingPrice = machinery.SellingPrice,
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
-                Brand = machinery.Brand,
+                Origin = await _unitOfWork.GetRepository<Origin>().SingleOrDefaultAsync(
+                        selector: x => new GetOriginResponse()
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                        },
+                        predicate: x => x.Id.Equals(machinery.OriginId)
+                    ),
                 Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                        selector: x => new CategoryResponse()
+                        selector: x => new GetCategoryResponse()
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -256,7 +292,18 @@ namespace SAM.BusinessTier.Services.Implements
                             CreateDate = x.CreateDate,
                         },
                         predicate: x => x.MachineryId.Equals(id)
-                    )
+                    ),
+                Specifications = (List<SpecificationsResponse>)await _unitOfWork.GetRepository<Specification>()
+                    .GetListAsync(
+                        selector: x => new SpecificationsResponse()
+                        {
+                            SpecificationId = x.Id,
+                            MachineryId = x.MachineryId,
+                            Name = x.Name,
+                            Value = x.Value,
+                        },
+                        predicate: x => x.MachineryId.Equals(id)
+                    ),
             };
 
             return getMachinerySpecificationsRespone;
@@ -283,17 +330,23 @@ namespace SAM.BusinessTier.Services.Implements
             Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateProductRequest.CategoryId))
             ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+            Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateProductRequest.BrandId))
+            ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
+            Origin origin = await _unitOfWork.GetRepository<Origin>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateProductRequest.OriginId))
+            ?? throw new BadHttpRequestException(MessageConstant.Origin.NotFoundFailedMessage);
 
             product.Name = string.IsNullOrEmpty(updateProductRequest.Name) ? product.Name : updateProductRequest.Name;
-            product.Origin = string.IsNullOrEmpty(updateProductRequest.Origin) ? product.Origin : updateProductRequest.Origin;
+            //product.Origin = string.IsNullOrEmpty(updateProductRequest.Origin) ? product.Origin : updateProductRequest.Origin;
             product.Model = string.IsNullOrEmpty(updateProductRequest.Model) ? product.Model : updateProductRequest.Model;
             product.SellingPrice = updateProductRequest.SellingPrice.HasValue ? updateProductRequest.SellingPrice.Value : product.SellingPrice;
             product.StockPrice = updateProductRequest.StockPrice.HasValue ? updateProductRequest.StockPrice.Value : product.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
-            product.Brand = string.IsNullOrEmpty(updateProductRequest.Brand) ? product.Brand : updateProductRequest.Brand;
+            //product.Brand = string.IsNullOrEmpty(updateProductRequest.Brand) ? product.Brand : updateProductRequest.Brand;
             product.TimeWarranty = updateProductRequest.TimeWarranty.HasValue ? updateProductRequest.TimeWarranty.Value : product.TimeWarranty;
             product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
-            product.Quantity = updateProductRequest.Quantity.HasValue ? updateProductRequest.Quantity.Value : product.Quantity;
+            //product.Quantity = updateProductRequest.Quantity.HasValue ? updateProductRequest.Quantity.Value : product.Quantity;
 
             product.Priority = updateProductRequest.Priority.HasValue ? updateProductRequest.Priority.Value : product.Priority;
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);

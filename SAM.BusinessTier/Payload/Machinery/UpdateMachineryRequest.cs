@@ -12,7 +12,7 @@ namespace SAM.BusinessTier.Payload.Machinery
     {
         public string? Name { get; set; }
 
-        public string? Origin { get; set; }
+        public Guid? OriginId { get; set; }
 
         public string? Model { get; set; }
 
@@ -20,14 +20,13 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public MachineryStatus? Status { get; set; }
 
-        public int? Quantity { get; set; }
         public double? StockPrice { get; set; }
 
         public double? SellingPrice { get; set; }
 
         public int? Priority { get; set; }
 
-        public string? Brand { get; set; }
+        public Guid? BrandId { get; set; }
 
         public int? TimeWarranty { get; set; }
 

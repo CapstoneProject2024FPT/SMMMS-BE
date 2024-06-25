@@ -29,7 +29,26 @@ public static class MessageConstant
         public const string CategoryExistedMessage = "Category đã tồn tại";
         public const string CategoryEmptyMessage = "Category không hợp lệ";
     }
-
+    public static class Origin
+    {
+        public const string CreateOriginFailedMessage = "Tạo mới Origin thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent Origin ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Origin ko có trong hệ thống";
+        public const string UpdateOriginSuccessMessage = "Origin được cập nhật thành công";
+        public const string UpdateOriginFailedMessage = "Origin cập nhật thất bại";
+        public const string OriginExistedMessage = "Origin đã tồn tại";
+        public const string OriginEmptyMessage = "Origin không hợp lệ";
+    }
+    public static class Brand
+    {
+        public const string CreateBrandFailedMessage = "Tạo mới Brand thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent Brand ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Brand ko có trong hệ thống";
+        public const string UpdateBrandSuccessMessage = "Brand được cập nhật thành công";
+        public const string UpdateBrandFailedMessage = "Brand cập nhật thất bại";
+        public const string BrandExistedMessage = "Brand đã tồn tại";
+        public const string BrandEmptyMessage = "Brand không hợp lệ";
+    }
     public static class Machinery
     {
         public const string MachineryNameExisted = "Machinery đã tồn tại";

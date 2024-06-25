@@ -21,6 +21,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Area> Areas { get; set; }
 
+    public virtual DbSet<Brand> Brands { get; set; }
+
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Certification> Certifications { get; set; }
@@ -46,6 +48,8 @@ public partial class SamContext : DbContext
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+
+    public virtual DbSet<Origin> Origins { get; set; }
 
     public virtual DbSet<Payment> Payments { get; set; }
 
@@ -119,6 +123,15 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Status).HasMaxLength(255);
         });
 
+        modelBuilder.Entity<Brand>(entity =>
+        {
+            entity.ToTable("Brand");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Name).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Category__3213E83F7BE3BF50");
@@ -128,7 +141,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Category__3213E83EEA87B891").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Type).HasMaxLength(255);
@@ -212,6 +225,12 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.SerialNumber).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Type)
+                .HasMaxLength(50)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.Inventories)
                 .HasForeignKey(d => d.MachineryId)
@@ -256,18 +275,24 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Machiner__3213E83E14DE8756").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Brand).HasMaxLength(50);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasMaxLength(255);
-            entity.Property(e => e.Model).HasMaxLength(255);
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Model).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Origin).HasMaxLength(255);
             entity.Property(e => e.SerialNumber).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
+
+            entity.HasOne(d => d.Brand).WithMany(p => p.Machineries)
+                .HasForeignKey(d => d.BrandId)
+                .HasConstraintName("FK_Machinery_Brand");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.CategoryId)
                 .HasConstraintName("FK_Machinery_Category");
+
+            entity.HasOne(d => d.Origin).WithMany(p => p.Machineries)
+                .HasForeignKey(d => d.OriginId)
+                .HasConstraintName("FK_Machinery_Origin");
         });
 
         modelBuilder.Entity<News>(entity =>
@@ -337,6 +362,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__OrderDet__3213E83E76775357").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.MachineryId)
@@ -345,6 +371,17 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK_OrderDetail_Order");
+        });
+
+        modelBuilder.Entity<Origin>(entity =>
+        {
+            entity.ToTable("Origin");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Payment>(entity =>
@@ -359,7 +396,6 @@ public partial class SamContext : DbContext
             entity.Property(e => e.PaymentMethod)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.UserId).HasColumnName("UserID");
 
             entity.HasOne(d => d.Order).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)

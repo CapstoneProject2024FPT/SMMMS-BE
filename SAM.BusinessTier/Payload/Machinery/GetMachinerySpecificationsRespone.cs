@@ -1,5 +1,6 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Category;
 using SAM.BusinessTier.Payload.Order;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace SAM.BusinessTier.Payload.Machinery
 {
     public class GetMachinerySpecificationsRespone
     {
-        public string? Name { get; set; }
+        public Guid? Id { get; set; }
 
-        public string? Origin { get; set; }
+        public string? Name { get; set; }
 
         public string? Model { get; set; }
 
@@ -21,22 +22,26 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public MachineryStatus? Status { get; set; }
 
-        public List<MachineryImagesResponse>? Image { get; set; } = new List<MachineryImagesResponse>();
-
-        public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
-        public int? Quantity { get; set; }
 
         public string? SerialNumber { get; set; }
 
         public double? SellingPrice { get; set; }
 
         public int? Priority { get; set; }
-        public string? Brand { get; set; }
 
         public int? TimeWarranty { get; set; }
 
-        public CategoryResponse? Category { get; set; }
         public DateTime? CreateDate { get; set; }
+
+        public GetOriginResponse? Origin { get; set; }
+
+        public GetBrandResponse? Brand { get; set; }
+
+        public GetCategoryResponse? Category { get; set; }
+
+        public List<MachineryImagesResponse>? Image { get; set; } = new List<MachineryImagesResponse>();
+
+        public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
     }
     public class SpecificationsResponse
     {
@@ -47,11 +52,21 @@ namespace SAM.BusinessTier.Payload.Machinery
 
 
     }
-    public class CategoryResponse
+    public class GetCategoryResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
         public CategoryType? Type { get; set; }
+    }
+    public class GetBrandResponse
+    {
+        public Guid? Id { get; set; }
+        public string? Name { get; set; }
+    }
+    public class GetOriginResponse
+    {
+        public Guid? Id { get; set; }
+        public string? Name { get; set; }
     }
     public class MachineryImagesResponse
     {

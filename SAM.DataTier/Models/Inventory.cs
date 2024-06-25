@@ -11,6 +11,10 @@ public partial class Inventory
 
     public Guid? MachineryId { get; set; }
 
+    public string? Status { get; set; }
+
+    public string? Type { get; set; }
+
     public virtual Machinery? Machinery { get; set; }
 
     public virtual ICollection<Warranty> Warranties { get; set; } = new List<Warranty>();

@@ -9,8 +9,6 @@ public partial class Machinery
 
     public string? Name { get; set; }
 
-    public string? Origin { get; set; }
-
     public string? Model { get; set; }
 
     public string? Description { get; set; }
@@ -29,11 +27,15 @@ public partial class Machinery
 
     public DateTime? CreateDate { get; set; }
 
-    public string? Brand { get; set; }
-
     public int? TimeWarranty { get; set; }
 
     public Guid? CategoryId { get; set; }
+
+    public Guid? OriginId { get; set; }
+
+    public Guid? BrandId { get; set; }
+
+    public virtual Brand? Brand { get; set; }
 
     public virtual Category? Category { get; set; }
 
@@ -48,6 +50,8 @@ public partial class Machinery
     public virtual ICollection<News> News { get; set; } = new List<News>();
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public virtual Origin? Origin { get; set; }
 
     public virtual ICollection<Specification> Specifications { get; set; } = new List<Specification>();
 }

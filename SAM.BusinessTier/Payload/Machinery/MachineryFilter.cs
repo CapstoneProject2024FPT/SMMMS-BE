@@ -8,8 +8,6 @@ namespace SAM.BusinessTier.Payload.Machinery
     {
         public List<string>? Name { get; set; }
 
-        public List<string>? Origin { get; set; }
-
         public List<string>? Model { get; set; }
 
         public MachineryStatus? Status { get; set; }
@@ -22,7 +20,9 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? Priority { get; set; }
 
-        public List<string>? Brand { get; set; }
+        public List<Guid>? OriginId { get; set; }
+
+        public List<Guid>? BrandId { get; set; }
 
         public int? TimeWarranty { get; set; }
 
