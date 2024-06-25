@@ -15,6 +15,8 @@ public partial class Category
 
     public string? Description { get; set; }
 
+    public DateTime? CreateDate { get; set; }
+
     public Guid? MasterCategoryId { get; set; }
 
     public virtual ICollection<Category> InverseMasterCategory { get; set; } = new List<Category>();

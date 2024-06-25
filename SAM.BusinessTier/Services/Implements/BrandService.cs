@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.DataTier.Models;
 using SAM.DataTier.Repository.Interfaces;
@@ -16,6 +17,31 @@ namespace SAM.BusinessTier.Services.Implements
     {
         public BrandService(IUnitOfWork<SamContext> unitOfWork, ILogger<BrandService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
+        }
+
+        public Task<Guid> CreateNewBrand(CreateNewBrandRequest createNewBrandRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICollection<GetBrandResponse>> GetBrands(BrandFilter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetBrandResponse> GetCategory(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> RemoveCategoryStatus(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateBrand(Guid id, UpdateBrandRequest updateBrandRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

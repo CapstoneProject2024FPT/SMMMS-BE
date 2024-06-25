@@ -26,6 +26,16 @@ public static class ApiEndPointConstant
         public const string CategoriesEndPoint = ApiEndpoint + "/categories";
         public const string CategoryEndPoint = CategoriesEndPoint + "/{id}";
     }
+    public static class Origin
+    {
+        public const string OriginsEndPoint = ApiEndpoint + "/origin";
+        public const string originEndPoint = OriginsEndPoint + "/{id}";
+    }
+    public static class Brand
+    {
+        public const string BrandsEndPoint = ApiEndpoint + "/brand";
+        public const string BrandEndPoint = BrandsEndPoint + "/{id}";
+    }
     public static class Product
     {
         public const string MachineriesEndPoint = ApiEndpoint + "/machinery";

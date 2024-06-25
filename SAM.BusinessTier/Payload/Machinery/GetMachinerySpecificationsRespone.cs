@@ -33,11 +33,11 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public DateTime? CreateDate { get; set; }
 
-        public GetOriginResponse? Origin { get; set; }
+        public OriginResponse? Origin { get; set; }
 
-        public GetBrandResponse? Brand { get; set; }
+        public BrandResponse? Brand { get; set; }
 
-        public GetCategoryResponse? Category { get; set; }
+        public CategoryResponse? Category { get; set; }
 
         public List<MachineryImagesResponse>? Image { get; set; } = new List<MachineryImagesResponse>();
 
@@ -52,21 +52,27 @@ namespace SAM.BusinessTier.Payload.Machinery
 
 
     }
-    public class GetCategoryResponse
+    public class CategoryResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
         public CategoryType? Type { get; set; }
+
+        public DateTime? CreateDate { get; set; }
     }
-    public class GetBrandResponse
+    public class BrandResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
+        public string? Description { get; set; }
+        public DateTime? CreateDate { get; set; }
     }
-    public class GetOriginResponse
+    public class OriginResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
+        public string? Description { get; set; }
+        public DateTime? CreateDate { get; set; }
     }
     public class MachineryImagesResponse
     {

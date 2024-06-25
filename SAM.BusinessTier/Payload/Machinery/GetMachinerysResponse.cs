@@ -30,9 +30,9 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public DateTime? CreateDate { get; set; }
 
-        public GetOriginAllResponse? Origin { get; set; }
+        public OriginAllResponse? Origin { get; set; }
 
-        public GetBrandAllResponse? Brand { get; set; }
+        public BrandAllResponse? Brand { get; set; }
 
         public CategoryAllResponse? Category { get; set; }
         
@@ -55,12 +55,12 @@ namespace SAM.BusinessTier.Payload.Machinery
         public string? Name { get; set; }
         public CategoryType? Type { get; set; }
     }
-    public class GetBrandAllResponse
+    public class BrandAllResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
     }
-    public class GetOriginAllResponse
+    public class OriginAllResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }

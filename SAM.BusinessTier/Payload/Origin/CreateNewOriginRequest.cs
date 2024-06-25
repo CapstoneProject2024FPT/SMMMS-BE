@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.Origin
 {
-    public class CreateNewOriginResponse
+    public class CreateNewOriginRequest
     {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
     }
 }

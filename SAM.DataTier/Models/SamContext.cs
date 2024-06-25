@@ -128,6 +128,7 @@ public partial class SamContext : DbContext
             entity.ToTable("Brand");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(50);
         });
@@ -141,6 +142,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Category__3213E83EEA87B891").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
@@ -378,6 +380,7 @@ public partial class SamContext : DbContext
             entity.ToTable("Origin");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Name)
                 .HasMaxLength(50)

@@ -181,7 +181,7 @@ namespace SAM.BusinessTier.Services.Implements
                     );
                 var origin = await _unitOfWork.GetRepository<Origin>()
                     .SingleOrDefaultAsync(
-                        selector: x => new GetOriginAllResponse
+                        selector: x => new OriginAllResponse
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -190,7 +190,7 @@ namespace SAM.BusinessTier.Services.Implements
                     );
                 var brand = await _unitOfWork.GetRepository<Brand>()
                     .SingleOrDefaultAsync(
-                        selector: x => new GetBrandResponse
+                        selector: x => new BrandResponse
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -253,7 +253,7 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 Name = machinery.Name,
                 Brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
-                        selector: x => new GetBrandResponse()
+                        selector: x => new BrandResponse()
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -268,7 +268,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                 Origin = await _unitOfWork.GetRepository<Origin>().SingleOrDefaultAsync(
-                        selector: x => new GetOriginResponse()
+                        selector: x => new OriginResponse()
                         {
                             Id = x.Id,
                             Name = x.Name,
@@ -276,7 +276,7 @@ namespace SAM.BusinessTier.Services.Implements
                         predicate: x => x.Id.Equals(machinery.OriginId)
                     ),
                 Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                        selector: x => new GetCategoryResponse()
+                        selector: x => new CategoryResponse()
                         {
                             Id = x.Id,
                             Name = x.Name,
