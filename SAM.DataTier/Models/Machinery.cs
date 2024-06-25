@@ -13,8 +13,6 @@ public partial class Machinery
 
     public string? Description { get; set; }
 
-    public int? Quantity { get; set; }
-
     public string? Status { get; set; }
 
     public string? SerialNumber { get; set; }
