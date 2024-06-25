@@ -41,6 +41,9 @@ namespace SAM.DataTier.Repository.Implement
                         int minValue = intArrayValue[0];
                         int maxValue = intArrayValue[1];
                         query = query.Where(x => EF.Property<int>(x, propertyInfo.Name) >= minValue && EF.Property<int>(x, propertyInfo.Name) <= maxValue);
+                    }else if (propertyValue is List<Guid> guidListValue && guidListValue.Count > 0)
+                    { 
+                        query = query.Where(x => guidListValue.Contains(EF.Property<Guid>(x, propertyInfo.Name)));
                     }
                     // Add other types of filters here as needed
                 }

@@ -26,6 +26,6 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public int? TimeWarranty { get; set; }
 
-        public Guid? CategoryId { get; set; }
+        public List<Guid>? CategoryId { get; set; }
     }
 }
