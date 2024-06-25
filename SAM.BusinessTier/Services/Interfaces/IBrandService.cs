@@ -13,7 +13,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<Guid> CreateNewBrand(CreateNewBrandRequest createNewBrandRequest);
         Task<bool> UpdateBrand(Guid id, UpdateBrandRequest updateBrandRequest);
         Task<ICollection<GetBrandResponse>> GetBrands(BrandFilter filter);
-        Task<GetBrandResponse> GetCategory(Guid id);
-        Task<bool> RemoveCategoryStatus(Guid id);
+        Task<GetBrandResponse> GetBrand(Guid id);
+        Task<bool> RemoveBrandStatus(Guid id);
     }
 }

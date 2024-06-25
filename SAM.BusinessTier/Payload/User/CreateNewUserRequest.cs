@@ -22,18 +22,10 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Email { get; set; }
 
-        //public int Rank { get; set; }
-
         public double? Amount { get; set; }
 
         public int? YearsOfExperience { get; set; }
 
-    }
-    public class AccountRank
-    {
-        public Guid RankId { get; set; }
-        public string Name {  get; set; }
-        public int Range { get; set; }
     }
 
 }

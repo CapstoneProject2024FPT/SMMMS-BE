@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Payload.Origin;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.DataTier.Models;
 using SAM.DataTier.Repository.Interfaces;
@@ -16,6 +17,31 @@ namespace SAM.BusinessTier.Services.Implements
     {
         public OriginService(IUnitOfWork<SamContext> unitOfWork, ILogger<OriginService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
+        }
+
+        public Task<Guid> CreateNewOrigin(CreateNewOriginRequest createNewOriginRequest)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GetOriginResponse> GetOrigin(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICollection<GetOriginResponse>> GetOrigins(OriginFilter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> RemoveOriginStatus(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateOrigin(Guid id, UpdateOriginRequest updateOriginRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

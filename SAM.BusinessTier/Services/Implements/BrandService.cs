@@ -24,17 +24,17 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
+        public Task<GetBrandResponse> GetBrand(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<ICollection<GetBrandResponse>> GetBrands(BrandFilter filter)
         {
             throw new NotImplementedException();
         }
 
-        public Task<GetBrandResponse> GetCategory(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> RemoveCategoryStatus(Guid id)
+        public Task<bool> RemoveBrandStatus(Guid id)
         {
             throw new NotImplementedException();
         }
