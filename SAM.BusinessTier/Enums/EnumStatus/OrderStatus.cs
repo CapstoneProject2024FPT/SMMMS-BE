@@ -16,12 +16,4 @@ namespace SAM.BusinessTier.Enums.EnumStatus
 
     }
 
-    public enum OrderHistoryStatus
-    {
-        PENDING,
-        CONFIRMED,
-        PAID,
-        COMPLETED,
-        CANCELED
-    }
 }

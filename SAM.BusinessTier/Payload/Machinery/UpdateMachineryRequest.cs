@@ -1,4 +1,5 @@
 ﻿using SAM.BusinessTier.Enums;
+using SAM.BusinessTier.Enums.EnumStatus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public string? Description { get; set; }
 
-        //public MachineryStatus? Status { get; set; }
+        public MachineryStatus? Status { get; set; }
 
         public int? Quantity { get; set; }
         public double? StockPrice { get; set; }

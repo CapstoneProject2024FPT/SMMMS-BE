@@ -18,7 +18,7 @@ namespace SAM.BusinessTier.Mappers
             CreateMap<Machinery, GetMachinerysResponse>();
             CreateMap<CreateNewMachineryRequest, Machinery>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => ProductStatus.Active.GetDescriptionFromEnum()));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MachineryStatus.Available.GetDescriptionFromEnum()));
             CreateMap<Machinery, GetMachinerySpecificationsRespone>();
         }
     }

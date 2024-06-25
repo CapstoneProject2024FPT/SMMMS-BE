@@ -68,7 +68,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Description = request.Description,
                 Quantity = request.Quantity,
                 SerialNumber = TimeUtils.GetTimestamp(currentTime),
-                Status = ProductStatus.Active.GetDescriptionFromEnum(),
+                Status = MachineryStatus.Available.GetDescriptionFromEnum(),
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
@@ -268,7 +268,7 @@ namespace SAM.BusinessTier.Services.Implements
             Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-            product.Status = ProductStatus.Inactive.GetDescriptionFromEnum();
+            product.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
@@ -292,7 +292,7 @@ namespace SAM.BusinessTier.Services.Implements
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
             product.Brand = string.IsNullOrEmpty(updateProductRequest.Brand) ? product.Brand : updateProductRequest.Brand;
             product.TimeWarranty = updateProductRequest.TimeWarranty.HasValue ? updateProductRequest.TimeWarranty.Value : product.TimeWarranty;
-            //product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
+            product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
             product.Quantity = updateProductRequest.Quantity.HasValue ? updateProductRequest.Quantity.Value : product.Quantity;
 
             product.Priority = updateProductRequest.Priority.HasValue ? updateProductRequest.Priority.Value : product.Priority;
@@ -308,7 +308,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
 
-            product.Status = ProductStatus.Active.GetDescriptionFromEnum();
+            product.Status = MachineryStatus.Available.GetDescriptionFromEnum();
 
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;

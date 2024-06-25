@@ -8,7 +8,8 @@ namespace SAM.BusinessTier.Enums.EnumStatus
 {
     public enum MachineryStatus
     {
-        Active,
-        Inactive
+        Available,
+        UnAvailable,
+        OutOfStock,
     }
 }
