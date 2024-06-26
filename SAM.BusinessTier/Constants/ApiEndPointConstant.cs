@@ -79,11 +79,11 @@ public static class ApiEndPointConstant
     }
     public static class WarrantyDetail
     {
-        public const string WarrantyDetailEndPoint = ApiEndpoint + "/warrantyDetail";
-        public const string WarrantyDetailEndPointNoPaginate = ApiEndpoint + "/warrantyDetail/noPaginate";
-        public const string WarrantydetailEndPoint = WarrantyDetailEndPoint + "/{id}";
-        public const string WarrantyDetailEndPointDetail = ApiEndpoint + "/warrantyDetail/Detail/{id}";
-        public const string WarrantyDetailUpdateStatusEndPoint = WarrantyDetailEndPoint + "/updateStatus/{id}";
+        public const string WarrantyDetailsEndPoint = ApiEndpoint + "/warrantyDetail";
+        public const string WarrantyDetailsEndPointNoPaginate = ApiEndpoint + "/warrantyDetail/noPaginate";
+        public const string WarrantydetailEndPoint = WarrantyDetailsEndPoint + "/{id}";
+        public const string WarrantyDetailsEndPointDetail = ApiEndpoint + "/warrantyDetail/Detail/{id}";
+        public const string WarrantyDetailsUpdateStatusEndPoint = WarrantyDetailsEndPoint + "/updateStatus/{id}";
 
     }
     public static class News

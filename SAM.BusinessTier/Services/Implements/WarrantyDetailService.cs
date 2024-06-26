@@ -25,7 +25,7 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<GetWarrantyDetailResponse>> GetRankList(WarrantyDetailFilter filter)
+        public Task<ICollection<GetWarrantyDetailResponse>> GetWarrantyDetailList(WarrantyDetailFilter filter)
         {
             throw new NotImplementedException();
         }
