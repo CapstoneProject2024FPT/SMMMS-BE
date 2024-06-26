@@ -50,8 +50,17 @@ public static class ApiEndPointConstant
         public const string MachineriesUpdateStatusEndPoint = MachineriesEndPoint + "/updateStatus/{id}";
 
     }
-   
-    
+    public static class MachineryComponent
+    {
+        public const string MachineryComponentsEndPoint = ApiEndpoint + "/machineryComponent";
+        public const string MachineryComponentsEndPointNoPaginate = ApiEndpoint + "/machineryComponent/noPaginate";
+        public const string MachineryComponentEndPoint = MachineryComponentsEndPoint + "/{id}";
+        public const string MachineryComponentsEndPointDetail = ApiEndpoint + "/machineryComponent/Detail/{id}";
+        public const string MachineryComponentsUpdateStatusEndPoint = MachineryComponentsEndPoint + "/updateStatus/{id}";
+
+    }
+
+
     public static class Order
     {
         public const string OrdersEndPoint = ApiEndpoint + "/orders";

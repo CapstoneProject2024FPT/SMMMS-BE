@@ -30,7 +30,7 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<GetBrandResponse> GetWarrantyById(Guid id)
+        public Task<GetWarrantyInforResponse> GetWarrantyById(Guid id)
         {
             throw new NotImplementedException();
         }

@@ -13,7 +13,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<Guid> CreateNewInventory(CreateNewInventoryRequest createNewInventoryRequest);
         Task<bool> UpdateInventory(Guid id, UpdateInventoryRequest updateInventoryRequest);
         Task<ICollection<GetInventoryResponse>> GetInventoryList(InventoryFilter filter);
-        Task<GetBrandResponse> GetInventoryById(Guid id);
+        Task<GetInventoryResponse> GetInventoryById(Guid id);
         Task<bool> RemoveInventoryStatus(Guid id);
     }
 }

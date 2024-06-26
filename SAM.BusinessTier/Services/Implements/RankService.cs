@@ -25,7 +25,7 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<GetBrandResponse> GetRankById(Guid id)
+        public Task<GetRankResponse> GetRankById(Guid id)
         {
             throw new NotImplementedException();
         }

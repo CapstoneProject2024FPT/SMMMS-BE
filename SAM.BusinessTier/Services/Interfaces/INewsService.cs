@@ -14,7 +14,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<Guid> CreateNewNews(CreateNewsRequest createNewsRequest);
         Task<bool> UpdateNews(Guid id, UpdateNewsRequest updateNewsRequest);
         Task<ICollection<GetNewsReponse>> GetNewsList(NewsFilter filter);
-        Task<GetBrandResponse> GetNewsById(Guid id);
+        Task<GetNewsReponse> GetNewsById(Guid id);
         Task<bool> RemoveNewsStatus(Guid id);
     }
 }

@@ -133,6 +133,18 @@ public static class MessageConstant
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
+    public static class WarrantyDetail
+    {
+        public const string WarrantyDetailNameExisted = "Warranty Detail đã tồn tại";
+        public const string CreateNewWarrantyDetailFailedMessage = "Tạo mới Warranty Detail thất bại";
+        public const string UpdateWarrantyDetailFailedMessage = "Cập nhật thông tin Warranty Detail thất bại";
+        public const string UpdateWarrantyDetailSuccessMessage = "Cập nhật thông tin Warranty Detail thành công";
+        public const string EmptyWarrantyDetailIdMessage = "Warranty Detail Id không hợp lệ";
+        public const string WarrantyDetailNotFoundMessage = "Warranty Detail không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
 
     public static class Rank
     {

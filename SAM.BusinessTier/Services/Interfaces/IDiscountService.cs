@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Discount;
+using SAM.BusinessTier.Payload.Inventory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +11,10 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface IDiscountService
     {
+        Task<Guid> CreateNewDiscounts(CreateNewDiscountRequest createNewDiscountRequest);
+        Task<bool> UpdateDiscount(Guid id, UpdateDiscountRequest updateDiscountRequest);
+        Task<ICollection<GetDiscountResponse>> GetDiscountList(DiscountFilter filter);
+        Task<GetDiscountResponse> GetDiscountById(Guid id);
+        Task<bool> RemoveDiscountStatus(Guid id);
     }
 }

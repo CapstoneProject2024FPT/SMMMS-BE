@@ -26,7 +26,7 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<GetBrandResponse> GetNewsById(Guid id)
+        public Task<GetNewsReponse> GetNewsById(Guid id)
         {
             throw new NotImplementedException();
         }

@@ -14,7 +14,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<Guid> CreateNewWarranty(CreateNewWarrantyRequest createNewWarrantyRequest);
         Task<bool> UpdateWarranty(Guid id, UpdateWarrantyRequest updateWarrantyRequest);
         Task<ICollection<GetWarrantyInforResponse>> GetRankList(WarrantyFilter filter);
-        Task<GetBrandResponse> GetWarrantyById(Guid id);
+        Task<GetWarrantyInforResponse> GetWarrantyById(Guid id);
         Task<bool> RemoveWarrantyStatus(Guid id);
     }
 }
