@@ -36,6 +36,11 @@ public static class ApiEndPointConstant
         public const string BrandsEndPoint = ApiEndpoint + "/brand";
         public const string BrandEndPoint = BrandsEndPoint + "/{id}";
     }
+    public static class Inventory
+    {
+        public const string InventoriesEndPoint = ApiEndpoint + "/inventories";
+        public const string InventoryEndPoint = InventoriesEndPoint + "/{id}";
+    }
     public static class Product
     {
         public const string MachineriesEndPoint = ApiEndpoint + "/machinery";

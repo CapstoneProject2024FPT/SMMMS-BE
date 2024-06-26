@@ -49,6 +49,16 @@ public static class MessageConstant
         public const string BrandExistedMessage = "Brand đã tồn tại";
         public const string BrandEmptyMessage = "Brand không hợp lệ";
     }
+    public static class Inventory
+    {
+        public const string CreateInventoryFailedMessage = "Tạo mới Inventory thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent Inventory ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Inventory ko có trong hệ thống";
+        public const string UpdateInventorySuccessMessage = "Inventory được cập nhật thành công";
+        public const string UpdateInventoryFailedMessage = "Inventory cập nhật thất bại";
+        public const string InventoryExistedMessage = "Inventory đã tồn tại";
+        public const string InventoryEmptyMessage = "Inventory không hợp lệ";
+    }
     public static class Machinery
     {
         public const string MachineryNameExisted = "Machinery đã tồn tại";

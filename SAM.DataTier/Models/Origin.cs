@@ -13,5 +13,7 @@ public partial class Origin
 
     public DateTime? CreateDate { get; set; }
 
+    public string? Status { get; set; }
+
     public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
 }
