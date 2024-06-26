@@ -1,4 +1,5 @@
-﻿using SAM.BusinessTier.Payload.Machinery;
+﻿using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.News;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,10 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface INewsService
     {
-        Task<Guid> CreateNewsRequest(CreateNewsRequest createNewsRequest);
+        Task<Guid> CreateNewNews(CreateNewsRequest createNewsRequest);
+        Task<bool> UpdateNews(Guid id, UpdateNewsRequest updateNewsRequest);
+        Task<ICollection<GetNewsReponse>> GetNewsList(NewsFilter filter);
+        Task<GetBrandResponse> GetNewsById(Guid id);
+        Task<bool> RemoveNewsStatus(Guid id);
     }
 }

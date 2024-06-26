@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -20,14 +21,29 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public async Task<Guid> CreateNewsRequest(CreateNewsRequest createNewsRequest)
+        public Task<Guid> CreateNewNews(CreateNewsRequest createNewsRequest)
         {
-            var currentUser = GetUsernameFromJwt();
-            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Username.Equals(currentUser));
-            DateTime currentTime = TimeUtils.GetCurrentSEATime();
             throw new NotImplementedException();
+        }
 
+        public Task<GetBrandResponse> GetNewsById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICollection<GetNewsReponse>> GetNewsList(NewsFilter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> RemoveNewsStatus(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateNews(Guid id, UpdateNewsRequest updateNewsRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

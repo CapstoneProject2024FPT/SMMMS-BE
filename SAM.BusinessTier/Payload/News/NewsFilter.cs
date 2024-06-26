@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Payload.Warranty
+namespace SAM.BusinessTier.Payload.News
 {
-    public class GetWarantyDetailResponse
+    public class NewsFilter
     {
     }
 }

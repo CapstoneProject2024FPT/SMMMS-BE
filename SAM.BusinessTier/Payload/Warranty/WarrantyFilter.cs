@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.Warranty
 {
-    public class WarantyFilter
+    public class WarrantyFilter
     {
     }
 }
