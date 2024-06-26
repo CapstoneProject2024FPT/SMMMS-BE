@@ -1,8 +1,14 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Category;
 using SAM.BusinessTier.Services.Interfaces;
+using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
 using SAM.DataTier.Repository.Interfaces;
 using System;
@@ -19,29 +25,62 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public Task<Guid> CreateNewBrand(CreateNewBrandRequest createNewBrandRequest)
+        public async Task<Guid> CreateNewBrand(CreateNewBrandRequest request)
         {
-            throw new NotImplementedException();
+
+            Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
+                predicate: x => x.Name.Equals(request.Name));
+            if (brand != null) throw new BadHttpRequestException(MessageConstant.Brand.BrandExistedMessage);
+            brand = _mapper.Map<Brand>(request);
+            await _unitOfWork.GetRepository<Brand>().InsertAsync(brand);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Brand.CreateBrandFailedMessage);
+            return brand.Id;
         }
 
-        public Task<GetBrandResponse> GetBrandById(Guid id)
+        public async Task<GetBrandResponse> GetBrandById(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Category.CategoryEmptyMessage);
+            Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
+            return _mapper.Map<GetBrandResponse>(brand);
         }
 
-        public Task<ICollection<GetBrandResponse>> GetBrandList(BrandFilter filter)
+        public async Task<ICollection<GetBrandResponse>> GetBrandList(BrandFilter filter)
         {
-            throw new NotImplementedException();
+            ICollection<GetBrandResponse> respone = await _unitOfWork.GetRepository<Brand>().GetListAsync(
+               selector: x => _mapper.Map<GetBrandResponse>(x),
+               filter: filter);
+            return respone;
         }
 
-        public Task<bool> RemoveBrandStatus(Guid id)
+        public async Task<bool> RemoveBrandStatus(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Brand.BrandEmptyMessage);
+            Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
+            brand.Status = BrandStatus.Inactive.GetDescriptionFromEnum();
+            _unitOfWork.GetRepository<Brand>().UpdateAsync(brand);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
 
-        public Task<bool> UpdateBrand(Guid id, UpdateBrandRequest updateBrandRequest)
+        public async Task<bool> UpdateBrand(Guid id, UpdateBrandRequest updateBrandRequest)
         {
-            throw new NotImplementedException();
+            Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+
+            brand.Name = string.IsNullOrEmpty(updateBrandRequest.Name) ? brand.Name : updateBrandRequest.Name;
+            brand.Description = string.IsNullOrEmpty(updateBrandRequest.Description) ? brand.Description : updateBrandRequest.Description;
+            brand.Status = updateBrandRequest.Status.GetDescriptionFromEnum();
+
+           
+            _unitOfWork.GetRepository<Brand>().UpdateAsync(brand);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
     }
 }

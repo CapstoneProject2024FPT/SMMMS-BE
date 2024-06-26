@@ -134,6 +134,9 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.Urlimage)
+                .HasMaxLength(250)
+                .HasColumnName("URLImage");
         });
 
         modelBuilder.Entity<Category>(entity =>
