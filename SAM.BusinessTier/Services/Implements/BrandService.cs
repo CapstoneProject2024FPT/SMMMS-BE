@@ -32,6 +32,12 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Name.Equals(request.Name));
             if (brand != null) throw new BadHttpRequestException(MessageConstant.Brand.BrandExistedMessage);
             brand = _mapper.Map<Brand>(request);
+            brand.Id = Guid.NewGuid();
+            brand.Status = BrandStatus.Active.GetDescriptionFromEnum();
+            brand.CreateDate = DateTime.Now;
+
+
+
             await _unitOfWork.GetRepository<Brand>().InsertAsync(brand);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Brand.CreateBrandFailedMessage);

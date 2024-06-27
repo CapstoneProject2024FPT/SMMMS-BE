@@ -15,7 +15,7 @@ public partial class Brand
 
     public string? Status { get; set; }
 
-    public byte[]? Urlimage { get; set; }
+    public string? Urlimage { get; set; }
 
     public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
 }

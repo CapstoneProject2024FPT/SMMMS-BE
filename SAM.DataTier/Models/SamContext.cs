@@ -136,6 +136,7 @@ public partial class SamContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Urlimage)
                 .HasMaxLength(250)
+                .IsUnicode(false)
                 .HasColumnName("URLImage");
         });
 
@@ -286,7 +287,9 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.Model).HasColumnType("text");
+            entity.Property(e => e.Model)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
 

@@ -16,10 +16,7 @@ namespace SAM.BusinessTier.Mappers
     {
         public BrandModule() {
             CreateMap<Brand, GetBrandResponse>();
-            CreateMap<CreateNewBrandRequest, Brand>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => BrandStatus.Active.GetDescriptionFromEnum()))
-                .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now));
+            CreateMap<CreateNewBrandRequest, Brand>();
 
         }
     }
