@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Inventory;
 using SAM.BusinessTier.Payload.Origin;
@@ -39,6 +40,13 @@ namespace SAM.BusinessTier.Services.Implements
             }
             Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync();
             inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
+            inventory.Id = Guid.NewGuid();
+            inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
+            inventory.Status = InventoryStautus.Available.GetDescriptionFromEnum();
+            inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
+            inventory.CreateDate = DateTime.Now;
+    
+
             await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Inventory.CreateInventoryFailedMessage);
