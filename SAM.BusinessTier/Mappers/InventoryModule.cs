@@ -17,11 +17,10 @@ namespace SAM.BusinessTier.Mappers
     public class InventoryModule : Profile
     {
         public InventoryModule() {
-            DateTime currentTime = TimeUtils.GetCurrentSEATime();
             CreateMap<Inventory, GetInventoryResponse>();
             CreateMap<CreateNewInventoryRequest, Inventory>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()))
-                .ForMember(dest => dest.SerialNumber, opt => opt.MapFrom(src => TimeUtils.GetTimestamp(currentTime)))
+                .ForMember(dest => dest.SerialNumber, opt => opt.MapFrom(src => TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime())))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => InventoryStautus.Available.GetDescriptionFromEnum()))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => InventoryType.Machinery.GetDescriptionFromEnum()))
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => DateTime.Now));
