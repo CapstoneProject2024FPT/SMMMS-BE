@@ -119,7 +119,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Area__3214EC068CA0ED2E").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasColumnType("text");
+            entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
         });
 
@@ -129,7 +129,7 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
@@ -150,7 +150,7 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Type).HasMaxLength(255);
@@ -167,7 +167,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Certific__3213E83E23FA8FE2").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CertificationLink).HasColumnType("text");
+            entity.Property(e => e.CertificationLink).HasMaxLength(4000);
             entity.Property(e => e.DateObtained).HasColumnType("datetime");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Certifications)
@@ -184,7 +184,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Discount__3214EC06339CFF00").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Type).HasColumnType("text");
+            entity.Property(e => e.Type).HasMaxLength(250);
         });
 
         modelBuilder.Entity<DiscountMachinery>(entity =>
@@ -254,7 +254,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__MachineC__3213E83E4C386BCF").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Name).HasMaxLength(255);
         });
 
@@ -286,7 +286,7 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Model)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -314,9 +314,9 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Cover).HasMaxLength(255);
-            entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.NewsContent).HasColumnType("text");
-            entity.Property(e => e.Title).HasColumnType("text");
+            entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.NewsContent).HasMaxLength(4000);
+            entity.Property(e => e.Title).HasMaxLength(4000);
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.News)
                 .HasForeignKey(d => d.MachineryId)
@@ -332,7 +332,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__NewsImag__3214EC0630722A48").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.ImgUrl).HasColumnType("text");
+            entity.Property(e => e.ImgUrl).HasMaxLength(4000);
             entity.Property(e => e.Name).HasMaxLength(255);
 
             entity.HasOne(d => d.News).WithMany(p => p.NewsImages)
@@ -352,7 +352,7 @@ public partial class SamContext : DbContext
             entity.Property(e => e.CompletedDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.InvoiceCode).HasMaxLength(255);
-            entity.Property(e => e.Note).HasMaxLength(255);
+            entity.Property(e => e.Note).HasMaxLength(4000);
             entity.Property(e => e.Status).HasMaxLength(255);
 
             entity.HasOne(d => d.Account).WithMany(p => p.Orders)
@@ -394,10 +394,8 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -430,7 +428,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Rank__3214EC06B0ABDC2C").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasColumnType("text");
+            entity.Property(e => e.Name).HasMaxLength(4000);
         });
 
         modelBuilder.Entity<Specification>(entity =>
@@ -477,10 +475,10 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Warranty__3213E83EE0585EB4").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Comments).HasColumnType("text");
+            entity.Property(e => e.Comments).HasMaxLength(4000);
             entity.Property(e => e.CompletionDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(255);
@@ -500,10 +498,10 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Warranty__3213E83E2C58FC35").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Comments).HasColumnType("text");
+            entity.Property(e => e.Comments).HasMaxLength(4000);
             entity.Property(e => e.CompletionDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(255);
