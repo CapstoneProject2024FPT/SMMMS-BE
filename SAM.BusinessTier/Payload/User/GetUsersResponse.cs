@@ -10,6 +10,7 @@ namespace SAM.BusinessTier.Payload.User
     public class GetUsersResponse
     {
         public Guid Id { get; set; }
+
         public string? Username { get; set; }
 
         public RoleEnum? Role { get; set; }
@@ -28,29 +29,5 @@ namespace SAM.BusinessTier.Payload.User
 
         public int? YearsOfExperience { get; set; }
 
-        public GetUsersResponse(Guid id, string? username, RoleEnum? role, string? fullName, string? phoneNumber, string? address, UserStatus? status, string? email, int? yearsOfExperience)
-        {
-            Id = id;
-            Username = username;
-            Role = role;
-            FullName = fullName;
-            PhoneNumber = phoneNumber;
-            Address = address;
-            Status = status;
-            Email = email;
-            YearsOfExperience = yearsOfExperience;
-        }
-
-        public GetUsersResponse(Guid id, string? username, RoleEnum? role, string? fullName, string? phoneNumber, string? address, UserStatus? status, string? email)
-        {
-            Id = id;
-            Username = username;
-            Role = role;
-            FullName = fullName;
-            PhoneNumber = phoneNumber;
-            Address = address;
-            Status = status;
-            Email = email;
-        }
     }
 }

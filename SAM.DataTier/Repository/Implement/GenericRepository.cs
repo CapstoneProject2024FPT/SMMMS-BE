@@ -125,7 +125,7 @@ namespace SAM.DataTier.Repository.Implement
             if (include != null) query = include(query);
             if (filter != null)
             {
-                query = query.ApplyFilter(filter); // Áp dụng filter bằng cách gọi extension method ApplyFilter
+                query = query.ApplyFilter(filter).DynamicFilter(filter);
             }
             if (predicate != null) query = query.Where(predicate);
             if (orderBy != null) return orderBy(query).Select(selector).ToPaginateAsync(page, size, 1);
