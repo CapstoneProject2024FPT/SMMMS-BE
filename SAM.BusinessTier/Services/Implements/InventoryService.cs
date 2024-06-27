@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Inventory;
+using SAM.BusinessTier.Payload.Origin;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.DataTier.Models;
 using SAM.DataTier.Repository.Interfaces;
@@ -20,9 +23,24 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public Task<Guid> CreateNewInventory(CreateNewInventoryRequest createNewInventoryRequest)
+        public async Task<Guid> CreateNewInventory(CreateNewInventoryRequest createNewInventoryRequest)
         {
-            throw new NotImplementedException();
+            if (createNewInventoryRequest.MachineryId.HasValue)
+            {
+                var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                    predicate: c => c.Id == createNewInventoryRequest.MachineryId.Value);
+                if (machinery == null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+                }
+            }
+            Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync();
+            if (inventory != null) throw new BadHttpRequestException(MessageConstant.Inventory.InventoryEmptyMessage);
+            inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
+            await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Inventory.CreateInventoryFailedMessage);
+            return inventory.Id;
         }
 
         public Task<GetInventoryResponse> GetInventoryById(Guid id)
