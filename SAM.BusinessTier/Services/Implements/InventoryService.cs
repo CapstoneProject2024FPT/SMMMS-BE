@@ -43,14 +43,21 @@ namespace SAM.BusinessTier.Services.Implements
             return inventory.Id;
         }
 
-        public Task<GetInventoryResponse> GetInventoryById(Guid id)
+        public async Task<GetInventoryResponse> GetInventoryById(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Inventory.InventoryEmptyMessage);
+            Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
+            return _mapper.Map<GetInventoryResponse>(inventory);
         }
 
-        public Task<ICollection<GetInventoryResponse>> GetInventoryList(InventoryFilter filter)
+        public async Task<ICollection<GetInventoryResponse>> GetInventoryList(InventoryFilter filter)
         {
-            throw new NotImplementedException();
+            ICollection<GetInventoryResponse> respone = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
+               selector: x => _mapper.Map<GetInventoryResponse>(x),
+               filter: filter);
+            return respone;
         }
 
         public Task<bool> RemoveInventoryStatus(Guid id)
