@@ -19,6 +19,10 @@ public partial class OrderDetail
 
     public Guid? MachineryId { get; set; }
 
+    public Guid? InventoryId { get; set; }
+
+    public virtual Inventory? Inventory { get; set; }
+
     public virtual Machinery? Machinery { get; set; }
 
     public virtual Order? Order { get; set; }

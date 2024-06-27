@@ -40,7 +40,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetBrandResponse> GetBrandById(Guid id)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Category.CategoryEmptyMessage);
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Brand.BrandEmptyMessage);
             Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
@@ -71,7 +71,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+                ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
 
             brand.Name = string.IsNullOrEmpty(updateBrandRequest.Name) ? brand.Name : updateBrandRequest.Name;
             brand.Description = string.IsNullOrEmpty(updateBrandRequest.Description) ? brand.Description : updateBrandRequest.Description;

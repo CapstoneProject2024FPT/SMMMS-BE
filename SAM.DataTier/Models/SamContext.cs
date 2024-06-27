@@ -232,6 +232,7 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Inventor__3214EC068D7C4137").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.SerialNumber).HasMaxLength(255);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
@@ -371,6 +372,10 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Inventory).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.InventoryId)
+                .HasConstraintName("FK_OrderDetail_Inventory");
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.MachineryId)

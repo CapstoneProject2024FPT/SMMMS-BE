@@ -15,7 +15,11 @@ public partial class Inventory
 
     public string? Type { get; set; }
 
+    public DateTime? CreateDate { get; set; }
+
     public virtual Machinery? Machinery { get; set; }
+
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
     public virtual ICollection<Warranty> Warranties { get; set; } = new List<Warranty>();
 }

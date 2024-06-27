@@ -85,7 +85,7 @@ namespace SAM.BusinessTier.Services.Implements
                 BrandId = request.BrandId,
                 Model = request.Model,
                 Description = request.Description,
-                SerialNumber = TimeUtils.GetTimestamp(currentTime),
+                //SerialNumber = TimeUtils.GetTimestamp(currentTime),
                 Status = MachineryStatus.Available.GetDescriptionFromEnum(),
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
