@@ -288,7 +288,6 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Description).HasColumnType("text");
             entity.Property(e => e.Model).HasColumnType("text");
             entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.SerialNumber).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Machineries)

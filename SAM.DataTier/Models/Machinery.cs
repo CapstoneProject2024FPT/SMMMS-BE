@@ -15,8 +15,6 @@ public partial class Machinery
 
     public string? Status { get; set; }
 
-    public string? SerialNumber { get; set; }
-
     public double? StockPrice { get; set; }
 
     public double? SellingPrice { get; set; }
