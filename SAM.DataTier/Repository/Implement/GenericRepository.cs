@@ -92,8 +92,7 @@ namespace SAM.DataTier.Repository.Implement
 
             if (filter != null)
             {
-                query = query.ApplyFilter(filter); // Áp dụng filter bằng cách gọi extension method ApplyFilter
-                //query = query.DynamicFilter(filter);
+                query = query.ApplyFilter(filter).DynamicFilter(filter);
             }
 
             if (predicate != null)
