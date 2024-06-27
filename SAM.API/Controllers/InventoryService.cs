@@ -45,9 +45,9 @@ namespace SAM.API.Controllers
         }
 
         [HttpDelete(ApiEndPointConstant.Inventory.InventoryEndPoint)]
-        public async Task<IActionResult> RemoveInventoryStatus(Guid id)
+        public async Task<IActionResult> SwitchInventoryStatus(Guid id)
         {
-            var isSuccessful = await _inventoryService.RemoveInventoryStatus(id);
+            var isSuccessful = await _inventoryService.SwitchInventoryStatus(id);
             if (!isSuccessful) return Ok(MessageConstant.Inventory.UpdateInventoryFailedMessage);
             return Ok(MessageConstant.Inventory.UpdateInventorySuccessMessage);
         }

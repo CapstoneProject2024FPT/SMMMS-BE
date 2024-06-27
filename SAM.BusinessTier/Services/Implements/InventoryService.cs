@@ -3,10 +3,13 @@ using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Inventory;
 using SAM.BusinessTier.Payload.Origin;
+using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Services.Interfaces;
+using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
 using SAM.DataTier.Repository.Interfaces;
 using System;
@@ -28,14 +31,13 @@ namespace SAM.BusinessTier.Services.Implements
             if (createNewInventoryRequest.MachineryId.HasValue)
             {
                 var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                    predicate: c => c.Id == createNewInventoryRequest.MachineryId.Value);
+                    predicate: x => x.Id == createNewInventoryRequest.MachineryId.Value);
                 if (machinery == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 }
             }
             Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync();
-            if (inventory != null) throw new BadHttpRequestException(MessageConstant.Inventory.InventoryEmptyMessage);
             inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
             await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
@@ -60,14 +62,32 @@ namespace SAM.BusinessTier.Services.Implements
             return respone;
         }
 
-        public Task<bool> RemoveInventoryStatus(Guid id)
+        public async Task<bool> SwitchInventoryStatus(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Brand.BrandEmptyMessage);
+            Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
+            inventory.Status = InventoryStautus.Sold.GetDescriptionFromEnum();
+            _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
 
-        public Task<bool> UpdateInventory(Guid id, UpdateInventoryRequest updateInventoryRequest)
+        public async Task<bool> UpdateInventory(Guid id, UpdateInventoryRequest updateInventoryRequest)
         {
-            throw new NotImplementedException();
+            Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
+
+
+            inventory.Status = updateInventoryRequest.Status.GetDescriptionFromEnum();
+            inventory.Type = updateInventoryRequest.Type.GetDescriptionFromEnum();
+
+
+            _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
     }
 }

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Payload.Inventory
+namespace SAM.BusinessTier.Enums.EnumTypes
 {
-    public class CreateNewInventoryRequest
+    public enum InventoryType
     {
-        public Guid? MachineryId { get; set; }
+        Machinery,
+        Material
     }
 }

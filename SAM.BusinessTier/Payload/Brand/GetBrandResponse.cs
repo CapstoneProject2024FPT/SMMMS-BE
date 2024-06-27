@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace SAM.BusinessTier.Payload.Brand
         public Guid? Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
+
+        public BrandStatus? Status { get; set; }
 
         public DateTime? CreateDate { get; set; }
 

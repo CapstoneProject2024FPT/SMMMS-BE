@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,11 +11,9 @@ namespace SAM.BusinessTier.Payload.Inventory
     public class UpdateInventoryRequest
     {
 
-        public string? SerialNumber { get; set; }
+        public InventoryStautus? Status { get; set; }
 
-        public string? Status { get; set; }
-
-        public string? Type { get; set; }
+        public InventoryType? Type { get; set; }
 
     }
 }

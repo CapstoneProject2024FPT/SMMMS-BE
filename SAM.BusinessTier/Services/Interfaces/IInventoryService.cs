@@ -14,6 +14,6 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> UpdateInventory(Guid id, UpdateInventoryRequest updateInventoryRequest);
         Task<ICollection<GetInventoryResponse>> GetInventoryList(InventoryFilter filter);
         Task<GetInventoryResponse> GetInventoryById(Guid id);
-        Task<bool> RemoveInventoryStatus(Guid id);
+        Task<bool> SwitchInventoryStatus(Guid id);
     }
 }
