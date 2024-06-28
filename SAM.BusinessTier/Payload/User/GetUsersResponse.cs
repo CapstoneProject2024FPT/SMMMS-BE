@@ -24,10 +24,18 @@ namespace SAM.BusinessTier.Payload.User
         public UserStatus? Status { get; set; }
 
         public string? Email { get; set; }
-
-        //public int? Rank { get; set; }
+        
+        public double? Amount { get; set; }
 
         public int? YearsOfExperience { get; set; }
 
+
+
+    }
+    public class RankResponse
+    {
+        public string? Name { get; set; }
+
+        public int? Range { get; set; }
     }
 }
