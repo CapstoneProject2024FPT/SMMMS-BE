@@ -14,5 +14,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<GetUsersResponse> GetUserById(Guid id);
         Task<bool> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest);
         Task<bool> RemoveUserStatus(Guid id);
+
+        Task<bool> AddRankToAccount(Guid id, List<Guid> request);
     }
 }

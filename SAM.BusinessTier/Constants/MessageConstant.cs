@@ -17,6 +17,7 @@ public static class MessageConstant
         public const string CreateAccountFailed = "Tạo tài khoản thất bại";
         public const string UpdateAccountSuccessMessage = "Cập nhật tài khoản thành công";
         public const string UpdateAccountFailedMessage = "Cập nhật tài khoản thất bại";
+        public const string NotFoundFailedMessage = "Tài khoản ko có trong hệ thống";
     }
 
     public static class Category

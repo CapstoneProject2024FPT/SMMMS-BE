@@ -8,6 +8,7 @@ using SAM.BusinessTier.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Services.Implements;
 
 namespace SAM.API.Controllers
 {
@@ -76,6 +77,12 @@ namespace SAM.API.Controllers
             var isSuccessful = await _userService.RemoveUserStatus(id);
             if (!isSuccessful) return Ok(MessageConstant.User.UpdateStatusFailedMessage);
             return Ok(MessageConstant.User.UpdateStatusSuccessMessage);
+        }
+        [HttpPost(ApiEndPointConstant.User.UserToRankEndPoint)]
+        public async Task<IActionResult> AddRankToAccount(Guid id, List<Guid> request)
+        {
+            var response = await _userService.AddRankToAccount(id, request);
+            return Ok(response);
         }
     }
 }

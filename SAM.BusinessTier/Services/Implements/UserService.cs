@@ -15,6 +15,8 @@ using SAM.BusinessTier.Payload.Category;
 using Microsoft.IdentityModel.Tokens;
 using static SAM.BusinessTier.Constants.ApiEndPointConstant;
 using SAM.BusinessTier.Enums.EnumStatus;
+using Microsoft.Identity.Client;
+using System.Linq;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -23,6 +25,54 @@ namespace SAM.BusinessTier.Services.Implements
         public UserService(IUnitOfWork<SamContext> unitOfWork, ILogger<UserService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
+
+        public async Task<bool> AddRankToAccount(Guid accountId, List<Guid> request)
+        {
+            _logger.LogInformation($"Add Rank to Customer: {accountId}");
+
+            // Retrieve the account or throw an exception if not found
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(accountId))
+            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+
+            // Retrieve current rank IDs associated with the account
+            List<Guid> currentRankIds = (List<Guid>)await _unitOfWork.GetRepository<AccountRank>().GetListAsync(
+                selector: x => x.RankId,
+                predicate: x => x.AccountId.Equals(accountId));
+
+            // Determine the IDs to add, remove, and keep
+            (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedRankIds =
+                CustomListUtil.splitidstoaddandremove(currentRankIds, request);
+
+            // Add new ranks
+            if (splittedRankIds.idsToAdd.Count > 0)
+            {
+                List<AccountRank> ranksToInsert = new List<AccountRank>();
+                splittedRankIds.idsToAdd.ForEach(id => ranksToInsert.Add(new AccountRank
+                {
+                    Id = Guid.NewGuid(),
+                    AccountId = accountId,
+                    RankId = id,
+                }));
+                await _unitOfWork.GetRepository<AccountRank>().InsertRangeAsync(ranksToInsert);
+            }
+
+            // Remove obsolete ranks
+            if (splittedRankIds.idsToRemove.Count > 0)
+            {
+                List<AccountRank> ranksToDelete = (List<AccountRank>)await _unitOfWork.GetRepository<AccountRank>()
+                    .GetListAsync(predicate: x =>
+                        x.AccountId.Equals(accountId) &&
+                        splittedRankIds.idsToRemove.Contains((Guid)x.RankId));
+
+                 _unitOfWork.GetRepository<AccountRank>().DeleteRangeAsync(ranksToDelete);
+            }
+
+            // Commit the changes to the database
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
+        }
+
 
         public async Task<Guid> CreateNewUser(CreateNewUserRequest request)
         {

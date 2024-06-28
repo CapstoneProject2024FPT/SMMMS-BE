@@ -49,13 +49,13 @@
         //    return (idsToRemove, idsToAdd, idsToKeep);
         //}
 
-        public static (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) SplitIdsToAddAndRemove(List<Guid> oldIds, List<Guid> newIds)
+        public static (List<Guid> idstoremove, List<Guid> idstoadd, List<Guid> idstokeep) splitidstoaddandremove(List<Guid> oldids, List<Guid> newids)
         {
-            List<Guid> idsToAdd = newIds.Except(oldIds).ToList();
-            List<Guid> idsToRemove = oldIds.Except(newIds).ToList();
-            List<Guid> idsToKeep = oldIds.Intersect(newIds).ToList();
+            List<Guid> idstoadd = newids.Except(oldids).ToList();
+            List<Guid> idstoremove = oldids.Except(newids).ToList();
+            List<Guid> idstokeep = oldids.Intersect(newids).ToList();
 
-            return (idsToRemove, idsToAdd, idsToKeep);
+            return (idstoremove, idstoadd, idstokeep);
         }
     }
 }

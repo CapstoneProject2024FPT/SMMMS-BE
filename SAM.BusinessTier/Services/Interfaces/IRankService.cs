@@ -16,5 +16,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<ICollection<GetRankResponse>> GetRankList(RankFilter filter);
         Task<GetRankResponse> GetRankById(Guid id);
         Task<bool> RemoveRankStatus(Guid id);
+
+        
     }
 }
