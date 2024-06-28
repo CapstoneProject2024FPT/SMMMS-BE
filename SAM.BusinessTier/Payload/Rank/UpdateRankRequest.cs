@@ -8,5 +8,8 @@ namespace SAM.BusinessTier.Payload.Rank
 {
     public class UpdateRankRequest
     {
+        public string? Name { get; set; }
+
+        public int? Range { get; set; }
     }
 }

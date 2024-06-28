@@ -8,5 +8,10 @@ namespace SAM.BusinessTier.Payload.Rank
 {
     public class GetRankResponse
     {
+        public Guid Id { get; set; }
+
+        public string? Name { get; set; }
+
+        public int? Range { get; set; }
     }
 }

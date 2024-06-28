@@ -8,5 +8,8 @@ namespace SAM.BusinessTier.Payload.Rank
 {
     public class RankFilter
     {
+        public string? Name { get; set; }
+
+        public int? Range { get; set; }
     }
 }

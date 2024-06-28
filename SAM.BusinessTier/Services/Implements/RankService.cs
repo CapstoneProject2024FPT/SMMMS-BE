@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Services.Interfaces;
@@ -20,19 +23,36 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public Task<Guid> CreateNewRank(CreateNewRankRequest createNewRankRequest)
+        public async Task<Guid> CreateNewRank(CreateNewRankRequest createNewRankRequest)
         {
-            throw new NotImplementedException();
+            
+            Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
+                predicate: x => x.Name.Equals(createNewRankRequest.Name));
+            if (rank != null) throw new BadHttpRequestException(MessageConstant.Rank.RankNameExisted);
+            rank = _mapper.Map<Rank>(createNewRankRequest);
+            rank.Id = Guid.NewGuid();
+
+            await _unitOfWork.GetRepository<Rank>().InsertAsync(rank);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Rank.CreateNewRankFailedMessage);
+            return rank.Id;
         }
 
-        public Task<GetRankResponse> GetRankById(Guid id)
+        public async Task<GetRankResponse> GetRankById(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Rank.EmptyRankIdMessage);
+            Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Rank.RankNotFoundMessage);
+            return _mapper.Map<GetRankResponse>(rank);
         }
 
-        public Task<ICollection<GetRankResponse>> GetRankList(RankFilter filter)
+        public async Task<ICollection<GetRankResponse>> GetRankList(RankFilter filter)
         {
-            throw new NotImplementedException();
+            ICollection<GetRankResponse> respone = await _unitOfWork.GetRepository<Rank>().GetListAsync(
+               selector: x => _mapper.Map<GetRankResponse>(x),
+               filter: filter);
+            return respone;
         }
 
         public Task<bool> RemoveRankStatus(Guid id)
@@ -40,9 +60,19 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateRank(Guid id, UpdateRankRequest updateRankRequest)
+        public async Task<bool> UpdateRank(Guid id, UpdateRankRequest updateRankRequest)
         {
-            throw new NotImplementedException();
+            Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
+
+            rank.Name = string.IsNullOrEmpty(updateRankRequest.Name) ? rank.Name : updateRankRequest.Name;
+            rank.Range = updateRankRequest.Range.HasValue ? updateRankRequest.Range.Value : rank.Range;
+
+
+            _unitOfWork.GetRepository<Rank>().UpdateAsync(rank);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
     }
 }
