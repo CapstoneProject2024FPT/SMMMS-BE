@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.DataTier.Models;
+using SAM.DataTier.Paginate;
 using SAM.DataTier.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -36,6 +38,34 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Rank.CreateNewRankFailedMessage);
             return rank.Id;
+        }
+
+        public async Task<IPaginate<GetAccountInforInRankResponse>> GetAccountInforInRank(Guid id, PagingModel pagingModel)
+        {
+
+            // Retrieve the rank or throw an exception if not found
+            Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+            ?? throw new BadHttpRequestException(MessageConstant.Rank.RankNotFoundMessage);
+
+            // Retrieve the account IDs associated with the rank
+            List<Guid> accountIds = (List<Guid>)await _unitOfWork.GetRepository<AccountRank>().GetListAsync(
+                selector: x => x.AccountId,
+                predicate: x => x.RankId.Equals(id));
+
+            if (accountIds == null || accountIds.Count == 0)
+            {
+                throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+            }
+
+            // Retrieve the account information and map them to GetAccountInforInRankResponse with pagination
+            IPaginate<GetAccountInforInRankResponse> response = await _unitOfWork.GetRepository<Account>().GetPagingListAsync(
+                selector: x => _mapper.Map<GetAccountInforInRankResponse>(x),
+                predicate: x => accountIds.Contains(x.Id),
+                page: pagingModel.page,
+                size: pagingModel.size);
+
+            return response;
         }
 
         public async Task<GetRankResponse> GetRankById(Guid id)

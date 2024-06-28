@@ -15,6 +15,7 @@ namespace SAM.BusinessTier.Mappers
         public RankModule() {
             CreateMap<CreateNewRankRequest, Rank>();
             CreateMap<Rank, GetRankResponse>();
+            CreateMap<Account, GetAccountInforInRankResponse>();
         }
     }
 }

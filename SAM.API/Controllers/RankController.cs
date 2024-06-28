@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Inventory;
+using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Services.Implements;
 using SAM.BusinessTier.Services.Interfaces;
+using SAM.DataTier.Paginate;
 
 namespace SAM.API.Controllers
 {
@@ -50,6 +53,13 @@ namespace SAM.API.Controllers
             var isSuccessful = await _rankService.RemoveRankStatus(id);
             if (!isSuccessful) return Ok(MessageConstant.Rank.UpdateRankFailedMessage);
             return Ok(MessageConstant.Rank.UpdateRankSuccessMessage);
+        }
+
+        [HttpGet(ApiEndPointConstant.Rank.RanksEndPointRankToAccount)]
+        public async Task<IActionResult> GetAccountInforInRank(Guid id, [FromQuery] PagingModel pagingModel)
+        {
+            var response = await _rankService.GetAccountInforInRank(id, pagingModel);
+            return Ok(response);
         }
     }
 }

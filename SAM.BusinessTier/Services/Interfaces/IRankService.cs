@@ -1,6 +1,9 @@
-﻿using SAM.BusinessTier.Payload.Brand;
+﻿using SAM.BusinessTier.Payload;
+using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.Rank;
+using SAM.DataTier.Paginate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +19,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<ICollection<GetRankResponse>> GetRankList(RankFilter filter);
         Task<GetRankResponse> GetRankById(Guid id);
         Task<bool> RemoveRankStatus(Guid id);
+        Task<IPaginate<GetAccountInforInRankResponse>> GetAccountInforInRank(Guid id, PagingModel pagingModel);
 
-        
     }
 }
