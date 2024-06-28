@@ -100,7 +100,7 @@ public static class ApiEndPointConstant
     public static class Rank
     {
         public const string RanksEndPoint = ApiEndpoint + "/rank";
-        public const string RanksEndPointRankToAccount = ApiEndpoint + "/{id}";
+        public const string RanksEndPointRankToAccount = ApiEndpoint + "/getAccountInfor/{id}";
         public const string RankEndPoint = RanksEndPoint + "/{id}";
         public const string RanksEndPointDetail = ApiEndpoint + "/rank/Detail/{id}";
         public const string RanksUpdateStatusEndPoint = RanksEndPoint + "/updateStatus/{id}";
