@@ -69,7 +69,7 @@ namespace SAM.BusinessTier.Services.Implements
             if (request.BrandId.HasValue)
             {
                 var brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
-                    predicate: c => c.Id == request.OriginId.Value);
+                    predicate: c => c.Id == request.BrandId.Value);
                 if (brand == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
@@ -336,12 +336,15 @@ namespace SAM.BusinessTier.Services.Implements
             Machinery product = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
+
             Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateProductRequest.CategoryId))
             ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+
             Brand brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateProductRequest.BrandId))
             ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
+
             Origin origin = await _unitOfWork.GetRepository<Origin>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateProductRequest.OriginId))
             ?? throw new BadHttpRequestException(MessageConstant.Origin.NotFoundFailedMessage);
