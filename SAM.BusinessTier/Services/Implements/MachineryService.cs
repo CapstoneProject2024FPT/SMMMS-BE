@@ -349,18 +349,19 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(updateProductRequest.OriginId))
             ?? throw new BadHttpRequestException(MessageConstant.Origin.NotFoundFailedMessage);
 
+            product.Category = category;
+            product.Brand = brand;
+            product.Origin = origin;
+
             product.Name = string.IsNullOrEmpty(updateProductRequest.Name) ? product.Name : updateProductRequest.Name;
-            //product.Origin = string.IsNullOrEmpty(updateProductRequest.Origin) ? product.Origin : updateProductRequest.Origin;
             product.Model = string.IsNullOrEmpty(updateProductRequest.Model) ? product.Model : updateProductRequest.Model;
             product.SellingPrice = updateProductRequest.SellingPrice.HasValue ? updateProductRequest.SellingPrice.Value : product.SellingPrice;
             product.StockPrice = updateProductRequest.StockPrice.HasValue ? updateProductRequest.StockPrice.Value : product.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
-            //product.Brand = string.IsNullOrEmpty(updateProductRequest.Brand) ? product.Brand : updateProductRequest.Brand;
             product.TimeWarranty = updateProductRequest.TimeWarranty.HasValue ? updateProductRequest.TimeWarranty.Value : product.TimeWarranty;
             product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
-            //product.Quantity = updateProductRequest.Quantity.HasValue ? updateProductRequest.Quantity.Value : product.Quantity;
-
             product.Priority = updateProductRequest.Priority.HasValue ? updateProductRequest.Priority.Value : product.Priority;
+            
             _unitOfWork.GetRepository<Machinery>().UpdateAsync(product);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
