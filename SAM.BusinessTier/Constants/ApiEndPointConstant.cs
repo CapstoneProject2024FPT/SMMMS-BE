@@ -46,9 +46,9 @@ public static class ApiEndPointConstant
     public static class Product
     {
         public const string MachineriesEndPoint = ApiEndpoint + "/machinery";
-        public const string MachineriesEndPointNoPaginate = ApiEndpoint + "/machinery/noPaginate";
+        public const string MachineriesEndPointNoPaginate = MachineriesEndPoint + "/noPaginate";
         public const string MachineryEndPoint = MachineriesEndPoint + "/{id}";
-        public const string MachineriesEndPointDetail = ApiEndpoint + "/machinery/Detail/{id}";
+        public const string MachineriesEndPointDetail = MachineriesEndPoint + "/{id}/detail";
         public const string MachineriesUpdateStatusEndPoint = MachineriesEndPoint + "/updateStatus/{id}";
 
     }
@@ -82,18 +82,18 @@ public static class ApiEndPointConstant
     public static class WarrantyDetail
     {
         public const string WarrantyDetailsEndPoint = ApiEndpoint + "/warrantyDetail";
-        public const string WarrantyDetailsEndPointNoPaginate = ApiEndpoint + "/warrantyDetail/noPaginate";
+        public const string WarrantyDetailsEndPointNoPaginate = WarrantyDetailsEndPoint + "/noPaginate";
         public const string WarrantydetailEndPoint = WarrantyDetailsEndPoint + "/{id}";
-        public const string WarrantyDetailsEndPointDetail = ApiEndpoint + "/warrantyDetail/Detail/{id}";
+        public const string WarrantyDetailsEndPointDetail = WarrantyDetailsEndPoint + "/{id}/Detail";
         public const string WarrantyDetailsUpdateStatusEndPoint = WarrantyDetailsEndPoint + "/updateStatus/{id}";
 
     }
     public static class News
     {
         public const string NewsSEndPoint = ApiEndpoint + "/news";
-        public const string NewsSEndPointNoPaginate = ApiEndpoint + "/news/noPaginate";
+        public const string NewsSEndPointNoPaginate = NewsSEndPoint + "/noPaginate";
         public const string NewsEndPoint = NewsSEndPoint + "/{id}";
-        public const string NewsSEndPointDetail = ApiEndpoint + "/news/Detail/{id}";
+        public const string NewsSEndPointDetail = NewsSEndPoint + "/detail/{id}";
         public const string NewsSUpdateStatusEndPoint = NewsSEndPoint + "/updateStatus/{id}";
 
     }
@@ -102,17 +102,14 @@ public static class ApiEndPointConstant
         public const string RanksEndPoint = ApiEndpoint + "/rank";
         public const string RanksEndPointRankToAccount = RanksEndPoint + "/{id}/account";
         public const string RankEndPoint = RanksEndPoint + "/{id}";
-        public const string RanksEndPointDetail = ApiEndpoint + "/rank/Detail/{id}";
         public const string RanksUpdateStatusEndPoint = RanksEndPoint + "/updateStatus/{id}";
 
     }
     public static class Discount
     {
         public const string DiscountsEndPoint = ApiEndpoint + "/discount";
-        public const string DiscountsEndPointNoPaginate = ApiEndpoint + "/discount/noPaginate";
         public const string DiscountEndPoint = DiscountsEndPoint + "/{id}";
-        public const string DiscountsEndPointDetail = ApiEndpoint + "/discount/Detail/{id}";
-        public const string DiscountsUpdateStatusEndPoint = DiscountsEndPoint + "/updateStatus/{id}";
+        public const string DiscountsEndPointDetail = DiscountsEndPoint + "/detail/{id}";
 
     }
 
