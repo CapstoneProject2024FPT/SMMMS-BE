@@ -102,22 +102,94 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)
         {
-            IPaginate<GetUsersResponse> respone = await _unitOfWork.GetRepository<Account>().GetPagingListAsync(
-               selector: x => _mapper.Map<GetUsersResponse>(x),
-               filter: filter,
-               page: pagingModel.page,
-               size: pagingModel.size,
-               orderBy: x => x.OrderBy(x => x.Username));
-            return respone;
+            // Lấy danh sách các account theo bộ lọc và phân trang
+            IPaginate<GetUsersResponse> response = await _unitOfWork.GetRepository<Account>().GetPagingListAsync(
+                 selector: x => _mapper.Map<GetUsersResponse>(x),
+                 filter: filter,
+                 page: pagingModel.page,
+                 size: pagingModel.size,
+                 orderBy: x => x.OrderBy(x => x.Username)
+            );
+
+            // Tạo danh sách response
+            var responseList = new List<GetUsersResponse>();
+
+            foreach (var account in response.Items)
+            {
+                // Lấy thông tin rank cho từng account
+                AccountRank accountRank = await _unitOfWork.GetRepository<AccountRank>().SingleOrDefaultAsync(
+                    predicate: x => x.AccountId.Equals(account.Id)
+                );
+
+                RankResponse rankResponse = null;
+
+                if (accountRank != null)
+                {
+                    // Lấy thông tin rank từ bảng Rank
+                    DataTier.Models.Rank rank = await _unitOfWork.GetRepository<DataTier.Models.Rank>().SingleOrDefaultAsync(
+                        predicate: x => x.Id.Equals(accountRank.RankId)
+                    );
+
+                    if (rank != null)
+                    {
+                        rankResponse = new RankResponse
+                        {
+                            Name = rank.Name,
+                            Range = rank.Range
+                        };
+                    }
+                }
+
+                // Map account sang GetUsersResponse và thêm thông tin rank
+                var userResponse = _mapper.Map<GetUsersResponse>(account);
+                userResponse.Rank = rankResponse;
+
+                responseList.Add(userResponse);
+            }
+
+
+
+            return response;
         }
+
 
         public async Task<GetUsersResponse> GetUserById(Guid id)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
+            if (id == Guid.Empty)
+                throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
+
+            // Retrieve the user or throw an exception if not found
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
-            return _mapper.Map<GetUsersResponse>(user);
+
+            // Retrieve the rank ID associated with the user
+            AccountRank accountRank = await _unitOfWork.GetRepository<AccountRank>().SingleOrDefaultAsync(
+                predicate: x => x.AccountId.Equals(id));
+
+            RankResponse rankResponse = null;
+
+            if (accountRank != null)
+            {
+                // Retrieve the rank information
+                DataTier.Models.Rank rank = await _unitOfWork.GetRepository<DataTier.Models.Rank>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(accountRank.RankId));
+
+                if (rank != null)
+                {
+                    rankResponse = new RankResponse
+                    {
+                        Name = rank.Name,
+                        Range = rank.Range
+                    };
+                }
+            }
+
+            // Map the user to GetUsersResponse and include the rank information
+            var response = _mapper.Map<GetUsersResponse>(user);
+            response.Rank = rankResponse;
+
+            return response;
         }
 
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
