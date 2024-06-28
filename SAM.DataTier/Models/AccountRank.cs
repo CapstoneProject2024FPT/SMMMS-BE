@@ -9,7 +9,7 @@ public partial class AccountRank
 
     public Guid? AccountId { get; set; }
 
-    public Guid? RankId { get; set; }
+    public Guid RankId { get; set; }
 
     public virtual Account? Account { get; set; }
 

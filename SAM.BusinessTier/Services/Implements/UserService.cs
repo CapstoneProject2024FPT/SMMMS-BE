@@ -26,19 +26,19 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public async Task<bool> AddRankToAccount(Guid accountId, List<Guid> request)
+        public async Task<bool> AddRankToAccount(Guid id, List<Guid> request)
         {
-            _logger.LogInformation($"Add Rank to Customer: {accountId}");
+            _logger.LogInformation($"Add Rank to Customer: {id}");
 
             // Retrieve the account or throw an exception if not found
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(accountId))
+                predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
 
             // Retrieve current rank IDs associated with the account
             List<Guid> currentRankIds = (List<Guid>)await _unitOfWork.GetRepository<AccountRank>().GetListAsync(
                 selector: x => x.RankId,
-                predicate: x => x.AccountId.Equals(accountId));
+                predicate: x => x.AccountId.Equals(id));
 
             // Determine the IDs to add, remove, and keep
             (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedRankIds =
@@ -48,11 +48,11 @@ namespace SAM.BusinessTier.Services.Implements
             if (splittedRankIds.idsToAdd.Count > 0)
             {
                 List<AccountRank> ranksToInsert = new List<AccountRank>();
-                splittedRankIds.idsToAdd.ForEach(id => ranksToInsert.Add(new AccountRank
+                splittedRankIds.idsToAdd.ForEach(rankId => ranksToInsert.Add(new AccountRank
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = accountId,
-                    RankId = id,
+                    AccountId = id,
+                    RankId = rankId,
                 }));
                 await _unitOfWork.GetRepository<AccountRank>().InsertRangeAsync(ranksToInsert);
             }
@@ -62,8 +62,8 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 List<AccountRank> ranksToDelete = (List<AccountRank>)await _unitOfWork.GetRepository<AccountRank>()
                     .GetListAsync(predicate: x =>
-                        x.AccountId.Equals(accountId) &&
-                        splittedRankIds.idsToRemove.Contains((Guid)x.RankId));
+                        x.AccountId.Equals(id) &&
+                        splittedRankIds.idsToRemove.Contains(x.RankId));
 
                  _unitOfWork.GetRepository<AccountRank>().DeleteRangeAsync(ranksToDelete);
             }
