@@ -185,15 +185,19 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            Description = x.Description,
+                            CreateDate = x.CreateDate,
                         },
                         predicate: x => x.Id.Equals(machinery.OriginId)
                     );
                 var brand = await _unitOfWork.GetRepository<Brand>()
                     .SingleOrDefaultAsync(
-                        selector: x => new BrandResponse
+                        selector: x => new BrandAllResponse
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            Description = x.Description,
+                            CreateDate = x.CreateDate,
                         },
                         predicate: x => x.Id.Equals(machinery.BrandId)
                     );
@@ -219,6 +223,8 @@ namespace SAM.BusinessTier.Services.Implements
                     Priority = machinery.Priority,
                     TimeWarranty = machinery.TimeWarranty,
                     Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
+                    Origin = origin,
+                    Brand = brand,
                     Category = category,
                     Image = images.ToList(),
                     CreateDate = machinery.CreateDate
@@ -250,12 +256,15 @@ namespace SAM.BusinessTier.Services.Implements
 
             var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone
             {
+                Id = machinery.Id,
                 Name = machinery.Name,
                 Brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
                         selector: x => new BrandResponse()
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            Description = x.Description,
+                            CreateDate = x.CreateDate,
                         },
                         predicate: x => x.Id.Equals(machinery.BrandId)
                     ),
@@ -270,6 +279,8 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = x.Id,
                             Name = x.Name,
+                            Description = x.Description,
+                            CreateDate = x.CreateDate,
                         },
                         predicate: x => x.Id.Equals(machinery.OriginId)
                     ),
