@@ -59,24 +59,22 @@ namespace SAM.BusinessTier.Payload.Machinery
         public string? Name { get; set; }
         public CategoryType? Type { get; set; }
 
-        public DateTime? CreateDate { get; set; }
     }
     public class BrandResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public DateTime? CreateDate { get; set; }
     }
     public class OriginResponse
     {
         public Guid? Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public DateTime? CreateDate { get; set; }
     }
     public class MachineryImagesResponse
     {
+        public Guid? Id { get; set; }
         public string? ImageURL { get; set; }
         public DateTime? CreateDate { get; set; }
 

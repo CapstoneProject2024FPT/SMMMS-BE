@@ -28,24 +28,18 @@ namespace SAM.API.Controllers
             var response = await _iMachineryService.CreateNewMachinerys(mechinery);
             return Ok(response);
         }
+        [HttpGet(ApiEndPointConstant.Product.MachineryEndPoint)]
+        public async Task<IActionResult> GetMachinerySpecificationsDetail(Guid id)
+        {
+            var response = await _iMachineryService.GetMachinerySpecificationsDetail(id);
+            return Ok(response);
+        }
         [HttpGet(ApiEndPointConstant.Product.MachineriesEndPoint)]
         public async Task<IActionResult> GetMachineryList([FromQuery] MachineryFilter filter)
         {
             var response = await _iMachineryService.GetMachineryList(filter);
             return Ok(response);
         }
-        [HttpGet(ApiEndPointConstant.Product.MachineriesEndPointNoPaginate)]
-        public async Task<IActionResult> GetMachineryListNotIPaginate([FromQuery] MachineryFilter filter)
-        {
-            var response = await _iMachineryService.GetMachineryListNotIPaginate(filter);
-            return Ok(response);
-        }
-        //[HttpGet(ApiEndPointConstant.Product.MachineryEndPoint)]
-        //public async Task<IActionResult> GetMachineryById(Guid id)
-        //{
-        //    var response = await _iMachineryService.GetMachineryById(id);
-        //    return Ok(response);
-        //}
         [HttpPut(ApiEndPointConstant.Product.MachineryEndPoint)]
         public async Task<IActionResult> UpdateMachinery(Guid id, UpdateMachineryRequest updateProductRequest)
         {
@@ -68,12 +62,7 @@ namespace SAM.API.Controllers
             return Ok(MessageConstant.Machinery.UpdateStatusSuccessMessage);
 
         }
-        [HttpGet(ApiEndPointConstant.Product.MachineriesEndPointDetail)]
-        public async Task<IActionResult> GetMachinerySpecificationsDetail(Guid id)
-        {
-            var response = await _iMachineryService.GetMachinerySpecificationsDetail(id);
-            return Ok(response);
-        }
+
 
     }
 }
