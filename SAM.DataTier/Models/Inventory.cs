@@ -9,13 +9,15 @@ public partial class Inventory
 
     public string? SerialNumber { get; set; }
 
-    public Guid? MachineryId { get; set; }
-
     public string? Status { get; set; }
 
     public string? Type { get; set; }
 
     public DateTime? CreateDate { get; set; }
+
+    public DateTime? SoldDate { get; set; }
+
+    public Guid? MachineryId { get; set; }
 
     public virtual Machinery? Machinery { get; set; }
 

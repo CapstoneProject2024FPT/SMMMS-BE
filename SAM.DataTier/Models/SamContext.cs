@@ -103,10 +103,12 @@ public partial class SamContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.AccountRanks)
                 .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_AccountRank_Account");
 
             entity.HasOne(d => d.Rank).WithMany(p => p.AccountRanks)
                 .HasForeignKey(d => d.RankId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_AccountRank_Rank");
         });
 
@@ -235,6 +237,7 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.SerialNumber).HasMaxLength(255);
+            entity.Property(e => e.SoldDate).HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);

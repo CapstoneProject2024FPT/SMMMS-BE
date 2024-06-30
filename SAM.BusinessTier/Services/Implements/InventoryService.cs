@@ -77,6 +77,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
             inventory.Status = InventoryStautus.Sold.GetDescriptionFromEnum();
+            inventory.SoldDate = DateTime.Now;
             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;

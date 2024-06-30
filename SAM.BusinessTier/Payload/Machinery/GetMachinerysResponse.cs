@@ -28,6 +28,8 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public DateTime? CreateDate { get; set; }
 
+        public int? Quantity { get; set; }
+
         public OriginAllResponse? Origin { get; set; }
 
         public BrandAllResponse? Brand { get; set; }

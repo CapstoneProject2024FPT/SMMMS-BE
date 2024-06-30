@@ -5,6 +5,9 @@ using SAM.DataTier.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
+using Azure;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Drawing;
 
 namespace SAM.DataTier.Repository.Implement
 {
@@ -37,7 +40,7 @@ namespace SAM.DataTier.Repository.Implement
 
             return await query.FirstOrDefaultAsync();
         }
-
+        
         public virtual async Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
             IQueryable<T> query = _dbSet;
@@ -172,5 +175,11 @@ namespace SAM.DataTier.Repository.Implement
         }
 
         #endregion
+        public async Task<int?> CountAsync(Expression<Func<T, bool>> predicate)
+        {
+            IQueryable<T> query = _dbSet.Where(predicate);
+
+            return await query.CountAsync();
+        }
     }
 }

@@ -52,12 +52,13 @@ namespace SAM.DataTier.Repository.Interfaces
 			int page = 1,
 			int size = 10,
 			object filter = null);
+        
 
-		#endregion
+        #endregion
 
-		#region Insert
+        #region Insert
 
-		Task InsertAsync(T entity);
+        Task InsertAsync(T entity);
 
 		Task InsertRangeAsync(IEnumerable<T> entities);
 
@@ -73,5 +74,7 @@ namespace SAM.DataTier.Repository.Interfaces
 
 		void DeleteAsync(T entity);
 		void DeleteRangeAsync(IEnumerable<T> entities);
+        Task<int?> CountAsync(Expression<Func<T, bool>> predicate);
+
     }
 }

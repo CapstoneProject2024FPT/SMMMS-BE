@@ -11,7 +11,7 @@ public partial class AccountRank
 
     public Guid RankId { get; set; }
 
-    public virtual Account Account { get; set; }
+    public virtual Account Account { get; set; } = null!;
 
-    public virtual Rank Rank { get; set; }
+    public virtual Rank Rank { get; set; } = null!;
 }
