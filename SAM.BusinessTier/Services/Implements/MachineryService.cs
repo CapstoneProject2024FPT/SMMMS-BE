@@ -26,22 +26,6 @@ namespace SAM.BusinessTier.Services.Implements
         public MachineryService(IUnitOfWork<SamContext> unitOfWork, ILogger<MachineryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
-
-        //public async Task<Guid> CreateNewMachinerys(CreateNewMachineryRequest createNewMachineryRequest)
-        //{
-        //    Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-        //        predicate: x => x.Name.Equals(createNewMachineryRequest.Name));
-        //    if (machinery != null) throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNameExisted);
-        //    Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-        //        predicate: x => x.Id.Equals(createNewMachineryRequest.CategoryId));
-        //    if (category == null) throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
-        //    machinery = _mapper.Map<Machinery>(createNewMachineryRequest);
-
-        //    await _unitOfWork.GetRepository<Machinery>().InsertAsync(machinery);
-        //    bool isSuccess = await _unitOfWork.CommitAsync() > 0;
-        //    if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Machinery.CreateNewMachineryFailedMessage);
-        //    return machinery.Id;
-        //}
         public async Task<Guid> CreateNewMachinerys(CreateNewMachineryRequest request)
         {
             var currentUser = GetUsernameFromJwt();
@@ -78,7 +62,6 @@ namespace SAM.BusinessTier.Services.Implements
                 }
             }
 
-            // Create a new Machinery entity
             Machinery newMachinery = new()
             {
                 Id = Guid.NewGuid(),
@@ -87,7 +70,6 @@ namespace SAM.BusinessTier.Services.Implements
                 BrandId = request.BrandId,
                 Model = request.Model,
                 Description = request.Description,
-                //SerialNumber = TimeUtils.GetTimestamp(currentTime),
                 Status = MachineryStatus.Available.GetDescriptionFromEnum(),
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
@@ -98,7 +80,6 @@ namespace SAM.BusinessTier.Services.Implements
 
             };
 
-            // Create a list for the machinery specifications
             var specification = new List<Specification>();
             foreach (var spec in request.SpecificationList)
             {
@@ -197,6 +178,8 @@ namespace SAM.BusinessTier.Services.Implements
 
             return machineryResponses;
         }
+
+
 
         public async Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id)
         {
