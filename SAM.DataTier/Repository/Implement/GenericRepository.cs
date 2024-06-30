@@ -175,11 +175,11 @@ namespace SAM.DataTier.Repository.Implement
         }
 
         #endregion
-        public async Task<int?> CountAsync(Expression<Func<T, bool>> predicate)
-        {
-            IQueryable<T> query = _dbSet.Where(predicate);
+        //public async Task<int?> CountAsync(Expression<Func<T, bool>> predicate)
+        //{
+        //    IQueryable<T> query = _dbSet.Where(predicate);
 
-            return await query.CountAsync();
-        }
+        //    return await query.CountAsync();
+        //}
     }
 }

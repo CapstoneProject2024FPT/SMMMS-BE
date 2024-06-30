@@ -74,7 +74,7 @@ namespace SAM.DataTier.Repository.Interfaces
 
 		void DeleteAsync(T entity);
 		void DeleteRangeAsync(IEnumerable<T> entities);
-        Task<int?> CountAsync(Expression<Func<T, bool>> predicate);
+        //Task<int?> CountAsync(Expression<Func<T, bool>> predicate);
 
     }
 }

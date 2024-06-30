@@ -15,6 +15,8 @@ using static System.Net.Mime.MediaTypeNames;
 using Azure.Core;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace SAM.BusinessTier.Services.Implements
@@ -158,7 +160,7 @@ namespace SAM.BusinessTier.Services.Implements
             foreach (var machinery in machineryList)
             {
                 var inventoryCountWithSerialNumber = await _unitOfWork.GetRepository<Inventory>()
-                    .CountAsync(predicate: x => x.MachineryId.Equals(machinery.Id) && !string.IsNullOrEmpty(x.SerialNumber));
+                    .CountAsync(predicate: x => x.MachineryId.Equals(machinery.Id) && !string.IsNullOrEmpty(x.SerialNumber) && x.Status.Equals("Available"));
 
                 var specifications = await _unitOfWork.GetRepository<Specification>()
                     .GetListAsync(
@@ -254,99 +256,23 @@ namespace SAM.BusinessTier.Services.Implements
             return respone;
         }
 
-        //public async Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id)
-        //{
-
-        //    var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-        //        predicate: x => x.Id.Equals(id))
-        //        ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-
-        //    var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone
-        //    {
-        //        Id = machinery.Id,
-        //        Name = machinery.Name,
-        //        Brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
-        //                selector: x => new BrandResponse()
-        //                {
-        //                    Id = x.Id,
-        //                    Name = x.Name,
-        //                    Description = x.Description,
-        //                    CreateDate = x.CreateDate,
-        //                },
-        //                predicate: x => x.Id.Equals(machinery.BrandId)
-        //            ),
-        //        Model = machinery.Model,
-        //        Description = machinery.Description,
-        //        SellingPrice = machinery.SellingPrice,
-        //        Priority = machinery.Priority,
-        //        TimeWarranty = machinery.TimeWarranty,
-        //        Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
-        //        Origin = await _unitOfWork.GetRepository<Origin>().SingleOrDefaultAsync(
-        //                selector: x => new OriginResponse()
-        //                {
-        //                    Id = x.Id,
-        //                    Name = x.Name,
-        //                    Description = x.Description,
-        //                    CreateDate = x.CreateDate,
-        //                },
-        //                predicate: x => x.Id.Equals(machinery.OriginId)
-        //            ),
-        //        Category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-        //                selector: x => new CategoryResponse()
-        //                {
-        //                    Id = x.Id,
-        //                    Name = x.Name,
-        //                    Type = EnumUtil.ParseEnum<CategoryType>(x.Type),
-        //                },
-        //                predicate: x => x.Id.Equals(machinery.CategoryId)
-        //            ),
-        //        Image = (List<MachineryImagesResponse>)await _unitOfWork.GetRepository<ImagesAll>()
-        //            .GetListAsync(
-        //                selector: x => new MachineryImagesResponse()
-        //                {
-        //                    ImageURL = x.ImageUrl,
-        //                    CreateDate = x.CreateDate,
-        //                },
-        //                predicate: x => x.MachineryId.Equals(id)
-        //            ),
-        //        Specifications = (List<SpecificationsResponse>)await _unitOfWork.GetRepository<Specification>()
-        //            .GetListAsync(
-        //                selector: x => new SpecificationsResponse()
-        //                {
-        //                    SpecificationId = x.Id,
-        //                    MachineryId = x.MachineryId,
-        //                    Name = x.Name,
-        //                    Value = x.Value,
-        //                },
-        //                predicate: x => x.MachineryId.Equals(id)
-        //            ),
-        //    };
-
-        //    return getMachinerySpecificationsRespone;
-        //}
         public async Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id)
         {
             var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id))
+                predicate: x => x.Id.Equals(id),
+                include: x => x.Include(x => x.Inventories).Include(x => x.Brand))
                 ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
-            var inventoryCountWithSerialNumber = await _unitOfWork.GetRepository<Inventory>()
-                .CountAsync(predicate: x => x.MachineryId.Equals(id) && !string.IsNullOrEmpty(x.SerialNumber));
 
             var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone
             {
                 Id = machinery.Id,
                 Name = machinery.Name,
-                Brand = await _unitOfWork.GetRepository<Brand>().SingleOrDefaultAsync(
-                        selector: x => new BrandResponse()
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                            Description = x.Description,
-                            CreateDate = x.CreateDate,
-                        },
-                        predicate: x => x.Id.Equals(machinery.BrandId)
-                    ),
+                Brand = new BrandResponse()
+                {
+                    Id = machinery.BrandId,
+                    Name = machinery.Brand.Name
+                },
                 Model = machinery.Model,
                 Description = machinery.Description,
                 SellingPrice = machinery.SellingPrice,
@@ -394,7 +320,7 @@ namespace SAM.BusinessTier.Services.Implements
                     ),
 
                 // Set the inventory count here
-                Quantity = inventoryCountWithSerialNumber
+                Quantity = machinery.Inventories.CountInventoryEachStatus()
             };
 
             return getMachinerySpecificationsRespone;
