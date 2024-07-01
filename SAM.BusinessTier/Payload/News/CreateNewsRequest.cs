@@ -18,19 +18,13 @@ namespace SAM.BusinessTier.Payload.News
 
         public string? Cover { get; set; }
 
-        public NewsStatus? Status { get; set; }
-
-        public List<NewsMachineryResponse> MachineryList { get; set; } = new List<NewsMachineryResponse>();
-
-        public List<CreateNewImage> ImgList { get; set; } = new List<CreateNewImage>();
+        public Guid? MachineryId { get; set; }
 
         public Guid? AccountId { get; set; }
-    }
-    public class NewsMachineryResponse
-    {
-        public Guid? MachineryId { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+
+        public List<CreateNewImage> Image { get; set; } = new List<CreateNewImage>();
+
+        
     }
     public class CreateNewImage
     {

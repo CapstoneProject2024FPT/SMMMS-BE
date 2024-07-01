@@ -33,6 +33,8 @@ public partial class Account
 
     public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
 
+    public virtual ICollection<News> News { get; set; } = new List<News>();
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<WarrantyDetail> WarrantyDetails { get; set; } = new List<WarrantyDetail>();

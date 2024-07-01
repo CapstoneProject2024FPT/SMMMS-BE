@@ -109,7 +109,7 @@ namespace SAM.BusinessTier.Services.Implements
             await _unitOfWork.GetRepository<Specification>().InsertRangeAsync(specification);
             await _unitOfWork.GetRepository<ImagesAll>().InsertRangeAsync(imagesUrl);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Specification.CreateNewSpecificationFailedMessage);
+            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Machinery.CreateNewMachineryFailedMessage);
 
             return newMachinery.Id;
         }

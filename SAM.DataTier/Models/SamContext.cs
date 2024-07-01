@@ -317,9 +317,17 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Cover).HasMaxLength(255);
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.NewsContent).HasMaxLength(4000);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Title).HasMaxLength(4000);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.News)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_News_Account");
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.News)
                 .HasForeignKey(d => d.MachineryId)
@@ -335,8 +343,8 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__NewsImag__3214EC0630722A48").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.ImgUrl).HasMaxLength(4000);
-            entity.Property(e => e.Name).HasMaxLength(255);
 
             entity.HasOne(d => d.News).WithMany(p => p.NewsImages)
                 .HasForeignKey(d => d.NewsId)
