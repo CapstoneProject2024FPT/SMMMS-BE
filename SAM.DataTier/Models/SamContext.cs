@@ -43,6 +43,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<News> News { get; set; }
 
+    public virtual DbSet<NewsCategory> NewsCategories { get; set; }
+
     public virtual DbSet<NewsImage> NewsImages { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -325,14 +327,30 @@ public partial class SamContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Title).HasMaxLength(4000);
+            entity.Property(e => e.Type)
+                .HasMaxLength(50)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Account).WithMany(p => p.News)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK_News_Account");
 
-            entity.HasOne(d => d.Machinery).WithMany(p => p.News)
-                .HasForeignKey(d => d.MachineryId)
-                .HasConstraintName("FK_News_Machinery");
+            entity.HasOne(d => d.NewsCategory).WithMany(p => p.News)
+                .HasForeignKey(d => d.NewsCategoryId)
+                .HasConstraintName("FK_News_NewsCategory");
+        });
+
+        modelBuilder.Entity<NewsCategory>(entity =>
+        {
+            entity.ToTable("NewsCategory");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.Name).HasMaxLength(250);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<NewsImage>(entity =>

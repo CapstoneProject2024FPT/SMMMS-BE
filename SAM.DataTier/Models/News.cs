@@ -17,15 +17,17 @@ public partial class News
 
     public string? Status { get; set; }
 
+    public string? Type { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
-    public Guid? MachineryId { get; set; }
+    public Guid? NewsCategoryId { get; set; }
 
     public Guid? AccountId { get; set; }
 
     public virtual Account? Account { get; set; }
 
-    public virtual Machinery? Machinery { get; set; }
+    public virtual NewsCategory? NewsCategory { get; set; }
 
     public virtual ICollection<NewsImage> NewsImages { get; set; } = new List<NewsImage>();
 }

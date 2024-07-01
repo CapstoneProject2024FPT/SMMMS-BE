@@ -31,15 +31,12 @@ namespace SAM.BusinessTier.Services.Implements
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser));
 
-            if (request.MachineryId.HasValue)
+            if (request.NewsCategoryId.HasValue)
             {
-                var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                    predicate: m => m.Id == request.MachineryId.Value);
-                if (machinery == null)
-                {
-                    throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-                }
-                    
+                var newsCategory = await _unitOfWork.GetRepository<NewsCategory>().SingleOrDefaultAsync(
+                    predicate: m => m.Id == request.NewsCategoryId.Value)
+                    ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+
             }
 
             News newNews = new()
@@ -50,7 +47,7 @@ namespace SAM.BusinessTier.Services.Implements
                 NewsContent = request.NewsContent,
                 Cover = request.Cover,
                 Status = NewsStatus.Active.GetDescriptionFromEnum(),
-                MachineryId = request.MachineryId,
+                NewsCategoryId = request.NewsCategoryId,
                 AccountId = request.AccountId,
                 CreateDate = DateTime.Now,
             };
@@ -82,7 +79,7 @@ namespace SAM.BusinessTier.Services.Implements
             var news = await _unitOfWork.GetRepository<News>()
                 .SingleOrDefaultAsync(
                     predicate: x => x.Id == id,
-                    include: x => x.Include(x => x.Machinery)
+                    include: x => x.Include(x => x.NewsCategoryId)
                                    .Include(x => x.Account)
                                    .Include(x => x.NewsImages))
                 ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
@@ -96,12 +93,12 @@ namespace SAM.BusinessTier.Services.Implements
                 Cover = news.Cover,
                 Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
                 CreateDate = news.CreateDate,
-                Machinery = news.Machinery != null ? new NewsMachineryResponse
+                NewsCategory = new NewsCategoryResponse
                 {
-                    MachineryId = news.Machinery.Id,
-                    Name = news.Machinery.Name,
-                    Description = news.Machinery.Description
-                } : null,
+                    NewsCategoryId = news.NewsCategory.Id,
+                    Name = news.NewsCategory.Name,
+                    Description = news.NewsCategory.Description
+                },
                 Account = news.Account != null ? new AccountResponse
                 {
                     Id = news.Account.Id,
@@ -128,7 +125,7 @@ namespace SAM.BusinessTier.Services.Implements
                     selector: x => x,
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.CreateDate),
-                    include: x => x.Include(x => x.Machinery)
+                    include: x => x.Include(x => x.NewsCategoryId)
                                    .Include(x => x.Account)
                                    .Include(x => x.NewsImages))
                 ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
@@ -142,11 +139,11 @@ namespace SAM.BusinessTier.Services.Implements
                 Cover = news.Cover,
                 Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
                 CreateDate = news.CreateDate,
-                Machinery = new NewsMachineryResponse
+                NewsCategory = new NewsCategoryResponse
                 {
-                    MachineryId = news.Machinery.Id,
-                    Name = news.Machinery.Name,
-                    Description = news.Machinery.Description
+                    NewsCategoryId = news.NewsCategory.Id,
+                    Name = news.NewsCategory.Name,
+                    Description = news.NewsCategory.Description
                 },
                 Account = new AccountResponse
                 {
@@ -188,10 +185,10 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.News.NewsNameExisted);
 
-            Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(updateNewsRequest.MachineryId))
-            ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-            news.Machinery = machinery;
+            NewsCategory newsCategory = await _unitOfWork.GetRepository<NewsCategory>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateNewsRequest.NewsCategoryId))
+            ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+            news.NewsCategory = newsCategory;
 
             news.Title = string.IsNullOrEmpty(updateNewsRequest.Title) ? news.Title : updateNewsRequest.Title;
             news.Description = string.IsNullOrEmpty(updateNewsRequest.Description) ? news.Description : updateNewsRequest.Description;

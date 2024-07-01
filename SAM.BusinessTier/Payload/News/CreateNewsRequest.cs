@@ -18,7 +18,7 @@ namespace SAM.BusinessTier.Payload.News
 
         public string? Cover { get; set; }
 
-        public Guid? MachineryId { get; set; }
+        public Guid? NewsCategoryId { get; set; }
 
         public Guid? AccountId { get; set; }
 

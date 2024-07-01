@@ -19,7 +19,7 @@ namespace SAM.BusinessTier.Payload.News
 
         public NewsStatus? Status { get; set; }
 
-        public Guid? MachineryId { get; set; }
+        public Guid? NewsCategoryId { get; set; }
 
     }
 }

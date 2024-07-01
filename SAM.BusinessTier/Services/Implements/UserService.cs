@@ -17,6 +17,7 @@ using static SAM.BusinessTier.Constants.ApiEndPointConstant;
 using SAM.BusinessTier.Enums.EnumStatus;
 using Microsoft.Identity.Client;
 using System.Linq;
+using SAM.BusinessTier.Enums.EnumTypes;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -86,6 +87,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Password = PasswordUtil.HashPassword(request.Password),
                 Role = RoleEnum.User.GetDescriptionFromEnum(),
                 FullName = request.FullName,
+                Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
                 Address = request.Address,
                 Status = UserStatus.Activate.GetDescriptionFromEnum(),

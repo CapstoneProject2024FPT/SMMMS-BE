@@ -24,17 +24,19 @@ namespace SAM.BusinessTier.Payload.News
 
         public DateTime? CreateDate { get; set; }
 
-        public NewsMachineryResponse? Machinery { get; set; }
+        public NewsCategoryResponse? NewsCategory { get; set; }
 
         public AccountResponse? Account { get; set; }
 
         public List<NewsImageResponse> ImgList { get; set; } = new List<NewsImageResponse>();
     }
-    public class NewsMachineryResponse
+    public class NewsCategoryResponse
     {
-        public Guid? MachineryId { get; set; }
+        public Guid? NewsCategoryId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public NewsCategoryStatus? Status { get; set; }
+
     }
     public class NewsImageResponse
     {

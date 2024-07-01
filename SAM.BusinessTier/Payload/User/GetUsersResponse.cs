@@ -1,4 +1,5 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace SAM.BusinessTier.Payload.User
         public RoleEnum? Role { get; set; }
 
         public string? FullName { get; set; }
+
+        public string? Gender { get; set; }
 
         public string? PhoneNumber { get; set; }
 

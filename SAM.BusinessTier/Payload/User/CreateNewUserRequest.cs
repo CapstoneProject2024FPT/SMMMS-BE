@@ -1,4 +1,5 @@
 ﻿using SAM.BusinessTier.Enums;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Order;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace SAM.BusinessTier.Payload.User
         public string? Password { get; set; }
 
         public string? FullName { get; set; }
+        
+        public string? Gender { get; set; }
 
         public string? PhoneNumber { get; set; }
 
