@@ -81,6 +81,7 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
+            entity.Property(e => e.Gender).HasMaxLength(50);
             entity.Property(e => e.Image)
                 .HasMaxLength(250)
                 .IsUnicode(false);
