@@ -28,6 +28,11 @@ public static class ApiEndPointConstant
         public const string CategoriesEndPoint = ApiEndpoint + "/categories";
         public const string CategoryEndPoint = CategoriesEndPoint + "/{id}";
     }
+    public static class NewsCategory
+    {
+        public const string NewsCategoriesEndPoint = ApiEndpoint + "/newsCategory";
+        public const string NewsCategoryEndPoint = NewsCategoriesEndPoint + "/{id}";
+    }
     public static class Origin
     {
         public const string OriginsEndPoint = ApiEndpoint + "/origin";

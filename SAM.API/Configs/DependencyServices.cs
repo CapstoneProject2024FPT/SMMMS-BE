@@ -48,6 +48,7 @@ namespace SAM.API.Configs
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<IAreaService, AreaService>();
+            services.AddScoped<INewsCategoryService, NewsCategoryService>();
 
             return services;
         }
