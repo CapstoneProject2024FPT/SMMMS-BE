@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.News
 {
-    public class GetNewsReponse
+    public class GetNewsResponse
     {
         public Guid? Id { get; set; }
 
@@ -26,9 +26,9 @@ namespace SAM.BusinessTier.Payload.News
 
         public NewsMachineryResponse? Machinery { get; set; }
 
-        public AccountResponse? AccountId { get; set; }
+        public AccountResponse? Account { get; set; }
 
-        public List<CreateNewImage> ImgList { get; set; } = new List<CreateNewImage>();
+        public List<NewsImageResponse> ImgList { get; set; } = new List<NewsImageResponse>();
     }
     public class NewsMachineryResponse
     {
@@ -38,7 +38,9 @@ namespace SAM.BusinessTier.Payload.News
     }
     public class NewsImageResponse
     {
-        public string? ImageURL { get; set; }
+        public Guid? Id { get; set; }
+        public string? ImgUrl { get; set; }
+        public DateTime? CreateDate { get; set; }
 
     }
     public class AccountResponse

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,10 @@ namespace SAM.BusinessTier.Payload.News
         public string? NewsContent { get; set; }
 
         public string? Cover { get; set; }
+
+        public NewsStatus? Status { get; set; }
+
+        public Guid? MachineryId { get; set; }
 
     }
 }

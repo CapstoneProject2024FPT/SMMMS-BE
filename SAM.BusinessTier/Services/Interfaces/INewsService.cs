@@ -13,8 +13,8 @@ namespace SAM.BusinessTier.Services.Interfaces
     {
         Task<Guid> CreateNewNews(CreateNewsRequest createNewsRequest);
         Task<bool> UpdateNews(Guid id, UpdateNewsRequest updateNewsRequest);
-        Task<ICollection<GetNewsReponse>> GetNewsList(NewsFilter filter);
-        Task<GetNewsReponse> GetNewsById(Guid id);
+        Task<ICollection<GetNewsResponse>> GetNewsList(NewsFilter filter);
+        Task<GetNewsResponse> GetNewsById(Guid id);
         Task<bool> RemoveNewsStatus(Guid id);
     }
 }

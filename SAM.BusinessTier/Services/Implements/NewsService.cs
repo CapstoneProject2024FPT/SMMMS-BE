@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
@@ -12,6 +13,7 @@ using SAM.DataTier.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,13 +30,16 @@ namespace SAM.BusinessTier.Services.Implements
             var currentUser = GetUsernameFromJwt();
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser));
-            DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
             if (request.MachineryId.HasValue)
             {
                 var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                    predicate: m => m.Id == request.MachineryId.Value)
-                ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+                    predicate: m => m.Id == request.MachineryId.Value);
+                if (machinery == null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+                }
+                    
             }
 
             News newNews = new()
@@ -46,7 +51,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Cover = request.Cover,
                 Status = NewsStatus.Active.GetDescriptionFromEnum(),
                 MachineryId = request.MachineryId,
-                AccountId = account.Id,
+                AccountId = request.AccountId,
                 CreateDate = DateTime.Now,
             };
 
@@ -72,24 +77,131 @@ namespace SAM.BusinessTier.Services.Implements
 
 
 
-        public Task<GetNewsReponse> GetNewsById(Guid id)
-        {
-            throw new NotImplementedException();
+        public async Task<GetNewsResponse> GetNewsById(Guid id)
+{
+            var news = await _unitOfWork.GetRepository<News>()
+                .SingleOrDefaultAsync(
+                    predicate: x => x.Id == id,
+                    include: x => x.Include(x => x.Machinery)
+                                   .Include(x => x.Account)
+                                   .Include(x => x.NewsImages))
+                ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
+
+            var newsResponse = new GetNewsResponse
+            {
+                Id = news.Id,
+                Title = news.Title,
+                Description = news.Description,
+                NewsContent = news.NewsContent,
+                Cover = news.Cover,
+                Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
+                CreateDate = news.CreateDate,
+                Machinery = news.Machinery != null ? new NewsMachineryResponse
+                {
+                    MachineryId = news.Machinery.Id,
+                    Name = news.Machinery.Name,
+                    Description = news.Machinery.Description
+                } : null,
+                Account = news.Account != null ? new AccountResponse
+                {
+                    Id = news.Account.Id,
+                    FullName = news.Account.FullName,
+                    Role = EnumUtil.ParseEnum<RoleEnum>(news.Account.Role)
+                } : null,
+                ImgList = news.NewsImages.Select(image => new NewsImageResponse
+                {
+                    Id = image.Id,
+                    ImgUrl = image.ImgUrl,
+                    CreateDate = image.CreateDate,
+
+                }).ToList()
+            };
+
+            return newsResponse;
         }
 
-        public Task<ICollection<GetNewsReponse>> GetNewsList(NewsFilter filter)
+
+        public async Task<ICollection<GetNewsResponse>> GetNewsList(NewsFilter filter)
         {
-            throw new NotImplementedException();
+            var newsList = await _unitOfWork.GetRepository<News>()
+                .GetListAsync(
+                    selector: x => x,
+                    filter: filter,
+                    orderBy: x => x.OrderBy(x => x.CreateDate),
+                    include: x => x.Include(x => x.Machinery)
+                                   .Include(x => x.Account)
+                                   .Include(x => x.NewsImages))
+                ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
+
+            var newsResponses = newsList.Select(news => new GetNewsResponse
+            {
+                Id = news.Id,
+                Title = news.Title,
+                Description = news.Description,
+                NewsContent = news.NewsContent,
+                Cover = news.Cover,
+                Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
+                CreateDate = news.CreateDate,
+                Machinery = new NewsMachineryResponse
+                {
+                    MachineryId = news.Machinery.Id,
+                    Name = news.Machinery.Name,
+                    Description = news.Machinery.Description
+                },
+                Account = new AccountResponse
+                {
+                    Id = news.Account.Id,
+                    FullName = news.Account.FullName,
+                    Role = EnumUtil.ParseEnum<RoleEnum>(news.Account.Role)
+                },
+                ImgList = news.NewsImages.Select(image => new NewsImageResponse
+                {
+                    Id = image.Id,
+                    ImgUrl = image.ImgUrl,
+                    CreateDate = image.CreateDate,
+
+                }).ToList(),
+
+            }).ToList();
+
+            return newsResponses;
         }
 
-        public Task<bool> RemoveNewsStatus(Guid id)
+
+        public async Task<bool> RemoveNewsStatus(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.News.EmptyNewsIdMessage);
+            News news = await _unitOfWork.GetRepository<News>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
+            news.Status = NewsStatus.Inactive.GetDescriptionFromEnum();
+            _unitOfWork.GetRepository<News>().UpdateAsync(news);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
 
-        public Task<bool> UpdateNews(Guid id, UpdateNewsRequest updateNewsRequest)
+
+        public async Task<bool> UpdateNews(Guid id, UpdateNewsRequest updateNewsRequest)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.News.EmptyNewsIdMessage);
+            News news = await _unitOfWork.GetRepository<News>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+            ?? throw new BadHttpRequestException(MessageConstant.News.NewsNameExisted);
+
+            Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateNewsRequest.MachineryId))
+            ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+            news.Machinery = machinery;
+
+            news.Title = string.IsNullOrEmpty(updateNewsRequest.Title) ? news.Title : updateNewsRequest.Title;
+            news.Description = string.IsNullOrEmpty(updateNewsRequest.Description) ? news.Description : updateNewsRequest.Description;
+            news.NewsContent = string.IsNullOrEmpty(updateNewsRequest.NewsContent) ? news.NewsContent : updateNewsRequest.NewsContent;
+            news.Cover = string.IsNullOrEmpty(updateNewsRequest.Cover) ? news.Cover : updateNewsRequest.Cover;
+            news.Status = updateNewsRequest.Status.GetDescriptionFromEnum();
+
+            _unitOfWork.GetRepository<News>().UpdateAsync(news);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
         }
     }
 }
