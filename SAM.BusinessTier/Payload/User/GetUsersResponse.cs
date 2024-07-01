@@ -29,6 +29,8 @@ namespace SAM.BusinessTier.Payload.User
 
         public int? YearsOfExperience { get; set; }
 
+        public string? Image { get; set; }
+
         public RankResponse? Rank { get; set; }
 
 

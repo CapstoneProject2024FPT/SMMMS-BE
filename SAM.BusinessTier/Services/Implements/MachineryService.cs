@@ -147,6 +147,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
+                CreateDate = machinery.CreateDate,
                 Origin = new OriginResponse
                 {
                     Id = machinery.OriginId,
@@ -210,6 +211,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
+                CreateDate = machinery.CreateDate,
                 Origin = new OriginResponse()
                 {
                     Id = machinery.OriginId,

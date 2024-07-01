@@ -89,7 +89,8 @@ namespace SAM.BusinessTier.Services.Implements
                 PhoneNumber = request.PhoneNumber,
                 Address = request.Address,
                 Status = UserStatus.Activate.GetDescriptionFromEnum(),
-                Email = request.Email
+                Email = request.Email,
+                Image = request.Image,
 
             };
 
@@ -255,6 +256,7 @@ namespace SAM.BusinessTier.Services.Implements
             user.Address = string.IsNullOrEmpty(updateRequest.Address) ? user.Address : updateRequest.Address;
             user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
             user.YearsOfExperience = updateRequest.YearsOfExperience.HasValue ? updateRequest.YearsOfExperience.Value : user.YearsOfExperience;
+            user.Image = string.IsNullOrEmpty(updateRequest.Image) ? user.Image : updateRequest.Image;
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;

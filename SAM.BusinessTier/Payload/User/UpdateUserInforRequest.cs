@@ -23,6 +23,8 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Email { get; set; }
 
+        public string? Image { get; set; }
+
         //public int? Rank { get; set; }
 
         public int? YearsOfExperience { get; set; }
