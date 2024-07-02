@@ -12,11 +12,11 @@ namespace SAM.BusinessTier.Extensions
 {
     public static class DataExtensions
     {
-        public static Dictionary<InventoryStautus, int> CountInventoryEachStatus(this ICollection<Inventory> inventories)
+        public static Dictionary<InventoryStatus, int> CountInventoryEachStatus(this ICollection<Inventory> inventories)
         {
-            var statusCount = new Dictionary<InventoryStautus, int>();
+            var statusCount = new Dictionary<InventoryStatus, int>();
 
-            foreach(InventoryStautus status in Enum.GetValues(typeof(InventoryStautus)))
+            foreach(InventoryStatus status in Enum.GetValues(typeof(InventoryStatus)))
             {
                 string statusDes = status.GetDescriptionFromEnum();
                 int count = inventories.Count(item => item.Status.Equals(statusDes));

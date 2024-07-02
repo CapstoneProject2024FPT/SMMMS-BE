@@ -42,7 +42,7 @@ namespace SAM.BusinessTier.Services.Implements
             inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
             inventory.Id = Guid.NewGuid();
             inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
-            inventory.Status = InventoryStautus.Available.GetDescriptionFromEnum();
+            inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
             inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
             inventory.CreateDate = DateTime.Now;
     
@@ -76,7 +76,7 @@ namespace SAM.BusinessTier.Services.Implements
             Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-            inventory.Status = InventoryStautus.Sold.GetDescriptionFromEnum();
+            inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
             inventory.SoldDate = DateTime.Now;
             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

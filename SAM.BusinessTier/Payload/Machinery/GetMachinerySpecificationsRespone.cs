@@ -32,7 +32,7 @@ namespace SAM.BusinessTier.Payload.Machinery
         public DateTime? CreateDate { get; set; }
 
         //public int? Quantity { get; set; }
-        public Dictionary<InventoryStautus, int>? Quantity { get; set; }
+        public Dictionary<InventoryStatus, int>? Quantity { get; set; }
 
         public OriginResponse? Origin { get; set; }
 

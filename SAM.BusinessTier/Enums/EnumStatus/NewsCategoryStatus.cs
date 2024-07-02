@@ -8,7 +8,7 @@ namespace SAM.BusinessTier.Enums.EnumStatus
 {
     public enum NewsCategoryStatus
     {
-        Activity,
-        InActivity
+        Active,
+        InActive
     }
 }

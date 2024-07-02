@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public enum InventoryStautus
+    public enum InventoryStatus
     {
         Available,
         Sold,

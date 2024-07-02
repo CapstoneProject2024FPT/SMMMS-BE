@@ -13,7 +13,7 @@ namespace SAM.BusinessTier.Payload.Inventory
 
         public string? SerialNumber { get; set; }
 
-        public InventoryStautus? Status { get; set; }
+        public InventoryStatus? Status { get; set; }
 
         public InventoryType? Type { get; set; }
 

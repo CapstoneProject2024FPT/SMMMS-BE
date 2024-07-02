@@ -11,7 +11,7 @@ namespace SAM.BusinessTier.Payload.Inventory
     public class UpdateInventoryRequest
     {
 
-        public InventoryStautus? Status { get; set; }
+        public InventoryStatus? Status { get; set; }
 
         public InventoryType? Type { get; set; }
 

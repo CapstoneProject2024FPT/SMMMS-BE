@@ -25,7 +25,7 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.NewsCategory.NewsCategoriesEndPoint)]
-        public async Task<IActionResult> GetNewsCategoryList([FromQuery] NewsCategoryFilter filter)
+        public async Task<IActionResult> GetNewsCategories([FromQuery] NewsCategoryFilter filter)
         {
             var response = await _newsCategoryService.GetNewsCategories(filter);
             return Ok(response);
