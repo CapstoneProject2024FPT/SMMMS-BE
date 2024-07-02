@@ -83,7 +83,7 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
 
             // Kiểm tra mật khẩu hiện tại
-            if (string.IsNullOrEmpty(changePasswordRequest.CurrentPassword) || !PasswordUtil.VerifyHashedPassword(changePasswordRequest.CurrentPassword, user.Password))
+            if (string.IsNullOrEmpty(changePasswordRequest.CurrentPassword) || !PasswordUtil.VerifyHashedPassword(user.Password, changePasswordRequest.CurrentPassword))
             {
                 throw new BadHttpRequestException(MessageConstant.User.CheckPasswordFailed);
             }

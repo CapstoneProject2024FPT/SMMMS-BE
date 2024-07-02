@@ -85,10 +85,16 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpPost(ApiEndPointConstant.User.UserEndPointChangePassword)]
-        public async Task<IActionResult> ChangePassword(Guid id, ChangePasswordRequest changePasswordRequest)
+        public async Task<IActionResult> ChangePassword(Guid id, [FromBody] ChangePasswordRequest changePasswordRequest)
         {
-            var response = await _userService.ChangePassword(id,  changePasswordRequest);
-            return Ok(response);
+
+                var isSuccessful = await _userService.ChangePassword(id, changePasswordRequest);
+                if (!isSuccessful)
+                {
+                    return Ok(new { Message = MessageConstant.User.ChangePasswordToFailed });
+                }
+                return Ok(new { Message = MessageConstant.User.ChangePasswordToSuccess });
+
         }
     }
 }

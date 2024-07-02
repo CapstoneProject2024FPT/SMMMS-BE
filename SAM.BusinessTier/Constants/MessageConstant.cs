@@ -116,6 +116,8 @@ public static class MessageConstant
         public const string UpdateStatusSuccessMessage = "Cập nhật thông tin thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật thông tin thất bại";
         public const string CheckPasswordFailed = "Mật khẩu cũ không đúng";
+        public const string ChangePasswordToFailed = "Đổi mật khẩu thất bại";
+        public const string ChangePasswordToSuccess = "Đổi mật khẩu thành công";
     }
 
     public static class ProductReview
