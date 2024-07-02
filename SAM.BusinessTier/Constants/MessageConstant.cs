@@ -115,6 +115,7 @@ public static class MessageConstant
         public const string EmptyUserIdMessage = "UserId ko hợp lệ";
         public const string UpdateStatusSuccessMessage = "Cập nhật thông tin thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật thông tin thất bại";
+        public const string CheckPasswordFailed = "Mật khẩu cũ không đúng";
     }
 
     public static class ProductReview

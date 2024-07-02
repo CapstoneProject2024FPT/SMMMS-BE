@@ -74,6 +74,28 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
+        public async Task<bool> ChangePassword(Guid userId, ChangePasswordRequest changePasswordRequest)
+        {
+            if (userId == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
+
+            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(userId))
+                ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
+
+            // Kiểm tra mật khẩu hiện tại
+            if (string.IsNullOrEmpty(changePasswordRequest.CurrentPassword) || !PasswordUtil.VerifyHashedPassword(changePasswordRequest.CurrentPassword, user.Password))
+            {
+                throw new BadHttpRequestException(MessageConstant.User.CheckPasswordFailed);
+            }
+
+            // Cập nhật mật khẩu mới
+            user.Password = PasswordUtil.HashPassword(changePasswordRequest.NewPassword);
+
+            // Cập nhật tài khoản
+            _unitOfWork.GetRepository<Account>().UpdateAsync(user);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
+        }
 
         public async Task<Guid> CreateNewUser(CreateNewUserRequest request)
         {
@@ -230,27 +252,12 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
-        //public async Task<bool> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest)
-        //{
-        //    if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
-        //    Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-        //        predicate: x => x.Id.Equals(id))
-        //        ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
-        //    user.Password = string.IsNullOrEmpty(updateRequest.Password) ? user.Password : PasswordUtil.HashPassword(updateRequest.Password);
-        //    user.Role = updateRequest.Role.GetDescriptionFromEnum();
-        //    user.Status = updateRequest.Status.GetDescriptionFromEnum();
-        //    _unitOfWork.GetRepository<Account>().UpdateAsync(user);
-        //    bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-        //    return isSuccessful;
-        //}
-
         public async Task<bool> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest)
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
-            user.Password = string.IsNullOrEmpty(updateRequest.Password) ? user.Password : PasswordUtil.HashPassword(updateRequest.Password);
             user.Role = updateRequest.Role.GetDescriptionFromEnum();
             user.Status = updateRequest.Status.GetDescriptionFromEnum();
             user.FullName = string.IsNullOrEmpty(updateRequest.FullName) ? user.FullName : updateRequest.FullName;

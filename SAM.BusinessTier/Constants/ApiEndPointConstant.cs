@@ -20,6 +20,7 @@ public static class ApiEndPointConstant
         public const string UserEndPoint = UsersEndPoint + "/{id}";
         public const string UserEndPointMember = UsersEndPoint + "/{id}";
         public const string UserToRankEndPoint = UsersEndPoint + "/{id}/addRank";
+        public const string UserEndPointChangePassword = UsersEndPoint + "/{id}/password";
 
     }
 

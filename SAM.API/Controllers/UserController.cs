@@ -84,5 +84,11 @@ namespace SAM.API.Controllers
             var response = await _userService.AddRankToAccount(id, request);
             return Ok(response);
         }
+        [HttpPost(ApiEndPointConstant.User.UserEndPointChangePassword)]
+        public async Task<IActionResult> ChangePassword(Guid id, ChangePasswordRequest changePasswordRequest)
+        {
+            var response = await _userService.ChangePassword(id,  changePasswordRequest);
+            return Ok(response);
+        }
     }
 }

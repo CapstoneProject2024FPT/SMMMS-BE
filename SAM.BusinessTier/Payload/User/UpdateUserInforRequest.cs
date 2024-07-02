@@ -10,7 +10,6 @@ namespace SAM.BusinessTier.Payload.User
 {
     public class UpdateUserInforRequest
     {
-        public string? Password { get; set; }
 
         public RoleEnum? Role { get; set; }
 

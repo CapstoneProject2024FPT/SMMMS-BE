@@ -16,5 +16,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> RemoveUserStatus(Guid id);
 
         Task<bool> AddRankToAccount(Guid id, List<Guid> request);
+
+        Task<bool> ChangePassword(Guid userId, ChangePasswordRequest changePasswordRequest);
     }
 }
