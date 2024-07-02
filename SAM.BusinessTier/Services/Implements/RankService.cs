@@ -63,7 +63,8 @@ namespace SAM.BusinessTier.Services.Implements
                 selector: x => _mapper.Map<GetAccountInforInRankResponse>(x),
                 predicate: x => accountIds.Contains(x.Id),
                 page: pagingModel.page,
-                size: pagingModel.size);
+                size: pagingModel.size,
+                orderBy: x => x.OrderBy(x => x.Amount));
 
             return response;
         }

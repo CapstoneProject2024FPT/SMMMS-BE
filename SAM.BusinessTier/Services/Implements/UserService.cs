@@ -254,6 +254,7 @@ namespace SAM.BusinessTier.Services.Implements
             user.Role = updateRequest.Role.GetDescriptionFromEnum();
             user.Status = updateRequest.Status.GetDescriptionFromEnum();
             user.FullName = string.IsNullOrEmpty(updateRequest.FullName) ? user.FullName : updateRequest.FullName;
+            user.Gender = updateRequest.Gender.GetDescriptionFromEnum();
             user.PhoneNumber = string.IsNullOrEmpty(updateRequest.PhoneNumber) ? user.PhoneNumber : updateRequest.PhoneNumber;
             user.Address = string.IsNullOrEmpty(updateRequest.Address) ? user.Address : updateRequest.Address;
             user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
