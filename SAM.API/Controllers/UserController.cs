@@ -89,10 +89,7 @@ namespace SAM.API.Controllers
         {
 
                 var isSuccessful = await _userService.ChangePassword(id, changePasswordRequest);
-                if (!isSuccessful)
-                {
-                    return Ok(new { Message = MessageConstant.User.ChangePasswordToFailed });
-                }
+                if (!isSuccessful) return Ok(new { Message = MessageConstant.User.ChangePasswordToFailed });
                 return Ok(new { Message = MessageConstant.User.ChangePasswordToSuccess });
 
         }

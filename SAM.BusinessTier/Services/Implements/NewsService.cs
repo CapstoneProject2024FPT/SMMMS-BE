@@ -79,7 +79,7 @@ namespace SAM.BusinessTier.Services.Implements
             var news = await _unitOfWork.GetRepository<News>()
                 .SingleOrDefaultAsync(
                     predicate: x => x.Id == id,
-                    include: x => x.Include(x => x.NewsCategoryId)
+                    include: x => x.Include(x => x.NewsCategory)
                                    .Include(x => x.Account)
                                    .Include(x => x.NewsImages))
                 ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
@@ -99,12 +99,12 @@ namespace SAM.BusinessTier.Services.Implements
                     Name = news.NewsCategory.Name,
                     Description = news.NewsCategory.Description
                 },
-                Account = news.Account != null ? new AccountResponse
+                Account = new AccountResponse
                 {
                     Id = news.Account.Id,
                     FullName = news.Account.FullName,
                     Role = EnumUtil.ParseEnum<RoleEnum>(news.Account.Role)
-                } : null,
+                },
                 ImgList = news.NewsImages.Select(image => new NewsImageResponse
                 {
                     Id = image.Id,
@@ -125,7 +125,7 @@ namespace SAM.BusinessTier.Services.Implements
                     selector: x => x,
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.CreateDate),
-                    include: x => x.Include(x => x.NewsCategoryId)
+                    include: x => x.Include(x => x.NewsCategory)
                                    .Include(x => x.Account)
                                    .Include(x => x.NewsImages))
                 ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
