@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Services.Interfaces;
@@ -47,6 +48,7 @@ namespace SAM.BusinessTier.Services.Implements
                 NewsContent = request.NewsContent,
                 Cover = request.Cover,
                 Status = NewsStatus.Active.GetDescriptionFromEnum(),
+                Type = NewsTypes.Normal.GetDescriptionFromEnum(),
                 NewsCategoryId = request.NewsCategoryId,
                 AccountId = request.AccountId,
                 CreateDate = DateTime.Now,
@@ -92,6 +94,7 @@ namespace SAM.BusinessTier.Services.Implements
                 NewsContent = news.NewsContent,
                 Cover = news.Cover,
                 Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
+                Type = EnumUtil.ParseEnum<NewsTypes>(news.Type),
                 CreateDate = news.CreateDate,
                 NewsCategory = new NewsCategoryResponse
                 {
@@ -138,6 +141,7 @@ namespace SAM.BusinessTier.Services.Implements
                 NewsContent = news.NewsContent,
                 Cover = news.Cover,
                 Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
+                Type = EnumUtil.ParseEnum<NewsTypes>(news.Type),
                 CreateDate = news.CreateDate,
                 NewsCategory = new NewsCategoryResponse
                 {
@@ -195,6 +199,7 @@ namespace SAM.BusinessTier.Services.Implements
             news.NewsContent = string.IsNullOrEmpty(updateNewsRequest.NewsContent) ? news.NewsContent : updateNewsRequest.NewsContent;
             news.Cover = string.IsNullOrEmpty(updateNewsRequest.Cover) ? news.Cover : updateNewsRequest.Cover;
             news.Status = updateNewsRequest.Status.GetDescriptionFromEnum();
+            news.Type = updateNewsRequest.Type.GetDescriptionFromEnum();
 
             _unitOfWork.GetRepository<News>().UpdateAsync(news);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;

@@ -1,4 +1,5 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace SAM.BusinessTier.Payload.News
         public string? Cover { get; set; }
 
         public NewsStatus? Status { get; set; }
+
+        public NewsTypes? Type { get; set; }
 
         public Guid? NewsCategoryId { get; set; }
 
