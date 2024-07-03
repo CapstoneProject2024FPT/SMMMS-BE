@@ -47,8 +47,6 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Machinery> Machineries { get; set; }
 
-    public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
-
     public virtual DbSet<News> News { get; set; }
 
     public virtual DbSet<NewsCategory> NewsCategories { get; set; }
@@ -149,10 +147,6 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Districts).WithMany()
                 .HasForeignKey(d => d.DistrictsId)
                 .HasConstraintName("FK_Address_Districts");
-
-            entity.HasOne(d => d.Neighborhoods).WithMany()
-                .HasForeignKey(d => d.NeighborhoodsId)
-                .HasConstraintName("FK_Address_Neighborhoods");
 
             entity.HasOne(d => d.Wards).WithMany()
                 .HasForeignKey(d => d.WardsId)
@@ -397,23 +391,6 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Origin).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.OriginId)
                 .HasConstraintName("FK_Machinery_Origin");
-        });
-
-        modelBuilder.Entity<Neighborhood>(entity =>
-        {
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.NameEn)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Type).HasMaxLength(250);
-
-            entity.HasOne(d => d.Wards).WithMany(p => p.Neighborhoods)
-                .HasForeignKey(d => d.WardsId)
-                .HasConstraintName("FK_Neighborhoods_Wards");
         });
 
         modelBuilder.Entity<News>(entity =>

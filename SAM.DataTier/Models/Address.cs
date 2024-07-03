@@ -21,8 +21,6 @@ public partial class Address
 
     public Guid? WardsId { get; set; }
 
-    public Guid? NeighborhoodsId { get; set; }
-
     public Guid? AccountId { get; set; }
 
     public virtual Account? Account { get; set; }
@@ -30,8 +28,6 @@ public partial class Address
     public virtual City? City { get; set; }
 
     public virtual District? Districts { get; set; }
-
-    public virtual Neighborhood? Neighborhoods { get; set; }
 
     public virtual Ward? Wards { get; set; }
 }
