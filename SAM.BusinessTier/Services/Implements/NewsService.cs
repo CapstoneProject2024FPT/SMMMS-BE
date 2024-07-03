@@ -78,7 +78,6 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<IPaginate<GetNewsResponse>> GetNewsList(NewsFilter filter, PagingModel pagingModel)
         {
-            // Fetch paginated list of news items with included related entities
             IPaginate<GetNewsResponse> newsList = await _unitOfWork.GetRepository<News>().GetPagingListAsync(
                 selector: x => new GetNewsResponse
                 {
@@ -120,8 +119,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return newsList;
         }
-
-
+         
         public async Task<GetNewsResponse> GetNewsById(Guid id)
 {
             var news = await _unitOfWork.GetRepository<News>()
@@ -165,7 +163,6 @@ namespace SAM.BusinessTier.Services.Implements
 
             return newsResponse;
         }
-
 
         public async Task<ICollection<GetNewsResponse>> GetNewsListNoPagingNate(NewsFilter filter)
         {
@@ -213,6 +210,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return newsResponses;
         }
+
 
 
         public async Task<bool> RemoveNewsStatus(Guid id)
