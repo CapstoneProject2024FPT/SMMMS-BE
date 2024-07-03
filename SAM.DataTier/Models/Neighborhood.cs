@@ -18,4 +18,6 @@ public partial class Neighborhood
     public string? NameEn { get; set; }
 
     public Guid? WardsId { get; set; }
+
+    public virtual Ward? Wards { get; set; }
 }

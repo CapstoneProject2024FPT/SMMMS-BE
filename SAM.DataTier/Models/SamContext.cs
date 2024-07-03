@@ -137,6 +137,26 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Account).WithMany()
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Address_Account");
+
+            entity.HasOne(d => d.City).WithMany()
+                .HasForeignKey(d => d.CityId)
+                .HasConstraintName("FK_Address_City");
+
+            entity.HasOne(d => d.Districts).WithMany()
+                .HasForeignKey(d => d.DistrictsId)
+                .HasConstraintName("FK_Address_Districts");
+
+            entity.HasOne(d => d.Neighborhoods).WithMany()
+                .HasForeignKey(d => d.NeighborhoodsId)
+                .HasConstraintName("FK_Address_Neighborhoods");
+
+            entity.HasOne(d => d.Wards).WithMany()
+                .HasForeignKey(d => d.WardsId)
+                .HasConstraintName("FK_Address_Wards");
         });
 
         modelBuilder.Entity<Area>(entity =>
@@ -272,6 +292,10 @@ public partial class SamContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Type).HasMaxLength(250);
+
+            entity.HasOne(d => d.City).WithMany(p => p.Districts)
+                .HasForeignKey(d => d.CityId)
+                .HasConstraintName("FK_Districts_City");
         });
 
         modelBuilder.Entity<ImagesAll>(entity =>
@@ -386,6 +410,10 @@ public partial class SamContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Type).HasMaxLength(250);
+
+            entity.HasOne(d => d.Wards).WithMany(p => p.Neighborhoods)
+                .HasForeignKey(d => d.WardsId)
+                .HasConstraintName("FK_Neighborhoods_Wards");
         });
 
         modelBuilder.Entity<News>(entity =>
@@ -583,6 +611,10 @@ public partial class SamContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Type).HasMaxLength(250);
+
+            entity.HasOne(d => d.Districts).WithMany(p => p.Wards)
+                .HasForeignKey(d => d.DistrictsId)
+                .HasConstraintName("FK_Wards_Districts");
         });
 
         modelBuilder.Entity<Warranty>(entity =>

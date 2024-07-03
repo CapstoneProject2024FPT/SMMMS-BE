@@ -22,4 +22,6 @@ public partial class City
     public string? Longitude { get; set; }
 
     public string? NameEn { get; set; }
+
+    public virtual ICollection<District> Districts { get; set; } = new List<District>();
 }

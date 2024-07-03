@@ -18,4 +18,8 @@ public partial class Ward
     public string? NameEn { get; set; }
 
     public Guid? DistrictsId { get; set; }
+
+    public virtual District? Districts { get; set; }
+
+    public virtual ICollection<Neighborhood> Neighborhoods { get; set; } = new List<Neighborhood>();
 }
