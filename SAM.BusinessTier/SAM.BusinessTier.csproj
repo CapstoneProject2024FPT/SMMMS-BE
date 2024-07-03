@@ -13,4 +13,10 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\SAM.DataTier\SAM.DataTier.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Payload\Address\" />
+	  <Folder Include="Payload\Districts\" />
+	  <Folder Include="Payload\City\" />
+	  <Folder Include="Payload\Wards\" />
+	</ItemGroup>
 </Project>

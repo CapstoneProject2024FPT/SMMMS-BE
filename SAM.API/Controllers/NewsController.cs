@@ -1,6 +1,7 @@
 ﻿using DentalLabManagement.API.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Services.Implements;
@@ -24,9 +25,15 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.News.NewsSEndPoint)]
-        public async Task<IActionResult> GetNewsList([FromQuery] NewsFilter filter)
+        public async Task<IActionResult> GetNewsList([FromQuery] NewsFilter filter, [FromQuery] PagingModel pagingModel)
         {
-            var response = await _newsService.GetNewsList(filter);
+            var response = await _newsService.GetNewsList(filter, pagingModel);
+            return Ok(response);
+        }
+        [HttpGet(ApiEndPointConstant.News.NewsSEndPointNoPaginate)]
+        public async Task<IActionResult> GetNewsListNoPagingNate([FromQuery] NewsFilter filter)
+        {
+            var response = await _newsService.GetNewsListNoPagingNate(filter);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.News.NewsEndPoint)]

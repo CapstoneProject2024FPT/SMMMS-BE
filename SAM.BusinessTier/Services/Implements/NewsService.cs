@@ -5,11 +5,13 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
+using SAM.DataTier.Paginate;
 using SAM.DataTier.Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -74,6 +76,50 @@ namespace SAM.BusinessTier.Services.Implements
             return newNews.Id;
         }
 
+        public async Task<IPaginate<GetNewsResponse>> GetNewsList(NewsFilter filter, PagingModel pagingModel)
+        {
+            // Fetch paginated list of news items with included related entities
+            IPaginate<GetNewsResponse> newsList = await _unitOfWork.GetRepository<News>().GetPagingListAsync(
+                selector: x => new GetNewsResponse
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    NewsContent = x.NewsContent,
+                    Cover = x.Cover,
+                    Status = EnumUtil.ParseEnum<NewsStatus>(x.Status),
+                    Type = EnumUtil.ParseEnum<NewsTypes>(x.Type),
+                    CreateDate = x.CreateDate,
+                    NewsCategory = new NewsCategoryResponse
+                    {
+                        NewsCategoryId = x.NewsCategory.Id,
+                        Name = x.NewsCategory.Name,
+                        Description = x.NewsCategory.Description
+                    },
+                    Account = new AccountResponse
+                    {
+                        Id = x.Account.Id,
+                        FullName = x.Account.FullName,
+                        Role = EnumUtil.ParseEnum<RoleEnum>(x.Account.Role)
+                    },
+                    ImgList = x.NewsImages.Select(image => new NewsImageResponse
+                    {
+                        Id = image.Id,
+                        ImgUrl = image.ImgUrl,
+                        CreateDate = image.CreateDate,
+                    }).ToList(),
+                },
+                filter: filter,
+                orderBy: x => x.OrderBy(n => n.CreateDate),
+                include: x => x.Include(n => n.NewsCategory)
+                               .Include(n => n.Account)
+                               .Include(n => n.NewsImages),
+                page: pagingModel.page,
+                size: pagingModel.size
+            ) ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
+
+            return newsList;
+        }
 
 
         public async Task<GetNewsResponse> GetNewsById(Guid id)
@@ -121,7 +167,7 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
-        public async Task<ICollection<GetNewsResponse>> GetNewsList(NewsFilter filter)
+        public async Task<ICollection<GetNewsResponse>> GetNewsListNoPagingNate(NewsFilter filter)
         {
             var newsList = await _unitOfWork.GetRepository<News>()
                 .GetListAsync(
