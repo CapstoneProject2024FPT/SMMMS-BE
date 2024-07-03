@@ -19,6 +19,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<AccountRank> AccountRanks { get; set; }
 
+    public virtual DbSet<Address> Addresses { get; set; }
+
     public virtual DbSet<Area> Areas { get; set; }
 
     public virtual DbSet<Brand> Brands { get; set; }
@@ -27,9 +29,13 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Certification> Certifications { get; set; }
 
+    public virtual DbSet<City> Cities { get; set; }
+
     public virtual DbSet<Discount> Discounts { get; set; }
 
     public virtual DbSet<DiscountMachinery> DiscountMachineries { get; set; }
+
+    public virtual DbSet<District> Districts { get; set; }
 
     public virtual DbSet<ImagesAll> ImagesAlls { get; set; }
 
@@ -40,6 +46,8 @@ public partial class SamContext : DbContext
     public virtual DbSet<MachinePartMachine> MachinePartMachines { get; set; }
 
     public virtual DbSet<Machinery> Machineries { get; set; }
+
+    public virtual DbSet<Neighborhood> Neighborhoods { get; set; }
 
     public virtual DbSet<News> News { get; set; }
 
@@ -60,6 +68,8 @@ public partial class SamContext : DbContext
     public virtual DbSet<Specification> Specifications { get; set; }
 
     public virtual DbSet<TransactionPayment> TransactionPayments { get; set; }
+
+    public virtual DbSet<Ward> Wards { get; set; }
 
     public virtual DbSet<Warranty> Warranties { get; set; }
 
@@ -113,6 +123,20 @@ public partial class SamContext : DbContext
                 .HasForeignKey(d => d.RankId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_AccountRank_Rank");
+        });
+
+        modelBuilder.Entity<Address>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("Address");
+
+            entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.Name).HasMaxLength(250);
+            entity.Property(e => e.Note).HasMaxLength(4000);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Area>(entity =>
@@ -180,6 +204,32 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK_Certifications_Account");
         });
 
+        modelBuilder.Entity<City>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_Cities");
+
+            entity.ToTable("City");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Latitude)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Longitude)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Name).HasMaxLength(250);
+            entity.Property(e => e.NameEn)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Slug)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Type).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<Discount>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC076BF8A8B1");
@@ -209,6 +259,19 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Machinery).WithMany(p => p.DiscountMachineries)
                 .HasForeignKey(d => d.MachineryId)
                 .HasConstraintName("FK_DiscountMachinery_Machinery");
+        });
+
+        modelBuilder.Entity<District>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(250);
+            entity.Property(e => e.NameEn)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Type).HasMaxLength(250);
         });
 
         modelBuilder.Entity<ImagesAll>(entity =>
@@ -310,6 +373,19 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Origin).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.OriginId)
                 .HasConstraintName("FK_Machinery_Origin");
+        });
+
+        modelBuilder.Entity<Neighborhood>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(250);
+            entity.Property(e => e.NameEn)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Type).HasMaxLength(250);
         });
 
         modelBuilder.Entity<News>(entity =>
@@ -494,6 +570,19 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Payment).WithMany(p => p.TransactionPayments)
                 .HasForeignKey(d => d.PaymentId)
                 .HasConstraintName("FK_TransactionPayment_Payment");
+        });
+
+        modelBuilder.Entity<Ward>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(250);
+            entity.Property(e => e.NameEn)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Type).HasMaxLength(250);
         });
 
         modelBuilder.Entity<Warranty>(entity =>
