@@ -35,7 +35,6 @@ namespace SAM.BusinessTier.Payload.News
         public Guid? NewsCategoryId { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public NewsCategoryStatus? Status { get; set; }
 
     }
     public class NewsImageResponse
