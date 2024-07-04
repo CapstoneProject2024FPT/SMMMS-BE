@@ -46,7 +46,7 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         //[CustomAuthorize(RoleEnum.Admin, RoleEnum.User)]
-        [HttpPost(ApiEndPointConstant.User.UsersEndPoint)]
+        [HttpPost(ApiEndPointConstant.User.AccountEndPoint)]
         public async Task<IActionResult> CreateNewUser(CreateNewUserRequest createNewUserRequest)
         {
             var response = await _userService.CreateNewUser(createNewUserRequest);
