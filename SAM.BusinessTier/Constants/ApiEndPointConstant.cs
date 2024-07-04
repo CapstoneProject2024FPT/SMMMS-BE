@@ -112,8 +112,6 @@ public static class ApiEndPointConstant
         public const string WarrantyDetailsEndPoint = ApiEndpoint + "/warrantyDetail";
         public const string WarrantyDetailsEndPointNoPaginate = WarrantyDetailsEndPoint + "/noPaginate";
         public const string WarrantydetailEndPoint = WarrantyDetailsEndPoint + "/{id}";
-        public const string WarrantyDetailsEndPointDetail = WarrantyDetailsEndPoint + "/{id}/Detail";
-        public const string WarrantyDetailsUpdateStatusEndPoint = WarrantyDetailsEndPoint + "/updateStatus/{id}";
 
     }
     public static class News

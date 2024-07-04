@@ -18,13 +18,13 @@ namespace SAM.API.Controllers
         {
             _warrantyDetailService = warrantyDetailService;
         }
-        [HttpPost(ApiEndPointConstant.WarrantyDetail.WarrantyDetailsEndPointDetail)]
+        [HttpPost(ApiEndPointConstant.WarrantyDetail.WarrantyDetailsEndPoint)]
         public async Task<IActionResult> CreateNewWarrantyDetail(CreateNewWarrantyDetailRequest createNewWarrantyDetailRequest)
         {
             var response = await _warrantyDetailService.CreateNewWarrantyDetail(createNewWarrantyDetailRequest);
             return Ok(response);
         }
-        [HttpGet(ApiEndPointConstant.WarrantyDetail.WarrantyDetailsEndPointDetail)]
+        [HttpGet(ApiEndPointConstant.WarrantyDetail.WarrantyDetailsEndPoint)]
         public async Task<IActionResult> GetWarrantyDetailList([FromQuery] WarrantyDetailFilter filter)
         {
             var response = await _warrantyDetailService.GetWarrantyDetailList(filter);
