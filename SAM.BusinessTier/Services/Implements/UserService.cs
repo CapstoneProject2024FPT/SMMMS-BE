@@ -147,22 +147,22 @@ namespace SAM.BusinessTier.Services.Implements
                 YearsOfExperience = request.YearsOfExperience,
 
             };
-            var cetificationList = new List<Certification>();
-            foreach (var cetification in request.Cetification)
-            {
-                cetificationList.Add(new Certification
-                {
-                    Id = Guid.NewGuid(),
-                    CertificationLink = cetification.CertificationLink,
-                    DateObtained = cetification.DateObtained,
-                    AccountId = account.Id,
-                });
+            //var cetificationList = new List<Certification>();
+            //foreach (var cetification in request.Cetification)
+            //{
+            //    cetificationList.Add(new Certification
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        CertificationLink = cetification.CertificationLink,
+            //        DateObtained = cetification.DateObtained,
+            //        AccountId = account.Id,
+            //    });
 
-            };
+            //};
 
 
             await _unitOfWork.GetRepository<Account>().InsertAsync(account);
-            await _unitOfWork.GetRepository<Certification>().InsertRangeAsync(cetificationList);
+            //await _unitOfWork.GetRepository<Certification>().InsertRangeAsync(cetificationList);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.User.CreateFailedMessage);
             return account.Id;

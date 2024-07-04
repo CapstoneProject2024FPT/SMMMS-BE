@@ -29,7 +29,7 @@ namespace SAM.BusinessTier.Payload.User
 
         public int? YearsOfExperience { get; set; }
 
-        public List<CertificationRequest> Cetification { get; set; } = new List<CertificationRequest>();
+        //public List<CertificationRequest> Cetification { get; set; } = new List<CertificationRequest>();
     }
     public class CertificationRequest
     {
