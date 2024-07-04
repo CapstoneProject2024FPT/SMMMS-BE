@@ -39,6 +39,26 @@ public static class ApiEndPointConstant
         public const string OriginsEndPoint = ApiEndpoint + "/origin";
         public const string OriginEndPoint = OriginsEndPoint + "/{id}";
     }
+    public static class Address
+    {
+        public const string AddressSEndPoint = ApiEndpoint + "/address";
+        public const string AddressEndPoint = AddressSEndPoint + "/{id}";
+    }
+    public static class City
+    {
+        public const string CitiesEndPoint = ApiEndpoint + "/city";
+        public const string CityEndPoint = CitiesEndPoint + "/{id}";
+    }
+    public static class District
+    {
+        public const string DistrictsEndPoint = ApiEndpoint + "/district";
+        public const string DistrictEndPoint = DistrictsEndPoint + "/{id}";
+    }
+    public static class Ward
+    {
+        public const string WardsEndPoint = ApiEndpoint + "/ward";
+        public const string WardEndPoint = WardsEndPoint + "/{id}";
+    }
     public static class Brand
     {
         public const string BrandsEndPoint = ApiEndpoint + "/brand";
