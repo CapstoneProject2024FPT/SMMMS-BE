@@ -116,7 +116,7 @@ namespace SAM.BusinessTier.Services.Implements
 
 
 
-        public async Task<ICollection<GetMachinerySpecificationsRespone>> GetMachineryList(MachineryFilter filter)
+        public async Task<ICollection<GetMachinerySpecificationsRespone>> GetMachineryListNoPagingNate(MachineryFilter filter)
         {
             var machineryList = await _unitOfWork.GetRepository<Machinery>()
                 .GetListAsync(
@@ -179,7 +179,71 @@ namespace SAM.BusinessTier.Services.Implements
 
             return machineryResponses;
         }
+        public async Task<IPaginate<GetMachinerySpecificationsRespone>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
+        {
+            IPaginate<GetMachinerySpecificationsRespone> machineryList = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync
+                (
+                     selector: x => new GetMachinerySpecificationsRespone
+                     {
+                         Id = x.Id,
+                         Name = x.Name,
+                         Brand = new BrandResponse
+                         {
+                             Id = x.BrandId,
+                             Name = x.Brand.Name,
+                             Description = x.Brand.Description,
+                         },
+                         Model = x.Model,
+                         Description = x.Description,
+                         SellingPrice = x.SellingPrice,
+                         Priority = x.Priority,
+                         TimeWarranty = x.TimeWarranty,
+                         Status = EnumUtil.ParseEnum<MachineryStatus>(x.Status),
+                         CreateDate = x.CreateDate,
+                         Origin = new OriginResponse
+                         {
+                             Id = x.OriginId,
+                             Name = x.Origin.Name,
+                             Description = x.Origin.Description,
+                         },
+                         Category = new CategoryResponse
+                         {
+                             Id = x.CategoryId,
+                             Name = x.Category.Name,
+                             Type = EnumUtil.ParseEnum<CategoryType>(x.Category.Type),
+                         },
+                         Image = x.ImagesAlls.Select(image => new MachineryImagesResponse
+                         {
+                             Id = image.Id,
+                             ImageURL = image.ImageUrl,
+                             CreateDate = image.CreateDate
+                         }).ToList(),
+                         Specifications = x.Specifications.Select(spec => new SpecificationsResponse
+                         {
+                             SpecificationId = spec.Id,
+                             MachineryId = spec.MachineryId,
+                             Name = spec.Name,
+                             Value = spec.Value
+                         }).ToList(),
 
+                         Quantity = x.Inventories.CountInventoryEachStatus()
+                     },
+                    filter: filter,
+                    orderBy: x => x.OrderBy(x => x.Priority),
+                    include: x => x.Include(x => x.Inventories)
+                                   .Include(x => x.Brand)
+                                   .Include(x => x.Origin)
+                                   .Include(x => x.Category)
+                                   .Include(x => x.ImagesAlls)
+                                   .Include(x => x.Specifications),
+                    page: pagingModel.page,
+                    size: pagingModel.size
+                    ) ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage
+                );
+
+
+            return machineryList;
+        }
 
 
         public async Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id)

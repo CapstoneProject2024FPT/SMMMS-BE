@@ -35,9 +35,15 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Product.MachineriesEndPoint)]
-        public async Task<IActionResult> GetMachineryList([FromQuery] MachineryFilter filter)
+        public async Task<IActionResult> GetMachineryList([FromQuery] MachineryFilter filter, [FromQuery] PagingModel pagingModel)
         {
-            var response = await _iMachineryService.GetMachineryList(filter);
+            var response = await _iMachineryService.GetMachineryList(filter, pagingModel);
+            return Ok(response);
+        }
+        [HttpGet(ApiEndPointConstant.Product.MachineriesEndPointNoPaginate)]
+        public async Task<IActionResult> GetMachineryListNoPagingNate([FromQuery] MachineryFilter filter)
+        {
+            var response = await _iMachineryService.GetMachineryListNoPagingNate(filter);
             return Ok(response);
         }
         [HttpPut(ApiEndPointConstant.Product.MachineryEndPoint)]

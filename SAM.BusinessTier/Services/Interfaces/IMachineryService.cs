@@ -16,7 +16,8 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<Guid> CreateNewMachinerys(CreateNewMachineryRequest createNewProductRequest);
         Task<bool> UpdateMachinery(Guid id, UpdateMachineryRequest updateProductRequest);
         Task<bool> UpdateStatusMachineryResponse(Guid id, UpdateStatusMachineryResponse updateStatusMachineryResponse);
-        Task<ICollection<GetMachinerySpecificationsRespone>> GetMachineryList(MachineryFilter filter);
+        Task<ICollection<GetMachinerySpecificationsRespone>> GetMachineryListNoPagingNate(MachineryFilter filter);
+        Task<IPaginate<GetMachinerySpecificationsRespone>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel);
         Task<bool> RemoveMachineryStatus(Guid id);
         Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id);
     }
