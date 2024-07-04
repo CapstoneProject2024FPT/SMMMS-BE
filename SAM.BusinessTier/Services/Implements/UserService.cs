@@ -74,6 +74,7 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
+
         public async Task<bool> ChangePassword(Guid userId, ChangePasswordRequest changePasswordRequest)
         {
             if (userId == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
@@ -120,11 +121,52 @@ namespace SAM.BusinessTier.Services.Implements
 
 
             await _unitOfWork.GetRepository<Account>().InsertAsync(account);
+            
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.User.CreateFailedMessage);
             return account.Id;
         }
+        public async Task<Guid> CreateNewStaff(CreateNewStaffRequest request)
+        {
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Username.Equals(request.Username));
+            if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
+            account = new Account()
+            {
+                Id = Guid.NewGuid(),
+                Username = request.Username,
+                Password = PasswordUtil.HashPassword(request.Password),
+                Role = request.Role,
+                FullName = request.FullName,
+                Gender = request.Gender,
+                PhoneNumber = request.PhoneNumber,
+                Address = request.Address,
+                Status = UserStatus.Activate.GetDescriptionFromEnum(),
+                Email = request.Email,
+                Image = request.Image,
+                YearsOfExperience = request.YearsOfExperience,
 
+            };
+            var cetificationList = new List<Certification>();
+            foreach (var cetification in request.Cetification)
+            {
+                cetificationList.Add(new Certification
+                {
+                    Id = Guid.NewGuid(),
+                    CertificationLink = cetification.CertificationLink,
+                    DateObtained = cetification.DateObtained,
+                    AccountId = account.Id,
+                });
+
+            };
+
+
+            await _unitOfWork.GetRepository<Account>().InsertAsync(account);
+            await _unitOfWork.GetRepository<Certification>().InsertRangeAsync(cetificationList);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.User.CreateFailedMessage);
+            return account.Id;
+        }
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)
         {
             // Lấy danh sách các account theo bộ lọc và phân trang

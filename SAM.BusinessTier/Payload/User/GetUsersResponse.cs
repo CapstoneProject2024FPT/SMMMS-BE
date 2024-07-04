@@ -36,6 +36,8 @@ namespace SAM.BusinessTier.Payload.User
 
         public RankResponse? Rank { get; set; }
 
+        //public CertificationResponse? Certification { get; set; }
+
 
 
     }
@@ -44,5 +46,12 @@ namespace SAM.BusinessTier.Payload.User
         public string? Name { get; set; }
 
         public int? Range { get; set; }
+    }
+    public class CertificationResponse
+    {
+        public string? CertificationLink { get; set; }
+
+        public DateTime? DateObtained { get; set; }
+
     }
 }
