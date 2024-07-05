@@ -34,13 +34,17 @@ namespace SAM.BusinessTier.Services.Implements
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser));
 
+            if (!request.NewsCategoryId.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+            }
             if (request.NewsCategoryId.HasValue)
             {
                 var newsCategory = await _unitOfWork.GetRepository<NewsCategory>().SingleOrDefaultAsync(
                     predicate: m => m.Id == request.NewsCategoryId.Value)
                     ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
-
             }
+
 
             News newNews = new()
             {
