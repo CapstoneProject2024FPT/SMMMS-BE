@@ -89,9 +89,10 @@ namespace SAM.BusinessTier.Services.Implements
                     Title = x.Title,
                     Description = x.Description,
                     NewsContent = x.NewsContent,
+
                     Cover = x.Cover,
-                    Status = EnumUtil.ParseEnum<NewsStatus>(x.Status),
-                    Type = EnumUtil.ParseEnum<NewsTypes>(x.Type),
+                    Status = string.IsNullOrEmpty(x.Status) ? null : EnumUtil.ParseEnum<NewsStatus>(x.Status),
+                    Type = string.IsNullOrEmpty(x.Type) ? null : EnumUtil.ParseEnum<NewsTypes>(x.Type),
                     CreateDate = x.CreateDate,
                     NewsCategory = new NewsCategoryResponse
                     {
@@ -141,8 +142,8 @@ namespace SAM.BusinessTier.Services.Implements
                 Description = news.Description,
                 NewsContent = news.NewsContent,
                 Cover = news.Cover,
-                Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
-                Type = EnumUtil.ParseEnum<NewsTypes>(news.Type),
+                Status = string.IsNullOrEmpty(news.Status) ? null : EnumUtil.ParseEnum<NewsStatus>(news.Status),
+                Type = string.IsNullOrEmpty(news.Type) ? null : EnumUtil.ParseEnum<NewsTypes>(news.Type),
                 CreateDate = news.CreateDate,
                 NewsCategory = new NewsCategoryResponse
                 {
@@ -187,8 +188,8 @@ namespace SAM.BusinessTier.Services.Implements
                 Description = news.Description,
                 NewsContent = news.NewsContent,
                 Cover = news.Cover,
-                Status = EnumUtil.ParseEnum<NewsStatus>(news.Status),
-                Type = EnumUtil.ParseEnum<NewsTypes>(news.Type),
+                Status = string.IsNullOrEmpty(news.Status) ? null : EnumUtil.ParseEnum<NewsStatus>(news.Status),
+                Type = string.IsNullOrEmpty(news.Type) ? null : EnumUtil.ParseEnum<NewsTypes>(news.Type),
                 CreateDate = news.CreateDate,
                 NewsCategory = new NewsCategoryResponse
                 {
