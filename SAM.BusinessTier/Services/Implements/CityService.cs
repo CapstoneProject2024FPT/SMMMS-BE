@@ -5,6 +5,7 @@ using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.City;
+using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.NewsCategory;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -101,9 +102,26 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
-        public Task<bool> UpdateCity(Guid id, UpdateCityRequest updateCityRequest)
+        public async Task<bool> UpdateCity(Guid id, UpdateCityRequest updateCityRequest)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty)
+                throw new BadHttpRequestException(MessageConstant.City.CityEmptyMessage);
+
+            var city = await _unitOfWork.GetRepository<City>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.City.CityExistedMessage);
+
+            city.Name = string.IsNullOrEmpty(updateCityRequest.Name) ? city.Name : updateCityRequest.Name;
+            city.Type = updateCityRequest.Type.GetDescriptionFromEnum();
+            city.Slug = string.IsNullOrEmpty(updateCityRequest.Slug) ? city.Slug : updateCityRequest.Slug;
+            city.Status = updateCityRequest.Status.GetDescriptionFromEnum();
+            city.Latitude = string.IsNullOrEmpty(updateCityRequest.Latitude) ? city.Latitude : updateCityRequest.Latitude;
+            city.Longitude = string.IsNullOrEmpty(updateCityRequest.Longitude) ? city.Longitude : updateCityRequest.Longitude;
+            city.NameEn = string.IsNullOrEmpty(updateCityRequest.NameEn) ? city.NameEn : updateCityRequest.NameEn;
+
+            _unitOfWork.GetRepository<City>().UpdateAsync(city);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
         }
     }
 }

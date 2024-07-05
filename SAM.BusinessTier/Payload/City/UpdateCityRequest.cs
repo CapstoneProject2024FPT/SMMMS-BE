@@ -11,8 +11,6 @@ namespace SAM.BusinessTier.Payload.City
     public class UpdateCityRequest
     {
 
-        public int? UnitId { get; set; }
-
         public string? Name { get; set; }
 
         public CityType? Type { get; set; }
