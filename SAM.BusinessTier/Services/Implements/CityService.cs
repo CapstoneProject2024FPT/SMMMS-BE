@@ -41,19 +41,64 @@ namespace SAM.BusinessTier.Services.Implements
             return city.Id;
         }
 
-        public Task<GetCityResponse> GetCityById(Guid id)
+        public async Task<GetCityResponse> GetCityById(Guid id)
         {
-            throw new NotImplementedException();
+            var city = await _unitOfWork.GetRepository<City>()
+                .SingleOrDefaultAsync(
+                    predicate: x => x.Id == id)
+                ?? throw new BadHttpRequestException(MessageConstant.City.NotFoundFailedMessage);
+
+            var cityResponse = new GetCityResponse
+            {
+                Id = city.Id,
+                UnitId = city.UnitId,
+                Name = city.Name,
+                Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
+                Type = string.IsNullOrEmpty(city.Type) ? null : EnumUtil.ParseEnum<CityType>(city.Type),
+                Slug = city.Slug,
+                Latitude = city.Latitude,
+                Longitude = city.Longitude,
+                NameEn = city.NameEn
+            };
+
+            return cityResponse;
         }
 
-        public Task<ICollection<GetCityResponse>> GetCityList(CityFilter filter)
+        public async Task<ICollection<GetCityResponse>> GetCityList(CityFilter filter)
         {
-            throw new NotImplementedException();
+            var cityList = await _unitOfWork.GetRepository<City>()
+                .GetListAsync(
+                    selector: x => x,
+                    filter: filter,
+                    orderBy: x => x.OrderBy(x => x.Name))
+                ?? throw new BadHttpRequestException(MessageConstant.City.NotFoundFailedMessage);
+
+            var cityResponses = cityList.Select(city => new GetCityResponse
+            {
+                Id = city.Id,
+                UnitId = city.UnitId,
+                Name = city.Name,
+                Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
+                Type = string.IsNullOrEmpty(city.Type) ? null : EnumUtil.ParseEnum<CityType>(city.Type),
+                Slug = city.Slug,
+                Latitude = city.Latitude,
+                Longitude = city.Longitude,
+                NameEn = city.NameEn
+            }).ToList();
+
+            return cityResponses;
         }
 
-        public Task<bool> RemoveCityStatus(Guid id)
+        public async Task<bool> RemoveCityStatus(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.City.CityEmptyMessage);
+            City city = await _unitOfWork.GetRepository<City>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
+            city.Status = CityStatus.Inactive.GetDescriptionFromEnum();
+            _unitOfWork.GetRepository<City>().UpdateAsync(city);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
 
         public Task<bool> UpdateCity(Guid id, UpdateCityRequest updateCityRequest)
