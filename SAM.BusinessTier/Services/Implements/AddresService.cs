@@ -29,7 +29,7 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<GetAddressResponse> GetBrandById(Guid id)
+        public Task<GetAddressResponse> GetAddressById(Guid id)
         {
             throw new NotImplementedException();
         }

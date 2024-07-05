@@ -31,7 +31,7 @@ namespace SAM.BusinessTier.Payload.News
 
         public AccountResponse? Account { get; set; }
 
-        public List<NewsImageResponse> ImgList { get; set; } = new List<NewsImageResponse>();
+        public List<NewsImageResponse>? ImgList { get; set; } = new List<NewsImageResponse>();
     }
     public class NewsCategoryResponse
     {

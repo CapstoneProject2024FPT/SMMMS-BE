@@ -51,8 +51,8 @@ namespace SAM.API.Configs
             services.AddScoped<INewsCategoryService, NewsCategoryService>();
             services.AddScoped<IAddressService, AddresService>();
             services.AddScoped<ICityService, CityService>();
-            services.AddScoped<IDistrictsService, DistrictsService>();
-            services.AddScoped<IWardsService, WardsService>();
+            services.AddScoped<IDistrictService, DistrictsService>();
+            services.AddScoped<IWardService, WardService>();
 
             return services;
         }

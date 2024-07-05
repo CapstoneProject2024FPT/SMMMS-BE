@@ -50,6 +50,46 @@ public static class MessageConstant
         public const string BrandExistedMessage = "Brand đã tồn tại";
         public const string BrandEmptyMessage = "Brand không hợp lệ";
     }
+    public static class Address
+    {
+        public const string CreateAddressFailedMessage = "Tạo mới Address thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent Address ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Address ko có trong hệ thống";
+        public const string UpdateAddressSuccessMessage = "Address được cập nhật thành công";
+        public const string UpdateAddressFailedMessage = "Address cập nhật thất bại";
+        public const string AddressExistedMessage = "Address đã tồn tại";
+        public const string AddressdEmptyMessage = "Address không hợp lệ";
+    }
+    public static class City
+    {
+        public const string CreateCityFailedMessage = "Tạo mới City thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent City ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "City ko có trong hệ thống";
+        public const string UpdateCitySuccessMessage = "City được cập nhật thành công";
+        public const string UpdateCityFailedMessage = "City cập nhật thất bại";
+        public const string CityExistedMessage = "City đã tồn tại";
+        public const string CityEmptyMessage = "City không hợp lệ";
+    }
+    public static class District
+    {
+        public const string CreateDistrictFailedMessage = "Tạo mới District thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent District ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "District ko có trong hệ thống";
+        public const string UpdateDistrictSuccessMessage = "District được cập nhật thành công";
+        public const string UpdateDistrictFailedMessage = "District cập nhật thất bại";
+        public const string DistrictExistedMessage = "District đã tồn tại";
+        public const string DistrictEmptyMessage = "District không hợp lệ";
+    }
+    public static class Ward
+    {
+        public const string CreateWardFailedMessage = "Tạo mới Ward thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent Ward ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Ward ko có trong hệ thống";
+        public const string UpdateWardSuccessMessage = "Ward được cập nhật thành công";
+        public const string UpdateWardFailedMessage = "Ward cập nhật thất bại";
+        public const string WardExistedMessage = "Ward đã tồn tại";
+        public const string WardEmptyMessage = "Ward không hợp lệ";
+    }
     public static class Inventory
     {
         public const string CreateInventoryFailedMessage = "Tạo mới Inventory thất bại";

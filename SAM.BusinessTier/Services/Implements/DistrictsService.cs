@@ -14,28 +14,28 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Services.Implements
 {
-    public class DistrictsService : BaseService<DiscountService>, IDistrictsService
+    public class DistrictsService : BaseService<DiscountService>, IDistrictService
     {
         public DistrictsService(IUnitOfWork<SamContext> unitOfWork, ILogger<DiscountService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 
-        public Task<Guid> CreateNewDistricts(CreateNewDistrictRequest createNewDistrictRequest)
+        public Task<Guid> CreateNewDistrict(CreateNewDistrictRequest createNewDistrictRequest)
         {
             throw new NotImplementedException();
         }
 
-        public Task<GetDistricResponse> GetDistrictsById(Guid id)
+        public Task<GetDistricResponse> GetDistrictById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<GetDistricResponse>> GetDistrictsList(DistrictFilter filter)
+        public Task<ICollection<GetDistricResponse>> GetDistrictList(DistrictFilter filter)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> RemoveDistrictsStatus(Guid id)
+        public Task<bool> RemoveDistrictStatus(Guid id)
         {
             throw new NotImplementedException();
         }

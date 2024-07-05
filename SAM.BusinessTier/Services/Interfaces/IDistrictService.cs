@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Services.Interfaces
 {
-    public interface IDistrictsService
+    public interface IDistrictService
     {
-        Task<Guid> CreateNewDistricts(CreateNewDistrictRequest createNewDistrictRequest);
+        Task<Guid> CreateNewDistrict(CreateNewDistrictRequest createNewDistrictRequest);
         Task<bool> UpdateDistrict(Guid id, UpdateDistrictRequest updateDistrictsRequest);
-        Task<ICollection<GetDistricResponse>> GetDistrictsList(DistrictFilter filter);
-        Task<GetDistricResponse> GetDistrictsById(Guid id);
-        Task<bool> RemoveDistrictsStatus(Guid id);
+        Task<ICollection<GetDistricResponse>> GetDistrictList(DistrictFilter filter);
+        Task<GetDistricResponse> GetDistrictById(Guid id);
+        Task<bool> RemoveDistrictStatus(Guid id);
     }
 }

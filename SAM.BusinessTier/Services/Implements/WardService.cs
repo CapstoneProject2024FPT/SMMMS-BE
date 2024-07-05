@@ -13,33 +13,33 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Services.Implements
 {
-    public class WardsService : BaseService<WardsService>, IWardsService
+    public class WardService : BaseService<WardService>, IWardService
     {
-        public WardsService(IUnitOfWork<SamContext> unitOfWork, ILogger<WardsService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public WardService(IUnitOfWork<SamContext> unitOfWork, ILogger<WardService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 
-        public Task<Guid> CreateNewWards(CreateNewWardRequest createNewWardsRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GetWardResponse> GetWardsById(Guid id)
+        public Task<Guid> CreateNewWard(CreateNewWardRequest createNewWardsRequest)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<GetWardResponse>> GetWardsList(WardFilter filter)
+        public Task<GetWardResponse> GetWardById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> RemoveWardsStatus(Guid id)
+        public Task<ICollection<GetWardResponse>> GetWardList(WardFilter filter)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateWards(Guid id, UpdateWardRequest updateWardsRequest)
+        public Task<bool> RemoveWardStatus(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateWard(Guid id, UpdateWardRequest updateWardsRequest)
         {
             throw new NotImplementedException();
         }

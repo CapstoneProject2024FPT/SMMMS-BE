@@ -13,7 +13,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<Guid> CreateNewAddress(CreateNewAddresRequest createNewAddresRequest);
         Task<bool> UpdateAddress(Guid id, UpdateAddressRequest updateAddressRequest);
         Task<ICollection<GetAddressResponse>> GetAddressList(AddressFilter filter);
-        Task<GetAddressResponse> GetBrandById(Guid id);
+        Task<GetAddressResponse> GetAddressById(Guid id);
         Task<bool> RemoveAddressStatus(Guid id);
     }
 }
