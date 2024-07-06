@@ -10,7 +10,6 @@ namespace SAM.BusinessTier.Payload.Order
 {
     public class OrderFilter
     { 
-
         public string? InvoiceCode { get; set; }
 
         public DateTime? CreateDate { get; set; }

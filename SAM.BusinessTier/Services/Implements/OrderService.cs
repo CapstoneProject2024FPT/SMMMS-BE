@@ -60,7 +60,8 @@ namespace SAM.BusinessTier.Services.Implements
                     MachineryId = machinery.MachineryId,
                     Quantity = machinery.Quantity,
                     SellingPrice = machinery.SellingPrice,
-                    TotalAmount = totalProductAmount
+                    TotalAmount = totalProductAmount,
+                    CreateDate = DateTime.Now
                 });
 
             };
