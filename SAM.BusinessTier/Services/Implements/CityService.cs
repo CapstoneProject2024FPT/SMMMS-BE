@@ -55,8 +55,6 @@ namespace SAM.BusinessTier.Services.Implements
                 UnitId = city.UnitId,
                 Name = city.Name,
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
-                Type = string.IsNullOrEmpty(city.Type) ? null : EnumUtil.ParseEnum<CityType>(city.Type),
-                Slug = city.Slug,
             };
 
             return cityResponse;
@@ -77,8 +75,6 @@ namespace SAM.BusinessTier.Services.Implements
                 UnitId = city.UnitId,
                 Name = city.Name,
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
-                Type = string.IsNullOrEmpty(city.Type) ? null : EnumUtil.ParseEnum<CityType>(city.Type),
-                Slug = city.Slug,
             }).ToList();
 
             return cityResponses;
@@ -106,8 +102,6 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.City.CityExistedMessage);
 
             city.Name = string.IsNullOrEmpty(updateCityRequest.Name) ? city.Name : updateCityRequest.Name;
-            city.Type = updateCityRequest.Type.GetDescriptionFromEnum();
-            city.Slug = string.IsNullOrEmpty(updateCityRequest.Slug) ? city.Slug : updateCityRequest.Slug;
             city.Status = updateCityRequest.Status.GetDescriptionFromEnum();
 
             _unitOfWork.GetRepository<City>().UpdateAsync(city);

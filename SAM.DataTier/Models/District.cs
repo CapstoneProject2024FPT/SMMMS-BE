@@ -11,11 +11,9 @@ public partial class District
 
     public string? Name { get; set; }
 
-    public string? Type { get; set; }
+    public string? Status { get; set; }
 
     public Guid? CityId { get; set; }
-
-    public string? Status { get; set; }
 
     public virtual City? City { get; set; }
 

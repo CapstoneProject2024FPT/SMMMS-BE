@@ -226,13 +226,9 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.Slug)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Type).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Discount>(entity =>
@@ -277,7 +273,6 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Type).HasMaxLength(250);
 
             entity.HasOne(d => d.City).WithMany(p => p.Districts)
                 .HasForeignKey(d => d.CityId)
@@ -577,13 +572,9 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.NameEn)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Type).HasMaxLength(250);
 
             entity.HasOne(d => d.District).WithMany(p => p.Wards)
                 .HasForeignKey(d => d.DistrictId)

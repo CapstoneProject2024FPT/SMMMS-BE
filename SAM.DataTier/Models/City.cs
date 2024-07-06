@@ -11,10 +11,6 @@ public partial class City
 
     public string? Name { get; set; }
 
-    public string? Type { get; set; }
-
-    public string? Slug { get; set; }
-
     public string? Status { get; set; }
 
     public virtual ICollection<District> Districts { get; set; } = new List<District>();

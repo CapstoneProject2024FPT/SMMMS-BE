@@ -14,11 +14,6 @@ namespace SAM.BusinessTier.Payload.City
         public int? UnitId { get; set; }
 
         public string? Name { get; set; }
-
-        public CityType? Type { get; set; }
-
-        public string? Slug { get; set; }
-
         public CityStatus? Status { get; set; }
 
     }

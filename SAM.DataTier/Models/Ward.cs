@@ -11,11 +11,7 @@ public partial class Ward
 
     public string? Name { get; set; }
 
-    public string? Type { get; set; }
-
     public string? Status { get; set; }
-
-    public string? NameEn { get; set; }
 
     public Guid? DistrictId { get; set; }
 

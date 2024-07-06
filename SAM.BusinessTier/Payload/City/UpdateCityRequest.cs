@@ -13,10 +13,6 @@ namespace SAM.BusinessTier.Payload.City
 
         public string? Name { get; set; }
 
-        public CityType? Type { get; set; }
-
-        public string? Slug { get; set; }
-
         public CityStatus? Status { get; set; }
 
     }

@@ -14,8 +14,5 @@ namespace SAM.BusinessTier.Payload.City
 
         public string? Name { get; set; }
 
-        public string? Type { get; set; }
-
-        public string? Slug { get; set; }
     }
 }
