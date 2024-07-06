@@ -17,11 +17,5 @@ public partial class City
 
     public string? Status { get; set; }
 
-    public string? Latitude { get; set; }
-
-    public string? Longitude { get; set; }
-
-    public string? NameEn { get; set; }
-
     public virtual ICollection<District> Districts { get; set; } = new List<District>();
 }

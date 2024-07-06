@@ -17,9 +17,9 @@ public partial class Address
 
     public Guid? CityId { get; set; }
 
-    public Guid? DistrictsId { get; set; }
+    public Guid? DistrictId { get; set; }
 
-    public Guid? WardsId { get; set; }
+    public Guid? WardId { get; set; }
 
     public Guid? AccountId { get; set; }
 
@@ -27,7 +27,7 @@ public partial class Address
 
     public virtual City? City { get; set; }
 
-    public virtual District? Districts { get; set; }
+    public virtual District? District { get; set; }
 
-    public virtual Ward? Wards { get; set; }
+    public virtual Ward? Ward { get; set; }
 }

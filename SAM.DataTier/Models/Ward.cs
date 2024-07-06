@@ -17,7 +17,7 @@ public partial class Ward
 
     public string? NameEn { get; set; }
 
-    public Guid? DistrictsId { get; set; }
+    public Guid? DistrictId { get; set; }
 
-    public virtual District? Districts { get; set; }
+    public virtual District? District { get; set; }
 }

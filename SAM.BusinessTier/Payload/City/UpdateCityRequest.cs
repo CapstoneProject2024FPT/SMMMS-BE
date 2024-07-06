@@ -19,10 +19,5 @@ namespace SAM.BusinessTier.Payload.City
 
         public CityStatus? Status { get; set; }
 
-        public string? Latitude { get; set; }
-
-        public string? Longitude { get; set; }
-
-        public string? NameEn { get; set; }
     }
 }

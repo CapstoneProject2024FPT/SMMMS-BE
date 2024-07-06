@@ -57,9 +57,6 @@ namespace SAM.BusinessTier.Services.Implements
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
                 Type = string.IsNullOrEmpty(city.Type) ? null : EnumUtil.ParseEnum<CityType>(city.Type),
                 Slug = city.Slug,
-                Latitude = city.Latitude,
-                Longitude = city.Longitude,
-                NameEn = city.NameEn
             };
 
             return cityResponse;
@@ -82,9 +79,6 @@ namespace SAM.BusinessTier.Services.Implements
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
                 Type = string.IsNullOrEmpty(city.Type) ? null : EnumUtil.ParseEnum<CityType>(city.Type),
                 Slug = city.Slug,
-                Latitude = city.Latitude,
-                Longitude = city.Longitude,
-                NameEn = city.NameEn
             }).ToList();
 
             return cityResponses;
@@ -115,9 +109,6 @@ namespace SAM.BusinessTier.Services.Implements
             city.Type = updateCityRequest.Type.GetDescriptionFromEnum();
             city.Slug = string.IsNullOrEmpty(updateCityRequest.Slug) ? city.Slug : updateCityRequest.Slug;
             city.Status = updateCityRequest.Status.GetDescriptionFromEnum();
-            city.Latitude = string.IsNullOrEmpty(updateCityRequest.Latitude) ? city.Latitude : updateCityRequest.Latitude;
-            city.Longitude = string.IsNullOrEmpty(updateCityRequest.Longitude) ? city.Longitude : updateCityRequest.Longitude;
-            city.NameEn = string.IsNullOrEmpty(updateCityRequest.NameEn) ? city.NameEn : updateCityRequest.NameEn;
 
             _unitOfWork.GetRepository<City>().UpdateAsync(city);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;

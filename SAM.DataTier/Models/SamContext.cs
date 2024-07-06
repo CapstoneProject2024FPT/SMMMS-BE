@@ -144,12 +144,12 @@ public partial class SamContext : DbContext
                 .HasForeignKey(d => d.CityId)
                 .HasConstraintName("FK_Address_City");
 
-            entity.HasOne(d => d.Districts).WithMany()
-                .HasForeignKey(d => d.DistrictsId)
+            entity.HasOne(d => d.District).WithMany()
+                .HasForeignKey(d => d.DistrictId)
                 .HasConstraintName("FK_Address_Districts");
 
-            entity.HasOne(d => d.Wards).WithMany()
-                .HasForeignKey(d => d.WardsId)
+            entity.HasOne(d => d.Ward).WithMany()
+                .HasForeignKey(d => d.WardId)
                 .HasConstraintName("FK_Address_Wards");
         });
 
@@ -225,16 +225,7 @@ public partial class SamContext : DbContext
             entity.ToTable("City");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Latitude)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Longitude)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.NameEn)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Slug)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -277,11 +268,12 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<District>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_Districts");
+
+            entity.ToTable("District");
+
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(250);
-            entity.Property(e => e.NameEn)
-                .HasMaxLength(50)
-                .IsUnicode(false);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -579,6 +571,10 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Ward>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("PK_Wards");
+
+            entity.ToTable("Ward");
+
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.NameEn)
@@ -589,8 +585,8 @@ public partial class SamContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Type).HasMaxLength(250);
 
-            entity.HasOne(d => d.Districts).WithMany(p => p.Wards)
-                .HasForeignKey(d => d.DistrictsId)
+            entity.HasOne(d => d.District).WithMany(p => p.Wards)
+                .HasForeignKey(d => d.DistrictId)
                 .HasConstraintName("FK_Wards_Districts");
         });
 
