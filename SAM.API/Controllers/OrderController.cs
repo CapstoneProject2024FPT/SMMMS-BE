@@ -6,6 +6,7 @@ using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SAM.DataTier.Paginate;
 
 namespace SAM.API.Controllers
 {
@@ -32,12 +33,13 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Order.OrdersEndPoint)]
-        [ProducesResponseType(typeof(GetOrderResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IPaginate<GetOrderDetailResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrderList([FromQuery] OrderFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _orderService.GetOrderList(filter, pagingModel);
             return Ok(response);
         }
+
         [HttpPut(ApiEndPointConstant.Order.OrderEndPoint)]
         [ProducesResponseType(typeof(GetOrderDetailResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateOrder(Guid id, UpdateOrderRequest request)

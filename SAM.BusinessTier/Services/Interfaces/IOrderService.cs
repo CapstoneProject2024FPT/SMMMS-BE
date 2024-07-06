@@ -15,7 +15,7 @@ namespace SAM.BusinessTier.Services.Interfaces
     {
         Task<Guid> CreateNewOrder(CreateNewOrderResponse createNewOrderRequest);
         Task<GetOrderDetailResponse> GetOrderDetail(Guid id);
-        Task<IPaginate<GetOrderResponse>> GetOrderList(OrderFilter filter, PagingModel pagingModel);
+        Task<IPaginate<GetOrderDetailResponse>> GetOrderList(OrderFilter filter, PagingModel pagingModel);
         Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request);
 
         //Task<IEnumerable<GetOrderHistoriesResponse>> GetOrderHistories(Guid orderId);

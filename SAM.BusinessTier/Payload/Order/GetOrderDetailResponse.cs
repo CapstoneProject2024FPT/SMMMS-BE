@@ -16,7 +16,6 @@ namespace SAM.BusinessTier.Payload.Order
         public DateTime? CreateDate { get; set; }
         public DateTime? CompletedDate { get; set; }
         public List<OrderDetailResponse>? ProductList { get; set; } = new List<OrderDetailResponse>();
-        
         public double? TotalAmount { get; set; }
         //public double? Discount { get; set; }
         public double? FinalAmount { get; set; }
@@ -35,6 +34,7 @@ namespace SAM.BusinessTier.Payload.Order
         public int? Quantity { get; set; }
         public double? SellingPrice { get; set; }
         public double? TotalAmount { get; set; }
+        public DateTime? CreateDate {  set; get; }
         
     }
 
