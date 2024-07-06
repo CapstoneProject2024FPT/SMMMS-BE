@@ -25,9 +25,6 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Image { get; set; }
 
-        public double? Amount { get; set; }
-
-        public int? YearsOfExperience { get; set; }
 
     }
 
