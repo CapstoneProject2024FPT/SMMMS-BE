@@ -46,6 +46,12 @@ namespace SAM.BusinessTier.Services.Implements
             address.Id = Guid.NewGuid();
             address.Status = AddressStatus.Active.GetDescriptionFromEnum();
             address.AccountId = account.Id;
+
+            address.Description = $"{createNewAddressRequest.Note ?? string.Empty} - " +
+                           $"{createNewAddressRequest.WardId} - " +
+                           $"{createNewAddressRequest.DistrictId} - " +
+                           $"{createNewAddressRequest.CityId}";
+
             await _unitOfWork.GetRepository<Address>().InsertAsync(address);
 
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
