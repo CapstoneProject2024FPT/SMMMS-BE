@@ -23,6 +23,8 @@ namespace SAM.BusinessTier.Payload.Order
         public string? Note { get; set; }
         public OrderStatus? Status { get; set; }
         public OrderUserResponse? UserInfo { get; set; }
+
+        public AddressResponse? Address { get; set; }
     }
 
     public class OrderDetailResponse
@@ -33,7 +35,7 @@ namespace SAM.BusinessTier.Payload.Order
         public int? Quantity { get; set; }
         public double? SellingPrice { get; set; }
         public double? TotalAmount { get; set; }
-
+        
     }
 
     public class OrderUserResponse
@@ -41,5 +43,10 @@ namespace SAM.BusinessTier.Payload.Order
         public Guid? Id { get; set; }
         public string? FullName { get; set; }
         public RoleEnum? Role { get; set; }
+    }
+    public class AddressResponse
+    {
+        public Guid Id { get; set; }
+        public string? Name { get; set; }
     }
 }

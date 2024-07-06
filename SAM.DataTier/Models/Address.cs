@@ -27,5 +27,7 @@ public partial class Address
 
     public virtual District? District { get; set; }
 
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
     public virtual Ward? Ward { get; set; }
 }

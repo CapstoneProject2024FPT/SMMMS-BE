@@ -21,8 +21,6 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Address> Addresses { get; set; }
 
-    public virtual DbSet<Area> Areas { get; set; }
-
     public virtual DbSet<Brand> Brands { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
@@ -148,19 +146,6 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Ward).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.WardId)
                 .HasConstraintName("FK_Address_Ward");
-        });
-
-        modelBuilder.Entity<Area>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Area__3214EC07A29447FC");
-
-            entity.ToTable("Area");
-
-            entity.HasIndex(e => e.Id, "UQ__Area__3214EC068CA0ED2E").IsUnique();
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(255);
-            entity.Property(e => e.Status).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Brand>(entity =>
@@ -454,9 +439,9 @@ public partial class SamContext : DbContext
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK_Order_Account");
 
-            entity.HasOne(d => d.Area).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.AreaId)
-                .HasConstraintName("FK_Order_Area");
+            entity.HasOne(d => d.Address).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("FK_Order_Address");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>

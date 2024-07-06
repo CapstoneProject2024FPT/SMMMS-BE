@@ -19,6 +19,8 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Machinery;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -82,12 +84,48 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetOrderDetailResponse> GetOrderDetail(Guid id)
         {
-            DateTime currentTime = TimeUtils.GetCurrentSEATime();
+            // Lấy thông tin đơn hàng từ database
             Order order = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-            ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
+                ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
 
-            var orderDetailResponse = new GetOrderDetailResponse()
+            // Lấy danh sách sản phẩm trong đơn hàng
+            var productList = await _unitOfWork.GetRepository<OrderDetail>()
+                .GetListAsync(
+                    selector: x => new OrderDetailResponse
+                    {
+                        OrderDetailId = x.Id,
+                        ProductId = x.MachineryId,
+                        ProductName = x.Machinery.Name,
+                        Quantity = x.Quantity,
+                        SellingPrice = x.SellingPrice,
+                        TotalAmount = x.TotalAmount,
+                    },
+                    predicate: x => x.OrderId.Equals(id)
+                );
+
+            // Lấy thông tin người dùng từ đơn hàng
+            var userInfo = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                selector: x => new OrderUserResponse
+                {
+                    Id = x.Id,
+                    FullName = x.FullName,
+                    Role = EnumUtil.ParseEnum<RoleEnum>(x.Role)
+                },
+                predicate: x => x.Id.Equals(order.AccountId));
+
+            // Lấy thông tin địa chỉ từ đơn hàng
+            var address = await _unitOfWork.GetRepository<Address>()
+                .SingleOrDefaultAsync(
+                    selector: x => new AddressResponse
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                    },
+                    predicate: x => x.Id.Equals(order.AddressId));
+
+            // Tạo đối tượng GetOrderDetailResponse để trả về
+            var orderDetailResponse = new GetOrderDetailResponse
             {
                 OrderId = order.Id,
                 InvoiceCode = order.InvoiceCode,
@@ -97,65 +135,15 @@ namespace SAM.BusinessTier.Services.Implements
                 FinalAmount = order.FinalAmount,
                 Note = order.Note,
                 Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
-
-                ProductList = (List<OrderDetailResponse>)await _unitOfWork.GetRepository<OrderDetail>()
-                    .GetListAsync(
-                        selector: x => new OrderDetailResponse()
-                        {
-                            OrderDetailId = x.Id,
-                            ProductId = x.MachineryId,
-                            ProductName = x.Machinery.Name,
-                            Quantity = x.Quantity,
-                            SellingPrice = x.SellingPrice,  
-                            TotalAmount = x.TotalAmount,
-                        },
-                        predicate: x => x.OrderId.Equals(id)
-                    ),
-                UserInfo = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                    selector: x => new OrderUserResponse()
-                    {
-                        Id = x.Id,
-                        FullName = x.FullName,
-                        Role = EnumUtil.ParseEnum<RoleEnum>(x.Role)
-                    },
-                    predicate: x => x.Id.Equals(order.AccountId))
-                
+                Address = address,
+                ProductList = productList.ToList(),
+                UserInfo = userInfo
             };
+
             return orderDetailResponse;
         }
-        //private static Expression<Func<Order, bool>> BuildGetOrderQuery(OrderFilter filter)
-        //{
-        //    Expression<Func<Order, bool>> filterQuery = x => true;
 
-        //    var InvoiceCode = filter.InvoiceCode;
-        //    var fromDate = filter.fromDate;
-        //    var toDate = filter.toDate;
-        //    var status = filter.status;
-
-        //    if (InvoiceCode != null)
-        //    {
-        //        filterQuery = filterQuery.AndAlso(x => x.InvoiceCode.Contains(InvoiceCode));
-        //    }
-
-        //    if (fromDate.HasValue)
-        //    {
-        //        filterQuery = filterQuery.AndAlso(x => x.CreateDate >= fromDate);
-        //    }
-
-        //    if (toDate.HasValue)
-        //    {
-        //        filterQuery = filterQuery.AndAlso(x => x.CreateDate <= toDate);
-        //    }
-
-        //    if (status != null)
-        //    {
-        //        filterQuery = filterQuery.AndAlso(x => x.Status.Equals(status.GetDescriptionFromEnum()));
-        //    }
-
-
-        //    return filterQuery;
-        //}
-
+       
 
         public async Task<IPaginate<GetOrderResponse>> GetOrderList(OrderFilter filter, PagingModel pagingModel)
         {

@@ -21,6 +21,8 @@ namespace SAM.BusinessTier.Payload.Order
 
         //public Guid? PaymentId { get; set; }
 
+        public Guid AddressId { get; set; }
+
     }
     public class OrderMachinery
     {
