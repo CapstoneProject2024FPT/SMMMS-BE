@@ -52,6 +52,12 @@ namespace SAM.BusinessTier.Services.Implements
                 Id = ward.Id,
                 Name = ward.Name,
                 Status = string.IsNullOrEmpty(ward.Status) ? null : EnumUtil.ParseEnum<WardStatus>(ward.Status),
+                District = new DistrictResponse
+                {
+                    Id = ward.District.Id,
+                    Name = ward.District.Name,
+                    UnitId = ward.District.UnitId,
+                },
             };
             return wardResponse;
         }
@@ -71,6 +77,12 @@ namespace SAM.BusinessTier.Services.Implements
                 Id = ward.Id,
                 Name = ward.Name,
                 Status = string.IsNullOrEmpty(ward.Status) ? null : EnumUtil.ParseEnum<WardStatus>(ward.Status),
+                District = new DistrictResponse
+                {
+                    Id = ward.District.Id,
+                    Name = ward.District.Name,
+                    UnitId = ward.District.UnitId,
+                },
             }).ToList();
 
             return wardResponses;
