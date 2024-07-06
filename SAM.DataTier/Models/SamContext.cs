@@ -128,7 +128,6 @@ public partial class SamContext : DbContext
             entity.ToTable("Address");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.Note).HasMaxLength(4000);
             entity.Property(e => e.Status)

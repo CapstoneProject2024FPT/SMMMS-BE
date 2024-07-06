@@ -20,7 +20,6 @@ namespace SAM.BusinessTier.Payload.Address
 
         public string? Note { get; set; }
 
-        public string? Description { get; set; }
 
         public List<CityResponse>? City { get; set; } = new List<CityResponse>();
         public List<DistrictResponse>? District { get; set; } = new List<DistrictResponse>();

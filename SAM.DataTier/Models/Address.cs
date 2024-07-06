@@ -13,8 +13,6 @@ public partial class Address
 
     public string? Note { get; set; }
 
-    public string? Description { get; set; }
-
     public Guid? CityId { get; set; }
 
     public Guid? DistrictId { get; set; }

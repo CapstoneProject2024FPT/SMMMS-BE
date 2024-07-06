@@ -47,11 +47,6 @@ namespace SAM.BusinessTier.Services.Implements
             address.Status = AddressStatus.Active.GetDescriptionFromEnum();
             address.AccountId = account.Id;
 
-            address.Description = $"{createNewAddressRequest.Note ?? string.Empty} - " +
-                           $"{createNewAddressRequest.WardId} - " +
-                           $"{createNewAddressRequest.DistrictId} - " +
-                           $"{createNewAddressRequest.CityId}";
-
             await _unitOfWork.GetRepository<Address>().InsertAsync(address);
 
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
@@ -78,7 +73,6 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                Description = address.Description,
                 City = address.City != null ? new List<CityResponse>
                 {
                     new CityResponse
@@ -138,7 +132,6 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                Description = address.Description,
                 City = address.City != null ? new List<CityResponse>
                 {
                     new CityResponse
@@ -208,8 +201,7 @@ namespace SAM.BusinessTier.Services.Implements
 
 
             address.Name = string.IsNullOrEmpty(updateAddressRequest.Name) ? address.Name : updateAddressRequest.Name;
-            address.Note = updateAddressRequest.Note;
-            address.Description = updateAddressRequest.Description;
+            address.Note = string.IsNullOrEmpty(updateAddressRequest.Note) ? address.Note : updateAddressRequest.Note;
             address.Status = updateAddressRequest.Status.GetDescriptionFromEnum();
 
             _unitOfWork.GetRepository<Address>().UpdateAsync(address);
