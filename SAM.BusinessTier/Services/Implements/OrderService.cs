@@ -138,28 +138,28 @@ namespace SAM.BusinessTier.Services.Implements
         {
             IPaginate<GetOrderDetailResponse> orderList = await _unitOfWork.GetRepository<Order>().GetPagingListAsync
             (
-                selector: order => new GetOrderDetailResponse
+                selector: x => new GetOrderDetailResponse
                 {
-                    OrderId = order.Id,
-                    InvoiceCode = order.InvoiceCode,
-                    CreateDate = order.CreateDate,
-                    CompletedDate = order.CompletedDate,
-                    TotalAmount = order.TotalAmount,
-                    FinalAmount = order.FinalAmount,
-                    Note = order.Note,
-                    Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
-                    UserInfo = order.Account == null ? null : new OrderUserResponse
+                    OrderId = x.Id,
+                    InvoiceCode = x.InvoiceCode,
+                    CreateDate = x.CreateDate,
+                    CompletedDate = x.CompletedDate,
+                    TotalAmount = x.TotalAmount,
+                    FinalAmount = x.FinalAmount,
+                    Note = x.Note,
+                    Status = EnumUtil.ParseEnum<OrderStatus>(x.Status),
+                    UserInfo = x.Account == null ? null : new OrderUserResponse
                     {
-                        Id = order.Account.Id,
-                        FullName = order.Account.FullName,
-                        Role = EnumUtil.ParseEnum<RoleEnum>(order.Account.Role)
+                        Id = x.Account.Id,
+                        FullName = x.Account.FullName,
+                        Role = EnumUtil.ParseEnum<RoleEnum>(x.Account.Role)
                     },
-                    Address = order.Address == null ? null : new AddressResponse
+                    Address = x.Address == null ? null : new AddressResponse
                     {
-                        Id = order.Address.Id,
-                        Name = order.Address.Name,
+                        Id = x.Address.Id,
+                        Name = x.Address.Name,
                     },
-                    ProductList = order.OrderDetails.Select(detail => new OrderDetailResponse
+                    ProductList = x.OrderDetails.Select(detail => new OrderDetailResponse
                     {
                         OrderDetailId = detail.Id,
                         ProductId = detail.MachineryId,
@@ -179,11 +179,6 @@ namespace SAM.BusinessTier.Services.Implements
                 page: pagingModel.page,
                 size: pagingModel.size
             );
-
-            if (orderList == null)
-            {
-                throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
-            }
 
             return orderList;
         }
