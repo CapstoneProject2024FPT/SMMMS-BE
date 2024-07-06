@@ -21,6 +21,5 @@ namespace SAM.BusinessTier.Payload.City
 
         public CityStatus? Status { get; set; }
 
-        public List<DistrictResponse>? District { get; set; } = new List<DistrictResponse>();
     }
 }

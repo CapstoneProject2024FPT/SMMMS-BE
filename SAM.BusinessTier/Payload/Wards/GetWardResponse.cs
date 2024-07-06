@@ -13,7 +13,6 @@ namespace SAM.BusinessTier.Payload.Wards
         public int? UnitId { get; set; }
         public string? Name { get; set; }
         public WardStatus? Status { get; set; }
-        public DistrictResponse? District { get; set; }
 
     }
     public class DistrictResponse

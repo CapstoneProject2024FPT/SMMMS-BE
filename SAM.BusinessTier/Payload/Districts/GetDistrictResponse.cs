@@ -17,9 +17,6 @@ namespace SAM.BusinessTier.Payload.Districts
 
         public DistrictStatus? Status { get; set; }
 
-        public CityResponse? City { get; set; }
-
-        public List<WardResponse>? Ward { get; set; } = new List<WardResponse>();
 
     }
     public class CityResponse

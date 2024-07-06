@@ -59,12 +59,6 @@ namespace SAM.BusinessTier.Services.Implements
                 UnitId = city.UnitId,
                 Name = city.Name,
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
-                District = city.Districts.Select(district => new DistrictResponse
-                {
-                    Id = district.Id,
-                    Name = district.Name,
-                    UnitId = district.UnitId,
-                }).ToList()
             };
 
             return cityResponse;
@@ -86,12 +80,6 @@ namespace SAM.BusinessTier.Services.Implements
                 UnitId = city.UnitId,
                 Name = city.Name,
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
-                District = city.Districts.Select(district => new DistrictResponse
-                {
-                    Id = district.Id,
-                    Name = district.Name,
-                    UnitId = district.UnitId,
-                }).ToList()
             }).ToList();
 
             return cityResponses;
