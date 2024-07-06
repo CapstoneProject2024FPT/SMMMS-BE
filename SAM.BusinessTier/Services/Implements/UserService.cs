@@ -139,7 +139,6 @@ namespace SAM.BusinessTier.Services.Implements
                 FullName = request.FullName,
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
-                Address = request.Address,
                 Status = UserStatus.Activate.GetDescriptionFromEnum(),
                 Email = request.Email,
                 Image = request.Image,
@@ -304,7 +303,6 @@ namespace SAM.BusinessTier.Services.Implements
             user.FullName = string.IsNullOrEmpty(updateRequest.FullName) ? user.FullName : updateRequest.FullName;
             user.Gender = updateRequest.Gender.GetDescriptionFromEnum();
             user.PhoneNumber = string.IsNullOrEmpty(updateRequest.PhoneNumber) ? user.PhoneNumber : updateRequest.PhoneNumber;
-            user.Address = string.IsNullOrEmpty(updateRequest.Address) ? user.Address : updateRequest.Address;
             user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
             user.YearsOfExperience = updateRequest.YearsOfExperience.HasValue ? updateRequest.YearsOfExperience.Value : user.YearsOfExperience;
             user.Image = string.IsNullOrEmpty(updateRequest.Image) ? user.Image : updateRequest.Image;

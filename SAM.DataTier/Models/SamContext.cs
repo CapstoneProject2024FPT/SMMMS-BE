@@ -88,7 +88,6 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Account__3213E83E68399404").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.Gender).HasMaxLength(50);
