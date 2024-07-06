@@ -25,8 +25,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<Guid> CreateNewWard(CreateNewWardRequest createNewWardRequest)
         {
-            Ward ward = await _unitOfWork.GetRepository<Ward>().SingleOrDefaultAsync(
-                predicate: x => x.Name.Equals(createNewWardRequest.Name));
+            Ward ward = await _unitOfWork.GetRepository<Ward>().SingleOrDefaultAsync();
             if (ward != null) throw new BadHttpRequestException(MessageConstant.Ward.WardExistedMessage);
             ward = _mapper.Map<Ward>(createNewWardRequest);
             ward.Id = Guid.NewGuid();

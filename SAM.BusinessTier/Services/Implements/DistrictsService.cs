@@ -25,8 +25,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<Guid> CreateNewDistrict(CreateNewDistrictRequest createNewDistrictRequest)
         {
-            District district = await _unitOfWork.GetRepository<District>().SingleOrDefaultAsync(
-                predicate: x => x.Name.Equals(createNewDistrictRequest.Name));
+            District district = await _unitOfWork.GetRepository<District>().SingleOrDefaultAsync();
             if (district != null) throw new BadHttpRequestException(MessageConstant.District.DistrictExistedMessage);
             district = _mapper.Map<District>(createNewDistrictRequest);
             district.Id = Guid.NewGuid();
