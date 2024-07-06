@@ -19,12 +19,10 @@ namespace SAM.BusinessTier.Payload.Address
         public AddressStatus? Status { get; set; }
 
         public string? Note { get; set; }
-
-
-        public List<CityResponse>? City { get; set; } = new List<CityResponse>();
-        public List<DistrictResponse>? District { get; set; } = new List<DistrictResponse>();
-        public List<WardResponse>? Ward { get; set; } = new List<WardResponse>();
-        public List<AccountResponse>? Account { get; set; } = new List<AccountResponse>();
+        public CityResponse? City { get; set; }
+        public DistrictResponse District { get; set; }
+        public WardResponse Ward { get; set; }
+        public AccountResponse Account { get; set; }
 
     }
 

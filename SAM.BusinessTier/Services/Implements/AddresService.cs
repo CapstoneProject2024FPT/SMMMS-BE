@@ -73,41 +73,33 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                City = address.City != null ? new List<CityResponse>
-                {
-                    new CityResponse
+                City = new CityResponse
                     {
                         Id = address.City.Id,
                         Name = address.City.Name,
                         UnitId = address.City.UnitId
                     }
-                } : null,
-                District = address.District != null ? new List<DistrictResponse>
-                {
-                    new DistrictResponse
+                 ,
+                District = new DistrictResponse
                     {
                         Id = address.District.Id,
                         Name = address.District.Name,
                         UnitId = address.District.UnitId
                     }
-                } : null,
-                Ward = address.Ward != null ? new List<WardResponse>
-                {
-                    new WardResponse
+                 ,
+                Ward =  new WardResponse
                     {
                         Id = address.Ward.Id,
                         Name = address.Ward.Name,
                         UnitId = address.Ward.UnitId
                     }
-                } : null,
-                Account = address.Account != null ? new List<AccountResponse>
-                {
-                    new AccountResponse
+                ,
+                Account =  new AccountResponse
                     {
                         Id = address.Account.Id,
                         FullName = address.Account.FullName
                     }
-                } : null
+                
             };
 
             return addressResponse;
@@ -132,42 +124,32 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                City = address.City != null ? new List<CityResponse>
+                City = new CityResponse
                 {
-                    new CityResponse
-                    {
-                        Id = address.City.Id,
-                        Name = address.City.Name,
-                        UnitId = address.City.UnitId
-                    }
-                } : null,
-                District = address.District != null ? new List<DistrictResponse>
+                    Id = address.City.Id,
+                    Name = address.City.Name,
+                    UnitId = address.City.UnitId
+                }
+                 ,
+                District = new DistrictResponse
                 {
-                    new DistrictResponse
-                    {
-                        Id = address.District.Id,
-                        Name = address.District.Name,
-                        UnitId = address.District.UnitId
-                    }
-                } : null,
-                Ward = address.Ward != null ? new List<WardResponse>
+                    Id = address.District.Id,
+                    Name = address.District.Name,
+                    UnitId = address.District.UnitId
+                }
+                 ,
+                Ward = new WardResponse
                 {
-                    new WardResponse
-                    {
-                        Id = address.Ward.Id,
-                        Name = address.Ward.Name,
-                        UnitId = address.Ward.UnitId
-                    }
-                } : null,
-                Account = address.Account != null ? new List<AccountResponse>
+                    Id = address.Ward.Id,
+                    Name = address.Ward.Name,
+                    UnitId = address.Ward.UnitId
+                }
+                ,
+                Account = new AccountResponse
                 {
-                    new AccountResponse
-                    {
-                        Id = address.Account.Id,
-                        FullName = address.Account.FullName,
-                        Role = EnumUtil.ParseEnum<RoleEnum>(address.Account.Role),
-                    }
-                } : null
+                    Id = address.Account.Id,
+                    FullName = address.Account.FullName
+                }
             }).ToList();
 
             return addressResponses;
