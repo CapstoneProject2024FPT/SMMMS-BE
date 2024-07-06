@@ -45,7 +45,7 @@ namespace SAM.BusinessTier.Services.Implements
             var address = _mapper.Map<Address>(createNewAddressRequest);
             address.Id = Guid.NewGuid();
             address.Status = AddressStatus.Active.GetDescriptionFromEnum();
-
+            address.AccountId = account.Id;
             await _unitOfWork.GetRepository<Address>().InsertAsync(address);
 
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

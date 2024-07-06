@@ -21,6 +21,6 @@ namespace SAM.BusinessTier.Payload.Address
 
         public Guid? WardId { get; set; }
 
-        public Guid? AccountId { get; set; }
+        //public Guid? AccountId { get; set; }
     }
 }

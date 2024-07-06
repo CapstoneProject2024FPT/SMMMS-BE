@@ -112,7 +112,6 @@ namespace SAM.BusinessTier.Services.Implements
                 FullName = request.FullName,
                 Gender = request.Gender,
                 PhoneNumber = request.PhoneNumber,
-                Address = request.Address,
                 Status = UserStatus.Activate.GetDescriptionFromEnum(),
                 Email = request.Email,
                 Image = request.Image,
