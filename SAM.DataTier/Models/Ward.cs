@@ -15,5 +15,7 @@ public partial class Ward
 
     public Guid? DistrictId { get; set; }
 
+    public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+
     public virtual District? District { get; set; }
 }

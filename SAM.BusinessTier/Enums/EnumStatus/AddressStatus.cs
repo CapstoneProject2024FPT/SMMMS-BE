@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Payload.Address
+namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public class CreateNewAddresRequest
+    public enum AddressStatus
     {
+        Active,
+        InActive
     }
 }

@@ -1,5 +1,7 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Districts;
+using SAM.BusinessTier.Payload.Wards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +20,7 @@ namespace SAM.BusinessTier.Payload.City
 
 
         public CityStatus? Status { get; set; }
+
+        public List<DistrictResponse>? District { get; set; } = new List<DistrictResponse>();
     }
 }

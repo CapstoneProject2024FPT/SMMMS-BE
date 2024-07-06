@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Wards;
 using SAM.BusinessTier.Services.Interfaces;
+using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
 using SAM.DataTier.Repository.Interfaces;
 using System;
@@ -19,29 +23,98 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public Task<Guid> CreateNewWard(CreateNewWardRequest createNewWardsRequest)
+        public async Task<Guid> CreateNewWard(CreateNewWardRequest createNewWardRequest)
         {
-            throw new NotImplementedException();
+            Ward ward = await _unitOfWork.GetRepository<Ward>().SingleOrDefaultAsync(
+                predicate: x => x.Name.Equals(createNewWardRequest.Name));
+            if (ward != null) throw new BadHttpRequestException(MessageConstant.Ward.WardExistedMessage);
+            ward = _mapper.Map<Ward>(createNewWardRequest);
+            ward.Id = Guid.NewGuid();
+            ward.Status = WardStatus.Active.GetDescriptionFromEnum();
+
+            await _unitOfWork.GetRepository<Ward>().InsertAsync(ward);
+
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Ward.CreateWardFailedMessage);
+            return ward.Id;
         }
 
-        public Task<GetWardResponse> GetWardById(Guid id)
+        public async Task<GetWardResponse> GetWardById(Guid id)
         {
-            throw new NotImplementedException();
+            var ward = await _unitOfWork.GetRepository<Ward>()
+                .SingleOrDefaultAsync(
+                    predicate: x => x.Id == id,
+                    include: x => x.Include(x => x.District))
+                ?? throw new BadHttpRequestException(MessageConstant.Ward.NotFoundFailedMessage);
+
+            var wardResponse = new GetWardResponse
+            {
+                Id = ward.Id,
+                Name = ward.Name,
+                Status = string.IsNullOrEmpty(ward.Status) ? null : EnumUtil.ParseEnum<WardStatus>(ward.Status),
+                District = new DistrictResponse
+                {
+                    Id = ward.District.Id,
+                    Name = ward.District.Name,
+                    UnitId = ward.District.UnitId,
+                },
+            };
+            return wardResponse;
         }
 
-        public Task<ICollection<GetWardResponse>> GetWardList(WardFilter filter)
+        public async Task<ICollection<GetWardResponse>> GetWardList(WardFilter filter)
         {
-            throw new NotImplementedException();
+            var wardList = await _unitOfWork.GetRepository<Ward>()
+                .GetListAsync(
+                    selector: x => x,
+                    filter: filter,
+                    orderBy: x => x.OrderBy(x => x.Name),
+                    include: x => x.Include(x => x.District))
+                ?? throw new BadHttpRequestException(MessageConstant.Ward.NotFoundFailedMessage);
+
+            var wardResponses = wardList.Select(ward => new GetWardResponse
+            {
+                Id = ward.Id,
+                Name = ward.Name,
+                Status = string.IsNullOrEmpty(ward.Status) ? null : EnumUtil.ParseEnum<WardStatus>(ward.Status),
+                District = new DistrictResponse
+                {
+                    Id = ward.District.Id,
+                    Name = ward.District.Name,
+                    UnitId = ward.District.UnitId,
+                },
+            }).ToList();
+
+            return wardResponses;
         }
 
-        public Task<bool> RemoveWardStatus(Guid id)
+        public async Task<bool> RemoveWardStatus(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Ward.WardEmptyMessage);
+            Ward ward = await _unitOfWork.GetRepository<Ward>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
+            ward.Status = WardStatus.InActive.GetDescriptionFromEnum();
+            _unitOfWork.GetRepository<Ward>().UpdateAsync(ward);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
 
-        public Task<bool> UpdateWard(Guid id, UpdateWardRequest updateWardsRequest)
+        public async Task<bool> UpdateWard(Guid id, UpdateWardRequest updateWardRequest)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty)
+                throw new BadHttpRequestException(MessageConstant.Ward.WardEmptyMessage);
+
+            var ward = await _unitOfWork.GetRepository<Ward>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Ward.WardExistedMessage);
+
+            ward.Name = string.IsNullOrEmpty(updateWardRequest.Name) ? ward.Name : updateWardRequest.Name;
+            ward.Status = updateWardRequest.Status.GetDescriptionFromEnum();
+
+            _unitOfWork.GetRepository<Ward>().UpdateAsync(ward);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
         }
     }
 }

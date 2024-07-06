@@ -33,6 +33,8 @@ public partial class Account
 
     public virtual ICollection<AccountRank> AccountRanks { get; set; } = new List<AccountRank>();
 
+    public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+
     public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
 
     public virtual ICollection<News> News { get; set; } = new List<News>();

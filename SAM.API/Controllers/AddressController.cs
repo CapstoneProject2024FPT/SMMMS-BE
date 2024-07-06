@@ -19,7 +19,7 @@ namespace SAM.API.Controllers
             _addressService = addressService;
         }
         [HttpPost(ApiEndPointConstant.Address.AddressSEndPoint)]
-        public async Task<IActionResult> CreateNewAddress(CreateNewAddresRequest createNewAddresRequest)
+        public async Task<IActionResult> CreateNewAddress(CreateNewAddressRequest createNewAddresRequest)
         {
             var response = await _addressService.CreateNewAddress(createNewAddresRequest);
             return Ok(response);

@@ -1,5 +1,4 @@
-﻿using SAM.BusinessTier.Enums.EnumStatus;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.Address
 {
-    public class AddressFilter
+    public class CreateNewAddressRequest
     {
 
         public string? Name { get; set; }
-
-        public AddressStatus? Status { get; set; }
 
         public string? Note { get; set; }
 
@@ -24,6 +21,6 @@ namespace SAM.BusinessTier.Payload.Address
 
         public Guid? WardId { get; set; }
 
-        public Guid? AccountId { get; set; }
+        //public Guid? AccountId { get; set; }
     }
 }

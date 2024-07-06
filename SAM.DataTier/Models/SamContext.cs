@@ -125,10 +125,9 @@ public partial class SamContext : DbContext
 
         modelBuilder.Entity<Address>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Address");
+            entity.ToTable("Address");
 
+            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Name).HasMaxLength(250);
             entity.Property(e => e.Note).HasMaxLength(4000);
@@ -136,21 +135,21 @@ public partial class SamContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Account).WithMany()
+            entity.HasOne(d => d.Account).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK_Address_Account");
 
-            entity.HasOne(d => d.City).WithMany()
+            entity.HasOne(d => d.City).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.CityId)
-                .HasConstraintName("FK_Address_City");
+                .HasConstraintName("FK_Address_City1");
 
-            entity.HasOne(d => d.District).WithMany()
+            entity.HasOne(d => d.District).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.DistrictId)
-                .HasConstraintName("FK_Address_Districts");
+                .HasConstraintName("FK_Address_District");
 
-            entity.HasOne(d => d.Ward).WithMany()
+            entity.HasOne(d => d.Ward).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.WardId)
-                .HasConstraintName("FK_Address_Wards");
+                .HasConstraintName("FK_Address_Ward");
         });
 
         modelBuilder.Entity<Area>(entity =>
@@ -276,7 +275,7 @@ public partial class SamContext : DbContext
 
             entity.HasOne(d => d.City).WithMany(p => p.Districts)
                 .HasForeignKey(d => d.CityId)
-                .HasConstraintName("FK_Districts_City");
+                .HasConstraintName("FK_District_City");
         });
 
         modelBuilder.Entity<ImagesAll>(entity =>
@@ -578,7 +577,7 @@ public partial class SamContext : DbContext
 
             entity.HasOne(d => d.District).WithMany(p => p.Wards)
                 .HasForeignKey(d => d.DistrictId)
-                .HasConstraintName("FK_Wards_Districts");
+                .HasConstraintName("FK_Ward_District");
         });
 
         modelBuilder.Entity<Warranty>(entity =>

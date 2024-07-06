@@ -57,7 +57,7 @@ public static class MessageConstant
         public const string NotFoundFailedMessage = "Address ko có trong hệ thống";
         public const string UpdateAddressSuccessMessage = "Address được cập nhật thành công";
         public const string UpdateAddressFailedMessage = "Address cập nhật thất bại";
-        public const string AddressExistedMessage = "Address đã tồn tại";
+        public const string AddressExisteMessage = "Address đã tồn tại";
         public const string AddressdEmptyMessage = "Address không hợp lệ";
     }
     public static class City
@@ -149,10 +149,10 @@ public static class MessageConstant
 
     public static class User
     {
-        public const string UserExisted = "User đã tồn tại trong hệ thống";
-        public const string CreateFailedMessage = "Tạo mới user thất bại";
-        public const string UserNotFoundMessage = "User không tồn tại trong hệ thống";
-        public const string EmptyUserIdMessage = "UserId ko hợp lệ";
+        public const string UserExisted = "Account đã tồn tại trong hệ thống";
+        public const string CreateFailedMessage = "Tạo mới Account thất bại";
+        public const string UserNotFoundMessage = "Account không tồn tại trong hệ thống";
+        public const string EmptyUserIdMessage = "AccountId ko hợp lệ";
         public const string UpdateStatusSuccessMessage = "Cập nhật thông tin thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật thông tin thất bại";
         public const string CheckPasswordFailed = "Mật khẩu cũ không đúng";

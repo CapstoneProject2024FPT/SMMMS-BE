@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.City;
+using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.NewsCategory;
+using SAM.BusinessTier.Payload.Wards;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
@@ -46,7 +49,8 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var city = await _unitOfWork.GetRepository<City>()
                 .SingleOrDefaultAsync(
-                    predicate: x => x.Id == id)
+                    predicate: x => x.Id == id,
+                    include: x => x.Include(x => x.Districts))
                 ?? throw new BadHttpRequestException(MessageConstant.City.NotFoundFailedMessage);
 
             var cityResponse = new GetCityResponse
@@ -55,6 +59,12 @@ namespace SAM.BusinessTier.Services.Implements
                 UnitId = city.UnitId,
                 Name = city.Name,
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
+                District = city.Districts.Select(district => new DistrictResponse
+                {
+                    Id = district.Id,
+                    Name = district.Name,
+                    UnitId = district.UnitId,
+                }).ToList()
             };
 
             return cityResponse;
@@ -66,7 +76,8 @@ namespace SAM.BusinessTier.Services.Implements
                 .GetListAsync(
                     selector: x => x,
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.Name))
+                    orderBy: x => x.OrderBy(x => x.Name),
+                    include: x => x.Include(x => x.Districts))
                 ?? throw new BadHttpRequestException(MessageConstant.City.NotFoundFailedMessage);
 
             var cityResponses = cityList.Select(city => new GetCityResponse
@@ -75,6 +86,12 @@ namespace SAM.BusinessTier.Services.Implements
                 UnitId = city.UnitId,
                 Name = city.Name,
                 Status = string.IsNullOrEmpty(city.Status) ? null : EnumUtil.ParseEnum<CityStatus>(city.Status),
+                District = city.Districts.Select(district => new DistrictResponse
+                {
+                    Id = district.Id,
+                    Name = district.Name,
+                    UnitId = district.UnitId,
+                }).ToList()
             }).ToList();
 
             return cityResponses;
@@ -86,7 +103,7 @@ namespace SAM.BusinessTier.Services.Implements
             City city = await _unitOfWork.GetRepository<City>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.News.NewsNotFoundMessage);
-            city.Status = CityStatus.Inactive.GetDescriptionFromEnum();
+            city.Status = CityStatus.InActive.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<City>().UpdateAsync(city);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;

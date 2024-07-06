@@ -10,7 +10,7 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface IAddressService
     {
-        Task<Guid> CreateNewAddress(CreateNewAddresRequest createNewAddresRequest);
+        Task<Guid> CreateNewAddress(CreateNewAddressRequest createNewAddresRequest);
         Task<bool> UpdateAddress(Guid id, UpdateAddressRequest updateAddressRequest);
         Task<ICollection<GetAddressResponse>> GetAddressList(AddressFilter filter);
         Task<GetAddressResponse> GetAddressById(Guid id);

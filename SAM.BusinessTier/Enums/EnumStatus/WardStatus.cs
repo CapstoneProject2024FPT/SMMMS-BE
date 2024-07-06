@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Payload.Districts
+namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public class GetDistricResponse
+    public enum WardStatus
     {
+        Active,
+        InActive
     }
 }
