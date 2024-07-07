@@ -21,6 +21,10 @@ using System.Threading.Tasks;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Machinery;
+using SAM.BusinessTier.Payload.Address;
+using SAM.BusinessTier.Payload.Districts;
+using SAM.BusinessTier.Payload.News;
+using SAM.BusinessTier.Payload.Wards;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -46,7 +50,8 @@ namespace SAM.BusinessTier.Services.Implements
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
                 Status = OrderStatus.Pending.GetDescriptionFromEnum(),
-                AccountId = request.AccountId
+                AccountId = request.AccountId,
+                AddressId = request.AddressId
             };
 
             var orderDetails = new List<OrderDetail>();
@@ -90,6 +95,13 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id),
                 include: x => x.Include(x => x.Account)
                                .Include(x => x.Address)
+                                   .ThenInclude(a => a.City)
+                               .Include(x => x.Address)
+                                   .ThenInclude(a => a.District)
+                               .Include(x => x.Address)
+                                   .ThenInclude(a => a.Ward)
+                               .Include(x => x.Address)
+                                   .ThenInclude(a => a.Account)
                                .Include(x => x.OrderDetails)
                                    .ThenInclude(detail => detail.Machinery))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
@@ -111,10 +123,32 @@ namespace SAM.BusinessTier.Services.Implements
                     FullName = order.Account.FullName,
                     Role = EnumUtil.ParseEnum<RoleEnum>(order.Account.Role)
                 },
-                Address = order.Address == null ? null : new AddressResponse
+                Address = order.Address == null ? null : new GetAddressResponse
                 {
                     Id = order.Address.Id,
                     Name = order.Address.Name,
+                    Status = EnumUtil.ParseEnum<AddressStatus>(order.Address.Status),
+                    Note = order.Address.Note,
+                    City = order.Address.City == null ? null : new CityResponse
+                    {
+                        Id = order.Address.City.Id,
+                        Name = order.Address.City.Name
+                    },
+                    District = order.Address.District == null ? null : new DistrictResponse
+                    {
+                        Id = order.Address.District.Id,
+                        Name = order.Address.District.Name
+                    },
+                    Ward = order.Address.Ward == null ? null : new WardResponse
+                    {
+                        Id = order.Address.Ward.Id,
+                        Name = order.Address.Ward.Name
+                    },
+                    Account = order.Address.Account == null ? null : new AccountResponse
+                    {
+                        Id = order.Address.Account.Id,
+                        FullName = order.Address.Account.FullName
+                    }
                 },
                 ProductList = order.OrderDetails?.Select(detail => new OrderDetailResponse
                 {
@@ -155,10 +189,32 @@ namespace SAM.BusinessTier.Services.Implements
                         FullName = x.Account.FullName,
                         Role = EnumUtil.ParseEnum<RoleEnum>(x.Account.Role)
                     },
-                    Address = x.Address == null ? null : new AddressResponse
+                    Address = x.Address == null ? null : new GetAddressResponse
                     {
                         Id = x.Address.Id,
                         Name = x.Address.Name,
+                        Status = EnumUtil.ParseEnum<AddressStatus>(x.Address.Status),
+                        Note = x.Address.Note,
+                        City = x.Address.City == null ? null : new CityResponse
+                        {
+                            Id = x.Address.City.Id,
+                            Name = x.Address.City.Name
+                        },
+                        District = x.Address.District == null ? null : new DistrictResponse
+                        {
+                            Id = x.Address.District.Id,
+                            Name = x.Address.District.Name
+                        },
+                        Ward = x.Address.Ward == null ? null : new WardResponse
+                        {
+                            Id = x.Address.Ward.Id,
+                            Name = x.Address.Ward.Name
+                        },
+                        Account = x.Address.Account == null ? null : new AccountResponse
+                        {
+                            Id = x.Address.Account.Id,
+                            FullName = x.Address.Account.FullName
+                        }
                     },
                     ProductList = x.OrderDetails.Select(detail => new OrderDetailResponse
                     {
@@ -175,6 +231,13 @@ namespace SAM.BusinessTier.Services.Implements
                 orderBy: x => x.OrderByDescending(x => x.CreateDate),
                 include: x => x.Include(x => x.Account)
                                .Include(x => x.Address)
+                                   .ThenInclude(a => a.City)
+                               .Include(x => x.Address)
+                                   .ThenInclude(a => a.District)
+                               .Include(x => x.Address)
+                                   .ThenInclude(a => a.Ward)
+                               .Include(x => x.Address)
+                                   .ThenInclude(a => a.Account)
                                .Include(x => x.OrderDetails)
                                    .ThenInclude(detail => detail.Machinery),
                 page: pagingModel.page,
@@ -183,6 +246,8 @@ namespace SAM.BusinessTier.Services.Implements
 
             return orderList;
         }
+
+
 
 
 

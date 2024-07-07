@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Http.Features;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Payload.Address;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace SAM.BusinessTier.Payload.Order
         public OrderStatus? Status { get; set; }
         public OrderUserResponse? UserInfo { get; set; }
 
-        public AddressResponse? Address { get; set; }
+        public GetAddressResponse? Address { get; set; }
     }
 
     public class OrderDetailResponse
