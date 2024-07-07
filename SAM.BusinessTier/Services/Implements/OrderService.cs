@@ -132,22 +132,26 @@ namespace SAM.BusinessTier.Services.Implements
                     City = order.Address.City == null ? null : new CityResponse
                     {
                         Id = order.Address.City.Id,
+                        UnitId = order.Address.City.UnitId,
                         Name = order.Address.City.Name
                     },
                     District = order.Address.District == null ? null : new DistrictResponse
                     {
                         Id = order.Address.District.Id,
+                        UnitId = order.Address.District.UnitId,
                         Name = order.Address.District.Name
                     },
                     Ward = order.Address.Ward == null ? null : new WardResponse
                     {
                         Id = order.Address.Ward.Id,
+                        UnitId = order.Address.Ward.UnitId,
                         Name = order.Address.Ward.Name
                     },
                     Account = order.Address.Account == null ? null : new AccountResponse
                     {
                         Id = order.Address.Account.Id,
-                        FullName = order.Address.Account.FullName
+                        FullName = order.Address.Account.FullName,
+                        Role = EnumUtil.ParseEnum<RoleEnum>(order.Address.Account.Role),
                     }
                 },
                 ProductList = order.OrderDetails?.Select(detail => new OrderDetailResponse
@@ -198,22 +202,26 @@ namespace SAM.BusinessTier.Services.Implements
                         City = x.Address.City == null ? null : new CityResponse
                         {
                             Id = x.Address.City.Id,
+                            UnitId = x.Address.City.UnitId,
                             Name = x.Address.City.Name
                         },
                         District = x.Address.District == null ? null : new DistrictResponse
                         {
                             Id = x.Address.District.Id,
+                            UnitId = x.Address.District.UnitId,
                             Name = x.Address.District.Name
                         },
                         Ward = x.Address.Ward == null ? null : new WardResponse
                         {
                             Id = x.Address.Ward.Id,
+                            UnitId = x.Address.Ward.UnitId,
                             Name = x.Address.Ward.Name
                         },
                         Account = x.Address.Account == null ? null : new AccountResponse
                         {
                             Id = x.Address.Account.Id,
-                            FullName = x.Address.Account.FullName
+                            FullName = x.Address.Account.FullName,
+                            Role = EnumUtil.ParseEnum<RoleEnum>(x.Address.Account.Role),
                         }
                     },
                     ProductList = x.OrderDetails.Select(detail => new OrderDetailResponse
