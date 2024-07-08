@@ -7,6 +7,8 @@ public partial class Machinery
 {
     public Guid Id { get; set; }
 
+    public string? Code { get; set; }
+
     public string? Name { get; set; }
 
     public string? Model { get; set; }
@@ -34,6 +36,8 @@ public partial class Machinery
     public virtual Brand? Brand { get; set; }
 
     public virtual Category? Category { get; set; }
+
+    public virtual SerialNumberTracker? CodeNavigation { get; set; }
 
     public virtual ICollection<DiscountMachinery> DiscountMachineries { get; set; } = new List<DiscountMachinery>();
 

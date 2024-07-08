@@ -50,8 +50,8 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 Id = Guid.NewGuid(),
                 InvoiceCode = TimeUtils.GetTimestamp(currentTime),
-                CreateDate = DateTime.Now,
-                CompletedDate = null, // Chưa hoàn thành
+                CreateDate = currentTime,
+                CompletedDate = null,
                 TotalAmount = request.TotalAmount,
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
@@ -64,19 +64,18 @@ namespace SAM.BusinessTier.Services.Implements
 
             foreach (var machinery in request.MachineryList)
             {
-                // Kiểm tra xem MachineryId có tồn tại trong hệ thống hay không
+
                 var machineryExists = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(predicate: x => x.Id.Equals(machinery.MachineryId));
                 if (machineryExists == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 }
 
-                // Lấy danh sách Inventory có sẵn cho từng loại máy (Machinery)
+
                 var inventories = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
                     predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum()
                 );
 
-                // Kiểm tra xem có đủ số lượng Inventory không
                 if (inventories.Count < machinery.Quantity)
                 {
                     throw new BadHttpRequestException(MessageConstant.Inventory.NotAvaliable);
@@ -84,24 +83,23 @@ namespace SAM.BusinessTier.Services.Implements
 
                 foreach (var inventory in inventories.Take((int)machinery.Quantity))
                 {
-                    // Cập nhật trạng thái của Inventory sang Pending
+
                     inventory.Status = InventoryStatus.Pending.GetDescriptionFromEnum();
                     _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
 
-                    // Tạo một chi tiết đơn hàng (OrderDetail)
+
                     var orderDetail = new OrderDetail
                     {
                         Id = Guid.NewGuid(),
                         OrderId = newOrder.Id,
                         MachineryId = machinery.MachineryId,
-                        InventoryId = inventory.Id, // Liên kết với Inventory đã bán
-                        Quantity = machinery.Quantity, // Số lượng sản phẩm
+                        InventoryId = inventory.Id, 
+                        Quantity = machinery.Quantity, 
                         SellingPrice = machinery.SellingPrice,
-                        TotalAmount = machinery.Quantity * machinery.SellingPrice, // Tổng số tiền cho từng sản phẩm
+                        TotalAmount = machinery.Quantity * machinery.SellingPrice, 
                         CreateDate = DateTime.Now
                     };
 
-                    // Thêm OrderDetail vào danh sách chi tiết đơn hàng
                     orderDetails.Add(orderDetail);
                 }
             }

@@ -19,9 +19,9 @@ namespace SAM.API.Controllers
             _inventoryService = inventoryService;
         }
         [HttpPost(ApiEndPointConstant.Inventory.InventoriesEndPoint)]
-        public async Task<IActionResult> CreateNewInventory(CreateNewInventoryRequest createNewInventoryRequest)
+        public async Task<IActionResult> CreateMultipleInventories(CreateNewInventoryRequest createNewInventoryRequest, int quantity)
         {
-            var response = await _inventoryService.CreateNewInventory(createNewInventoryRequest);
+            var response = await _inventoryService.CreateMultipleInventories(createNewInventoryRequest, quantity);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Inventory.InventoriesEndPoint)]

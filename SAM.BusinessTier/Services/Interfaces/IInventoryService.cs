@@ -10,7 +10,7 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface IInventoryService
     {
-        Task<Guid> CreateNewInventory(CreateNewInventoryRequest createNewInventoryRequest);
+        Task<List<Guid>> CreateMultipleInventories(CreateNewInventoryRequest createNewInventoryRequest, int quantity);
         Task<bool> UpdateInventory(Guid id, UpdateInventoryRequest updateInventoryRequest);
         Task<ICollection<GetInventoryResponse>> GetInventoryList(InventoryFilter filter);
         Task<GetInventoryResponse> GetInventoryById(Guid id);

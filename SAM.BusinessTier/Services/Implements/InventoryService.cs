@@ -27,8 +27,10 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public async Task<Guid> CreateNewInventory(CreateNewInventoryRequest createNewInventoryRequest)
+        public async Task<List<Guid>> CreateMultipleInventories(CreateNewInventoryRequest createNewInventoryRequest, int quantity)
         {
+            var inventoryIds = new List<Guid>();
+
             if (createNewInventoryRequest.MachineryId.HasValue)
             {
                 var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
@@ -38,20 +40,26 @@ namespace SAM.BusinessTier.Services.Implements
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 }
             }
-            Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync();
-            inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
-            inventory.Id = Guid.NewGuid();
-            inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
-            inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-            inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
-            inventory.CreateDate = DateTime.Now;
-    
 
-            await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
+            for (int i = 0; i < quantity; i++)
+            {
+                var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
+                inventory.Id = Guid.NewGuid();
+                inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
+                inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
+                inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
+                inventory.CreateDate = DateTime.Now;
+
+                await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
+                inventoryIds.Add(inventory.Id);
+            }
+
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccess) throw new BadHttpRequestException(MessageConstant.Inventory.CreateInventoryFailedMessage);
-            return inventory.Id;
+
+            return inventoryIds;
         }
+
 
         public async Task<GetInventoryResponse> GetInventoryById(Guid id)
         {
