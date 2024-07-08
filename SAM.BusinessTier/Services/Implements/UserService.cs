@@ -13,7 +13,6 @@ using SAM.DataTier.Repository.Interfaces;
 using SAM.DataTier.Models;
 using SAM.BusinessTier.Payload.Category;
 using Microsoft.IdentityModel.Tokens;
-using static SAM.BusinessTier.Constants.ApiEndPointConstant;
 using SAM.BusinessTier.Enums.EnumStatus;
 using Microsoft.Identity.Client;
 using System.Linq;
@@ -178,7 +177,7 @@ namespace SAM.BusinessTier.Services.Implements
                 if (accountRank != null)
                 {
                     // Lấy thông tin rank từ bảng Rank
-                    DataTier.Models.Rank rank = await _unitOfWork.GetRepository<DataTier.Models.Rank>().SingleOrDefaultAsync(
+                    var rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
                         predicate: x => x.Id.Equals(accountRank.RankId)
                     );
 

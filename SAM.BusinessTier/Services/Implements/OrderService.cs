@@ -42,7 +42,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (account == null)
             {
-                throw new BadHttpRequestException("User account not found.");
+                throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
             }
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
