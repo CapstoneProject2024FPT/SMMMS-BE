@@ -10,6 +10,7 @@ namespace SAM.BusinessTier.Enums.EnumStatus
     {
         Available,
         Sold,
+        Pending,
         Discontinued,
     }
 }

@@ -99,6 +99,7 @@ public static class MessageConstant
         public const string UpdateInventoryFailedMessage = "Inventory cập nhật thất bại";
         public const string InventoryExistedMessage = "Inventory đã tồn tại";
         public const string InventoryEmptyMessage = "Inventory không hợp lệ";
+        public const string NotAvaliable = "Không còn Machinery nào sẵn sàng để bán";
     }
     public static class Machinery
     {

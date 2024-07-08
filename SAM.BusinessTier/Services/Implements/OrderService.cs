@@ -39,54 +39,85 @@ namespace SAM.BusinessTier.Services.Implements
             var currentUser = GetUsernameFromJwt();
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser));
+
+            if (account == null)
+            {
+                throw new BadHttpRequestException("User account not found.");
+            }
+
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Order newOrder = new()
             {
                 Id = Guid.NewGuid(),
                 InvoiceCode = TimeUtils.GetTimestamp(currentTime),
                 CreateDate = DateTime.Now,
-                CompletedDate = DateTime.Now,
+                CompletedDate = null, // Chưa hoàn thành
                 TotalAmount = request.TotalAmount,
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
                 Status = OrderStatus.Pending.GetDescriptionFromEnum(),
-                AccountId = request.AccountId,
+                AccountId = account.Id,
                 AddressId = request.AddressId
             };
 
             var orderDetails = new List<OrderDetail>();
+
             foreach (var machinery in request.MachineryList)
             {
-                double totalProductAmount = (double)(machinery.SellingPrice * machinery.Quantity);
-                orderDetails.Add(new OrderDetail
+                // Kiểm tra xem MachineryId có tồn tại trong hệ thống hay không
+                var machineryExists = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(predicate: x => x.Id.Equals(machinery.MachineryId));
+                if (machineryExists == null)
                 {
-                    Id = Guid.NewGuid(),
-                    OrderId = newOrder.Id,
-                    MachineryId = machinery.MachineryId,
-                    Quantity = machinery.Quantity,
-                    SellingPrice = machinery.SellingPrice,
-                    TotalAmount = totalProductAmount,
-                    CreateDate = DateTime.Now
-                });
+                    throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+                }
 
-            };
-            //OrderHistory history = new OrderHistory()
-            //{
-            //    Id = Guid.NewGuid() ,
-            //    Status = OrderHistoryStatus.PENDING.GetDescriptionFromEnum(),
-            //    Note = request.Note,
-            //    CreateDate = currentTime,
-            //    OrderId = newOrder.Id,
-            //    UserId = account.UserId,
-            //};
+                // Lấy danh sách Inventory có sẵn cho từng loại máy (Machinery)
+                var inventories = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
+                    predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum()
+                );
 
+                // Kiểm tra xem có đủ số lượng Inventory không
+                if (inventories.Count < machinery.Quantity)
+                {
+                    throw new BadHttpRequestException(MessageConstant.Inventory.NotAvaliable);
+                }
+
+                foreach (var inventory in inventories.Take((int)machinery.Quantity))
+                {
+                    // Cập nhật trạng thái của Inventory sang Pending
+                    inventory.Status = InventoryStatus.Pending.GetDescriptionFromEnum();
+                    _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+
+                    // Tạo một chi tiết đơn hàng (OrderDetail)
+                    var orderDetail = new OrderDetail
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderId = newOrder.Id,
+                        MachineryId = machinery.MachineryId,
+                        InventoryId = inventory.Id, // Liên kết với Inventory đã bán
+                        Quantity = machinery.Quantity, // Số lượng sản phẩm
+                        SellingPrice = machinery.SellingPrice,
+                        TotalAmount = machinery.Quantity * machinery.SellingPrice, // Tổng số tiền cho từng sản phẩm
+                        CreateDate = DateTime.Now
+                    };
+
+                    // Thêm OrderDetail vào danh sách chi tiết đơn hàng
+                    orderDetails.Add(orderDetail);
+                }
+            }
+
+            // Thêm đơn hàng và chi tiết đơn hàng vào cơ sở dữ liệu
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
-            //await _unitOfWork.GetRepository<OrderHistory>().InsertAsync(history);
-            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Order.CreateOrderFailedMessage);
+
+            await _unitOfWork.CommitAsync();
+
             return newOrder.Id;
         }
+
+
+
+
 
         public async Task<GetOrderDetailResponse> GetOrderDetail(Guid id)
         {
@@ -264,8 +295,8 @@ namespace SAM.BusinessTier.Services.Implements
         {
             string currentUser = GetUsernameFromJwt();
             var userId = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate : x => x.Username.Equals(currentUser),
-                selector: x => x.Id); 
+                predicate: x => x.Username.Equals(currentUser),
+                selector: x => x.Id);
             Order updateOrder = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(orderId))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
@@ -277,28 +308,45 @@ namespace SAM.BusinessTier.Services.Implements
                 case OrderStatus.Confirmed:
                     break;
                 case OrderStatus.Paid:
+                    var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
+                        predicate: x => x.OrderId == orderId);
+                    foreach (var detail in orderDetails)
+                    {
+                        var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                            predicate: x => x.Id == detail.InventoryId);
+                        if (inventory != null)
+                        {
+                            inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
+                            _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+                        }
+                    }
+                    updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
+                    _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);
                     break;
                 case OrderStatus.Canceled:
+                    // Cập nhật trạng thái của Inventory sang Available
+                    ICollection<OrderDetail> orderDetails1 = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
+                                            predicate: x => x.OrderId == orderId);
+                    foreach (var detail in orderDetails1)
+                    {
+                        var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                            predicate: x => x.Id == detail.InventoryId);
+                        if (inventory != null)
+                        {
+                            inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
+                            _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+                        }
+                    }
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);
-                    
                     break;
                 default:
                     return false;
             }
-            //OrderHistory history = new OrderHistory()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Status = request.Status.GetDescriptionFromEnum(),
-            //    Note = request.Note,
-            //    CreateDate = currentTime,
-            //    OrderId = orderId,
-            //    UserId = userId,
-            //};
-            //await _unitOfWork.GetRepository<OrderHistory>().InsertAsync(history);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
+
 
     }
 }

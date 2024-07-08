@@ -40,7 +40,7 @@ namespace SAM.DataTier.Repository.Implement
 
             return await query.FirstOrDefaultAsync();
         }
-        
+
         public virtual async Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
             IQueryable<T> query = _dbSet;
@@ -156,6 +156,7 @@ namespace SAM.DataTier.Repository.Implement
         public void UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
+
 
         }
 
