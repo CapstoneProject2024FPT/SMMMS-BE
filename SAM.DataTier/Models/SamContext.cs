@@ -61,8 +61,6 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Rank> Ranks { get; set; }
 
-    public virtual DbSet<SerialNumberTracker> SerialNumberTrackers { get; set; }
-
     public virtual DbSet<Specification> Specifications { get; set; }
 
     public virtual DbSet<TransactionPayment> TransactionPayments { get; set; }
@@ -343,7 +341,6 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Machiner__3213E83E14DE8756").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Code).HasMaxLength(10);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Model)
@@ -359,10 +356,6 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.CategoryId)
                 .HasConstraintName("FK_Machinery_Category");
-
-            entity.HasOne(d => d.CodeNavigation).WithMany(p => p.Machineries)
-                .HasForeignKey(d => d.Code)
-                .HasConstraintName("FK_Machinery_SerialNumberTracker");
 
             entity.HasOne(d => d.Origin).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.OriginId)
@@ -516,15 +509,6 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(4000);
-        });
-
-        modelBuilder.Entity<SerialNumberTracker>(entity =>
-        {
-            entity.HasKey(e => e.MachineryCode);
-
-            entity.ToTable("SerialNumberTracker");
-
-            entity.Property(e => e.MachineryCode).HasMaxLength(10);
         });
 
         modelBuilder.Entity<Specification>(entity =>
