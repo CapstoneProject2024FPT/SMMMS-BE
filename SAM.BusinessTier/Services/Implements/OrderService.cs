@@ -64,13 +64,11 @@ namespace SAM.BusinessTier.Services.Implements
 
             foreach (var machinery in request.MachineryList)
             {
-
                 var machineryExists = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(predicate: x => x.Id.Equals(machinery.MachineryId));
                 if (machineryExists == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 }
-
 
                 var inventories = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
                     predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum()
@@ -83,20 +81,18 @@ namespace SAM.BusinessTier.Services.Implements
 
                 foreach (var inventory in inventories.Take((int)machinery.Quantity))
                 {
-
                     inventory.Status = InventoryStatus.Pending.GetDescriptionFromEnum();
                     _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
-
 
                     var orderDetail = new OrderDetail
                     {
                         Id = Guid.NewGuid(),
                         OrderId = newOrder.Id,
                         MachineryId = machinery.MachineryId,
-                        InventoryId = inventory.Id, 
-                        Quantity = machinery.Quantity, 
+                        InventoryId = inventory.Id,
+                        Quantity = 1, // Chỉnh Quantity thành 1 cho mỗi máy
                         SellingPrice = machinery.SellingPrice,
-                        TotalAmount = machinery.Quantity * machinery.SellingPrice, 
+                        TotalAmount = machinery.SellingPrice, // Tổng tiền cho mỗi máy
                         CreateDate = DateTime.Now
                     };
 
@@ -104,14 +100,13 @@ namespace SAM.BusinessTier.Services.Implements
                 }
             }
 
-            // Thêm đơn hàng và chi tiết đơn hàng vào cơ sở dữ liệu
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
-
             await _unitOfWork.CommitAsync();
 
             return newOrder.Id;
         }
+
 
 
 
