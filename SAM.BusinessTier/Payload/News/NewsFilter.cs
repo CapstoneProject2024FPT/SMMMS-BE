@@ -16,9 +16,9 @@ namespace SAM.BusinessTier.Payload.News
 
         public List<string>? NewsContent { get; set; }
 
-        public List<NewsStatus>? Status { get; set; }
+        public NewsStatus? Status { get; set; }
 
-        public List<NewsTypes>? Type { get; set; }
+        public NewsTypes? Type { get; set; }
 
         public string? Cover { get; set; }
 
