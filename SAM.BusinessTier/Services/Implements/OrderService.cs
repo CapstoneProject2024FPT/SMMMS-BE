@@ -294,19 +294,63 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(orderId))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
+
             switch (request.Status)
             {
                 case OrderStatus.Completed:
                     updateOrder.Status = OrderStatus.Completed.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
+
+                    // Tạo Warranty khi Order hoàn thành
+                    var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
+                        predicate: x => x.OrderId == orderId);
+
+                    foreach (var detail in orderDetails)
+                    {
+                        Warranty newWarranty = new Warranty
+                        {
+                            Id = Guid.NewGuid(),
+                            Type = WarrantyType.Periodic.GetDescriptionFromEnum(),
+                            CreateDate = currentTime,
+                            StartDate = currentTime,
+                            Status = WarrantyStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                            Description = updateOrder.Note,
+                            Priority = 1,
+                            InventoryId = detail.InventoryId
+                        };
+                        await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
+
+                        // Tạo 4 WarrantyDetail cho Periodic Warranty
+                        if (newWarranty.Type == WarrantyType.Periodic.GetDescriptionFromEnum())
+                        {
+                            List<int> monthsToAdd = new List<int> { 3, 6, 9, 12 };
+
+                            foreach (var months in monthsToAdd)
+                            {
+                                DateTime maintenanceDate = currentTime.AddMonths(months);
+
+                                WarrantyDetail newWarrantyDetail = new WarrantyDetail
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Type = newWarranty.Type,
+                                    CreateDate = currentTime,
+                                    StartDate = maintenanceDate,
+                                    Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                                    Description = $"Periodic Warranty Detail - Start on {maintenanceDate.ToString("yyyy-MM-dd HH:mm:ss")}",
+                                    WarrantyId = newWarranty.Id
+                                };
+                                await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
+                            }
+                        }
+                    }
                     break;
                 case OrderStatus.Confirmed:
                     updateOrder.Status = OrderStatus.Confirmed.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Paid:
-                    var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
+                    var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
-                    foreach (var detail in orderDetails)
+                    foreach (var detail in orderDetailsPaid)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                             predicate: x => x.Id == detail.InventoryId);
@@ -320,9 +364,9 @@ namespace SAM.BusinessTier.Services.Implements
                     break;
                 case OrderStatus.Canceled:
                     // Cập nhật trạng thái của Inventory sang Available
-                    ICollection<OrderDetail> orderDetails1 = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
-                                            predicate: x => x.OrderId == orderId);
-                    foreach (var detail in orderDetails1)
+                    var orderDetailsCanceled = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
+                        predicate: x => x.OrderId == orderId);
+                    foreach (var detail in orderDetailsCanceled)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                             predicate: x => x.Id == detail.InventoryId);
@@ -352,6 +396,9 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
+
+
+
 
 
 

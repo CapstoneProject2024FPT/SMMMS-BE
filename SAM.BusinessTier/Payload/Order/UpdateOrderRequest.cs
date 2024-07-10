@@ -9,8 +9,8 @@ namespace SAM.BusinessTier.Payload.Order
 {
     public class UpdateOrderRequest
     {
-        public OrderStatus Status { get; set; }
-        public string Note { get; set; }
+        public OrderStatus? Status { get; set; }
+        public string? Note { get; set; }
 
         //public DateTime CompletedDate { get; set; }
     }

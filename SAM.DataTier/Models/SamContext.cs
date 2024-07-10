@@ -599,6 +599,7 @@ public partial class SamContext : DbContext
             entity.Property(e => e.CompletionDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.ExpectedTime).HasColumnType("datetime");
             entity.Property(e => e.NextMaintenanceDate).HasColumnType("datetime");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(255);

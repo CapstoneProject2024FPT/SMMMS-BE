@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public enum WarrantyDetailStatus
+    public enum WarrantyStatus
     {
         AwaitingAssignment,  // Đang đợi giao cho nhân viên
         Process,          // Đang tiến hành (chuẩn bị tới nhà)
-        Repairing,            // Đang sửa chữa
         Complete,            // Hoàn thành
         Cancel
     }

@@ -11,6 +11,8 @@ public partial class Warranty
 
     public DateTime? CreateDate { get; set; }
 
+    public int? ExecutionTime { get; set; }
+
     public DateTime? StartDate { get; set; }
 
     public DateTime? CompletionDate { get; set; }
