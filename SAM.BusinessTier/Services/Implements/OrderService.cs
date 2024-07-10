@@ -297,8 +297,11 @@ namespace SAM.BusinessTier.Services.Implements
             switch (request.Status)
             {
                 case OrderStatus.Completed:
+                    updateOrder.Status = OrderStatus.Completed.GetDescriptionFromEnum();
+                    updateOrder.CompletedDate = currentTime;
                     break;
                 case OrderStatus.Confirmed:
+                    updateOrder.Status = OrderStatus.Confirmed.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Paid:
                     var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
@@ -314,7 +317,6 @@ namespace SAM.BusinessTier.Services.Implements
                         }
                     }
                     updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
-                    _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);
                     break;
                 case OrderStatus.Canceled:
                     // Cập nhật trạng thái của Inventory sang Available
@@ -331,14 +333,26 @@ namespace SAM.BusinessTier.Services.Implements
                         }
                     }
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
-                    _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);
+                    updateOrder.CompletedDate = currentTime;
+                    break;
+                case OrderStatus.Pending:
+                    updateOrder.Status = OrderStatus.Pending.GetDescriptionFromEnum();
                     break;
                 default:
                     return false;
             }
+
+            // Lưu trữ ghi chú nếu có
+            if (!string.IsNullOrEmpty(request.Note))
+            {
+                updateOrder.Note = request.Note;
+            }
+
+            _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
+
 
 
     }
