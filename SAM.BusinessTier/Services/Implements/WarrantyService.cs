@@ -67,19 +67,71 @@ namespace SAM.BusinessTier.Services.Implements
             return warrantyList;
         }
 
-        public Task<GetWarrantyInforResponse> GetWarrantyById(Guid id)
+        public async Task<GetWarrantyInforResponse> GetWarrantyById(Guid id)
         {
-            throw new NotImplementedException();
+            var warranty = await _unitOfWork.GetRepository<Warranty>()
+                .SingleOrDefaultAsync(
+                    selector: warranty => new GetWarrantyInforResponse
+                    {
+                        Id = warranty.Id,
+                        Type = EnumUtil.ParseEnum<WarrantyType>(warranty.Type),
+                        CreateDate = warranty.CreateDate,
+                        StartDate = warranty.StartDate,
+                        CompletionDate = warranty.CompletionDate,
+                        Status = EnumUtil.ParseEnum<WarrantyStatus>(warranty.Status),
+                        Description = warranty.Description,
+                        Comments = warranty.Comments,
+                        NextMaintenanceDate = warranty.NextMaintenanceDate,
+                        Priority = warranty.Priority,
+                        InventoryId = warranty.InventoryId,
+                        WarrantyDetail = warranty.WarrantyDetails.Select(detail => new WarrantyDetailResponse
+                        {
+                            Id = detail.Id,
+                            Status = EnumUtil.ParseEnum<WarrantyDetailStatus>(detail.Status),
+                            CreateDate = detail.CreateDate,
+                            StartDate = detail.StartDate,
+                            Description = detail.Description,
+                            Comments = detail.Comments,
+                            WarrantyId = detail.WarrantyId,
+                            AccountId = detail.AccountId
+                        }).ToList()
+                    },
+                    include: x => x.Include(x => x.WarrantyDetails)
+                );
+
+            if (warranty == null)
+            {
+                throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
+            }
+
+            return warranty;
         }
+
 
         public Task<bool> RemoveWarrantyStatus(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateWarranty(Guid id, UpdateWarrantyRequest updateWarrantyRequest)
+        public async Task<bool> UpdateWarranty(Guid id, UpdateWarrantyRequest updateWarrantyRequest)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Warranty.EmptyWarrantyIdMessage);
+
+            Warranty warranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+            ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
+
+            // Update warranty properties
+            warranty.Status = updateWarrantyRequest.Status.GetDescriptionFromEnum(); ;
+            warranty.Description = string.IsNullOrEmpty(updateWarrantyRequest.Description) ? updateWarrantyRequest.Description : warranty.Description;
+            warranty.Comments = string.IsNullOrEmpty(updateWarrantyRequest.Comments) ? updateWarrantyRequest.Comments : warranty.Comments;
+            warranty.NextMaintenanceDate = updateWarrantyRequest.NextMaintenanceDate.HasValue ? updateWarrantyRequest.NextMaintenanceDate.Value : warranty.NextMaintenanceDate;
+            warranty.Priority = updateWarrantyRequest.Priority.HasValue ? updateWarrantyRequest.Priority.Value : warranty.Priority;
+
+            _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
         }
+
     }
 }
