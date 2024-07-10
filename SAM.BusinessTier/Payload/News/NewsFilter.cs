@@ -10,20 +10,20 @@ namespace SAM.BusinessTier.Payload.News
 {
     public class NewsFilter
     {
-        public string? Title { get; set; }
+        public List<string>? Title { get; set; }
 
         public string? Description { get; set; }
 
-        public string? NewsContent { get; set; }
+        public List<string>? NewsContent { get; set; }
 
-        public NewsStatus? Status { get; set; }
+        public List<NewsStatus>? Status { get; set; }
 
-        public NewsTypes? Type { get; set; }
+        public List<NewsTypes>? Type { get; set; }
 
         public string? Cover { get; set; }
 
-        public Guid? NewsCategoryId { get; set; }
+        public List<Guid>? NewsCategoryId { get; set; }
 
-        public Guid? AccountId { get; set; }
+        public List<Guid>? AccountId { get; set; }
     }
 }

@@ -17,7 +17,7 @@
 
 //namespace SAM.BusinessTier.Services.Implements
 //{
-//    public class VNPayService : BaseService<VNPayService>, IVNPayService
+//    public class PaymentService : BaseService<PaymentService>, IPaymentService
 //    {
 //        public VNPayService(IUnitOfWork<SamContext> unitOfWork, ILogger<VNPayService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
 //        {

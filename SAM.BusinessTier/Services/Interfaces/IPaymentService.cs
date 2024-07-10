@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Services.Interfaces
 {
-    public interface IVNPayService
+    public interface IPaymentService
     {
     }
 }
