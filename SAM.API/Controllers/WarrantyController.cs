@@ -25,9 +25,9 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Warranty.WarrantiesEndPoint)]
-        public async Task<IActionResult> GetRankList([FromQuery] WarrantyFilter filter)
+        public async Task<IActionResult> GetWarrantyList([FromQuery] WarrantyFilter filter)
         {
-            var response = await _warrantyService.GetRankList(filter);
+            var response = await _warrantyService.GetWarrantyList(filter);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.Warranty.WarrantyEndPoint)]

@@ -13,7 +13,7 @@ namespace SAM.BusinessTier.Services.Interfaces
     {
         Task<Guid> CreateNewWarranty(CreateNewWarrantyRequest createNewWarrantyRequest);
         Task<bool> UpdateWarranty(Guid id, UpdateWarrantyRequest updateWarrantyRequest);
-        Task<ICollection<GetWarrantyInforResponse>> GetRankList(WarrantyFilter filter);
+        Task<ICollection<GetWarrantyInforResponse>> GetWarrantyList(WarrantyFilter filter);
         Task<GetWarrantyInforResponse> GetWarrantyById(Guid id);
         Task<bool> RemoveWarrantyStatus(Guid id);
     }

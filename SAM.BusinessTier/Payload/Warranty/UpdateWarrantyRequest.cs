@@ -9,10 +9,6 @@ namespace SAM.BusinessTier.Payload.Warranty
     public class UpdateWarrantyRequest
     {
 
-        public string? Type { get; set; }
-
-        public DateTime? StartDate { get; set; }
-
         public string? Status { get; set; }
 
         public string? Description { get; set; }
@@ -23,6 +19,5 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public int? Priority { get; set; }
 
-        public Guid? InventoryId { get; set; }
     }
 }

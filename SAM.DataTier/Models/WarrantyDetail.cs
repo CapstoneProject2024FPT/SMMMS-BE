@@ -13,8 +13,6 @@ public partial class WarrantyDetail
 
     public DateTime? StartDate { get; set; }
 
-    public DateTime? ExpectedTime { get; set; }
-
     public DateTime? CompletionDate { get; set; }
 
     public string? Status { get; set; }

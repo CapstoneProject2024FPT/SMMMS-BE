@@ -1,4 +1,5 @@
-﻿using SAM.BusinessTier.Enums.EnumTypes;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public WarrantyType? Type { get; set; }
 
-        public string? Status { get; set; }
+        public WarrantyStatus? Status { get; set; }
 
         public string? Description { get; set; }
 
