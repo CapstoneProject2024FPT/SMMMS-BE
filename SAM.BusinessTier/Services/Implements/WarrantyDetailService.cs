@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.WarrantyDetail;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -27,15 +31,72 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<GetWarrantyDetailResponse>> GetWarrantyDetailList(WarrantyDetailFilter filter)
+        public async Task<ICollection<GetWarrantyDetailResponse>> GetWarrantyDetailList(WarrantyDetailFilter filter)
         {
-            throw new NotImplementedException();
+            var warrantyDetails = await _unitOfWork.GetRepository<WarrantyDetail>()
+                .GetListAsync(
+                    selector: detail => new GetWarrantyDetailResponse
+                    {
+                        Id = detail.Id,
+                        Type = detail.Type != null ? EnumUtil.ParseEnum<WarrantyDetailType>(detail.Type) : null,
+                        Status = detail.Status != null ? EnumUtil.ParseEnum<WarrantyDetailStatus>(detail.Status) : null,
+                        CreateDate = detail.CreateDate,
+                        StartDate = detail.StartDate,
+                        CompletionDate = detail.CompletionDate,
+                        Description = detail.Description,
+                        Comments = detail.Comments,
+                        NextMaintenanceDate = detail.NextMaintenanceDate,
+                        UserInfor = detail.Account != null ? new OrderUserResponse
+                        {
+                            Id = detail.Account.Id,
+                            FullName = detail.Account.FullName,
+                            Role = EnumUtil.ParseEnum<RoleEnum>(detail.Account.Role)
+                        } : null
+
+                    },
+                    filter: filter,
+                    orderBy: x => x.OrderBy(x => x.CreateDate),
+                    include: x => x.Include(x => x.Account) // Include related user information
+                ) ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
+
+            return warrantyDetails;
         }
 
-        public Task<GetWarrantyDetailResponse> GetWarrantyDetailById(Guid id)
+        public async Task<GetWarrantyDetailResponse> GetWarrantyDetailById(Guid id)
         {
-            throw new NotImplementedException();
+            var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>()
+                .SingleOrDefaultAsync(
+                    selector: detail => new GetWarrantyDetailResponse
+                    {
+                        Id = detail.Id,
+                        Type = detail.Type != null ? EnumUtil.ParseEnum<WarrantyDetailType>(detail.Type) : null,
+                        CreateDate = detail.CreateDate,
+                        StartDate = detail.StartDate,
+                        CompletionDate = detail.CompletionDate,
+                        Status = detail.Status != null ? EnumUtil.ParseEnum<WarrantyDetailStatus>(detail.Status) : null,
+                        Description = detail.Description,
+                        Comments = detail.Comments,
+                        NextMaintenanceDate = detail.NextMaintenanceDate,
+                        UserInfor = detail.Account != null ? new OrderUserResponse
+                        {
+                            Id = detail.Account.Id,
+                            FullName = detail.Account.FullName,
+                            Role = EnumUtil.ParseEnum<RoleEnum>(detail.Account.Role)
+                        } : null
+                    },
+                    predicate: detail => detail.Id == id,
+                    include: x => x.Include(x => x.Account) // Include related account information
+                );
+
+            if (warrantyDetail == null)
+            {
+                throw new BadHttpRequestException($"WarrantyDetail with Id {id} not found.");
+            }
+
+            return warrantyDetail;
         }
+
+
 
         public Task<bool> RemoveWarrantyDetailStatus(Guid id)
         {
