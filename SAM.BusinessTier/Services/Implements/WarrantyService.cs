@@ -112,7 +112,7 @@ namespace SAM.BusinessTier.Services.Implements
                             }).FirstOrDefault()
                     },
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.Priority),
+                    orderBy: x => x.OrderBy(x => x.CreateDate),
                     include: x => x.Include(x => x.WarrantyDetails)
                                    .Include(x => x.Inventory)
                                        .ThenInclude(inventory => inventory.Machinery)

@@ -55,7 +55,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                     },
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.CreateDate),
+                    orderBy: x => x.OrderBy(x => x.StartDate),
                     include: x => x.Include(x => x.Account) // Include related user information
                 ) ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
