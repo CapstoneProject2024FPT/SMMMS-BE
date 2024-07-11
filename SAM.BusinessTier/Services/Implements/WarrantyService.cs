@@ -8,6 +8,7 @@ using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Extensions;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Machinery;
+using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.Warranty;
 using SAM.BusinessTier.Payload.WarrantyDetail;
 using SAM.BusinessTier.Services.Interfaces;
@@ -99,30 +100,44 @@ namespace SAM.BusinessTier.Services.Implements
                                 }).ToList(),
                                 Quantity = warranty.Inventory.Machinery.Inventories.CountInventoryEachStatus()
                             }
-                        }
+                        },
+                        // Add Account information
+                        Customer = warranty.Inventory.Machinery.OrderDetails
+                            .Where(detail => detail.MachineryId == warranty.Inventory.Machinery.Id)
+                            .Select(detail => new AccountResponse
+                            {
+                                Id = detail.Order.Account.Id,
+                                FullName = detail.Order.Account.FullName,
+                                Role = EnumUtil.ParseEnum<RoleEnum>(detail.Order.Account.Role),
+                            }).FirstOrDefault()
                     },
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.Priority),
                     include: x => x.Include(x => x.WarrantyDetails)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Brand)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Brand)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Origin)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Origin)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Category)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Category)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.ImagesAlls)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.ImagesAlls)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Specifications)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Specifications)
+                                   // Include OrderDetails and Account for retrieving Account info
+                                   .Include(x => x.Inventory.Machinery.OrderDetails)
+                                       .ThenInclude(detail => detail.Order.Account)
                 ) ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
 
             return warrantyList;
         }
+
+
 
 
         public async Task<GetDetailWarrantyInfor> GetWarrantyById(Guid id)
@@ -201,26 +216,38 @@ namespace SAM.BusinessTier.Services.Implements
                             Comments = detail.Comments,
                             WarrantyId = detail.WarrantyId,
                             AccountId = detail.AccountId
-                        }).ToList()
+                        }).ToList(),
+                        Customer = warranty.Inventory.Machinery.OrderDetails
+                            .Select(detail => detail.Order.Account)
+                            .Where(account => account != null)
+                            .Select(account => new AccountResponse
+                            {
+                                Id = account.Id,
+                                FullName = account.FullName,
+                                Role = EnumUtil.ParseEnum<RoleEnum>(account.Role),
+                            }).FirstOrDefault()
                     },
                     predicate: x => x.Id.Equals(id),
                     include: x => x.Include(x => x.WarrantyDetails)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Brand)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Brand)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Origin)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Origin)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Category)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Category)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.ImagesAlls)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.ImagesAlls)
                                    .Include(x => x.Inventory)
-                                   .ThenInclude(inventory => inventory.Machinery)
-                                   .ThenInclude(machinery => machinery.Specifications)
-                );
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.Specifications)
+                                   .Include(x => x.Inventory)
+                                       .ThenInclude(inventory => inventory.Machinery)
+                                           .ThenInclude(machinery => machinery.OrderDetails)
+                                               .ThenInclude(detail => detail.Order.Account));
 
             if (warranty == null)
             {
@@ -229,6 +256,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return warranty;
         }
+
 
 
 

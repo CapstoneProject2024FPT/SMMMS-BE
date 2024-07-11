@@ -1,6 +1,7 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Machinery;
+using SAM.BusinessTier.Payload.News;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public InventoryResponse? Inventory { get; set; }
         public Dictionary<WarrantyDetailStatus, int>? WarrantyDetai { get; set; }
+
+        public AccountResponse? Customer { get; set; }
     }
 
 }
