@@ -206,7 +206,9 @@ namespace SAM.BusinessTier.Services.Implements
                                 Quantity = warranty.Inventory.Machinery.Inventories.CountInventoryEachStatus()
                             }
                         },
-                        WarrantyDetail = warranty.WarrantyDetails.Select(detail => new WarrantyDetailResponse
+                        WarrantyDetail = warranty.WarrantyDetails
+                        .OrderBy(detail => detail.StartDate)
+                        .Select(detail => new WarrantyDetailResponse
                         {
                             Id = detail.Id,
                             Status = EnumUtil.ParseEnum<WarrantyDetailStatus>(detail.Status),
