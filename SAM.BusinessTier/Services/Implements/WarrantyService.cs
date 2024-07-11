@@ -5,8 +5,11 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Extensions;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.Warranty;
+using SAM.BusinessTier.Payload.WarrantyDetail;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
@@ -34,43 +37,6 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var warrantyList = await _unitOfWork.GetRepository<Warranty>()
                 .GetListAsync(
-            selector: warranty => new GetWarrantyInforResponse
-            {
-                Id = warranty.Id,
-                Type = EnumUtil.ParseEnum<WarrantyType>(warranty.Type),
-                CreateDate = warranty.CreateDate,
-                StartDate = warranty.StartDate,
-                CompletionDate = warranty.CompletionDate,
-                Status = EnumUtil.ParseEnum<WarrantyStatus>(warranty.Status),
-                Description = warranty.Description,
-                Comments = warranty.Comments,
-                NextMaintenanceDate = warranty.NextMaintenanceDate,
-                Priority = warranty.Priority,
-                InventoryId = warranty.InventoryId,
-                WarrantyDetail = warranty.WarrantyDetails.Select(detail => new WarrantyDetailResponse
-                {
-                    Id = detail.Id,
-                    Status = EnumUtil.ParseEnum<WarrantyDetailStatus>(detail.Status),
-                    CreateDate = detail.CreateDate,
-                    StartDate = detail.StartDate,
-                    Description = detail.Description,
-                    Comments = detail.Comments,
-                    WarrantyId = detail.WarrantyId,
-                    AccountId = detail.AccountId
-                }).ToList()
-            },
-                    filter: filter,
-                    orderBy: x => x.OrderBy(x => x.Priority),
-                    include: x => x.Include(x => x.WarrantyDetails)
-                ) ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
-
-            return warrantyList;
-        }
-
-        public async Task<GetWarrantyInforResponse> GetWarrantyById(Guid id)
-        {
-            var warranty = await _unitOfWork.GetRepository<Warranty>()
-                .SingleOrDefaultAsync(
                     selector: warranty => new GetWarrantyInforResponse
                     {
                         Id = warranty.Id,
@@ -83,7 +49,148 @@ namespace SAM.BusinessTier.Services.Implements
                         Comments = warranty.Comments,
                         NextMaintenanceDate = warranty.NextMaintenanceDate,
                         Priority = warranty.Priority,
-                        InventoryId = warranty.InventoryId,
+                        WarrantyDetai = warranty.WarrantyDetails.CountWarrantyDetailEachStatus(),
+                        Inventory = new InventoryResponse
+                        {
+                            Id = warranty.Inventory.Id,
+                            SerialNumber = warranty.Inventory.SerialNumber,
+                            Type = EnumUtil.ParseEnum<InventoryType>(warranty.Inventory.Type),
+                            Machinery = new GetMachinerySpecificationsRespone
+                            {
+                                Id = warranty.Inventory.Machinery.Id,
+                                Name = warranty.Inventory.Machinery.Name,
+                                Brand = new BrandResponse()
+                                {
+                                    Id = warranty.Inventory.Machinery.BrandId,
+                                    Name = warranty.Inventory.Machinery.Brand.Name,
+                                    Description = warranty.Inventory.Machinery.Brand.Description,
+                                },
+                                Model = warranty.Inventory.Machinery.Model,
+                                Description = warranty.Inventory.Machinery.Description,
+                                SellingPrice = warranty.Inventory.Machinery.SellingPrice,
+                                Priority = warranty.Inventory.Machinery.Priority,
+                                TimeWarranty = warranty.Inventory.Machinery.TimeWarranty,
+                                Status = EnumUtil.ParseEnum<MachineryStatus>(warranty.Inventory.Machinery.Status),
+                                CreateDate = warranty.Inventory.Machinery.CreateDate,
+                                Origin = new OriginResponse()
+                                {
+                                    Id = warranty.Inventory.Machinery.OriginId,
+                                    Name = warranty.Inventory.Machinery.Origin.Name,
+                                    Description = warranty.Inventory.Machinery.Origin.Description,
+                                },
+                                Category = new CategoryResponse()
+                                {
+                                    Id = warranty.Inventory.Machinery.CategoryId,
+                                    Name = warranty.Inventory.Machinery.Category.Name,
+                                    Type = EnumUtil.ParseEnum<CategoryType>(warranty.Inventory.Machinery.Category.Type),
+                                },
+                                Image = warranty.Inventory.Machinery.ImagesAlls.Select(image => new MachineryImagesResponse
+                                {
+                                    Id = image.Id,
+                                    ImageURL = image.ImageUrl,
+                                    CreateDate = image.CreateDate
+                                }).ToList(),
+                                Specifications = warranty.Inventory.Machinery.Specifications.Select(spec => new SpecificationsResponse
+                                {
+                                    SpecificationId = spec.Id,
+                                    MachineryId = spec.MachineryId,
+                                    Name = spec.Name,
+                                    Value = spec.Value
+                                }).ToList(),
+                                Quantity = warranty.Inventory.Machinery.Inventories.CountInventoryEachStatus()
+                            }
+                        }
+                    },
+                    filter: filter,
+                    orderBy: x => x.OrderBy(x => x.Priority),
+                    include: x => x.Include(x => x.WarrantyDetails)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Brand)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Origin)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Category)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.ImagesAlls)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Specifications)
+                ) ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
+
+            return warrantyList;
+        }
+
+
+        public async Task<GetDetailWarrantyInfor> GetWarrantyById(Guid id)
+        {
+            var warranty = await _unitOfWork.GetRepository<Warranty>()
+                .SingleOrDefaultAsync(
+                    selector: warranty => new GetDetailWarrantyInfor
+                    {
+                        Id = warranty.Id,
+                        Type = EnumUtil.ParseEnum<WarrantyType>(warranty.Type),
+                        CreateDate = warranty.CreateDate,
+                        StartDate = warranty.StartDate,
+                        CompletionDate = warranty.CompletionDate,
+                        Status = EnumUtil.ParseEnum<WarrantyStatus>(warranty.Status),
+                        Description = warranty.Description,
+                        Comments = warranty.Comments,
+                        NextMaintenanceDate = warranty.NextMaintenanceDate,
+                        Priority = warranty.Priority,
+                        Inventory = new InventoryResponse
+                        {
+                            Id = warranty.Inventory.Id,
+                            SerialNumber = warranty.Inventory.SerialNumber,
+                            Type = EnumUtil.ParseEnum<InventoryType>(warranty.Inventory.Type),
+                            Machinery = new GetMachinerySpecificationsRespone
+                            {
+                                Id = warranty.Inventory.Machinery.Id,
+                                Name = warranty.Inventory.Machinery.Name,
+                                Brand = new BrandResponse()
+                                {
+                                    Id = warranty.Inventory.Machinery.BrandId,
+                                    Name = warranty.Inventory.Machinery.Brand.Name,
+                                    Description = warranty.Inventory.Machinery.Brand.Description,
+                                },
+                                Model = warranty.Inventory.Machinery.Model,
+                                Description = warranty.Inventory.Machinery.Description,
+                                SellingPrice = warranty.Inventory.Machinery.SellingPrice,
+                                Priority = warranty.Inventory.Machinery.Priority,
+                                TimeWarranty = warranty.Inventory.Machinery.TimeWarranty,
+                                Status = EnumUtil.ParseEnum<MachineryStatus>(warranty.Inventory.Machinery.Status),
+                                CreateDate = warranty.Inventory.Machinery.CreateDate,
+                                Origin = new OriginResponse()
+                                {
+                                    Id = warranty.Inventory.Machinery.OriginId,
+                                    Name = warranty.Inventory.Machinery.Origin.Name,
+                                    Description = warranty.Inventory.Machinery.Origin.Description,
+                                },
+                                Category = new CategoryResponse()
+                                {
+                                    Id = warranty.Inventory.Machinery.CategoryId,
+                                    Name = warranty.Inventory.Machinery.Category.Name,
+                                    Type = EnumUtil.ParseEnum<CategoryType>(warranty.Inventory.Machinery.Category.Type),
+                                },
+                                Image = warranty.Inventory.Machinery.ImagesAlls.Select(image => new MachineryImagesResponse
+                                {
+                                    Id = image.Id,
+                                    ImageURL = image.ImageUrl,
+                                    CreateDate = image.CreateDate
+                                }).ToList(),
+                                Specifications = warranty.Inventory.Machinery.Specifications.Select(spec => new SpecificationsResponse
+                                {
+                                    SpecificationId = spec.Id,
+                                    MachineryId = spec.MachineryId,
+                                    Name = spec.Name,
+                                    Value = spec.Value
+                                }).ToList(),
+                                Quantity = warranty.Inventory.Machinery.Inventories.CountInventoryEachStatus()
+                            }
+                        },
                         WarrantyDetail = warranty.WarrantyDetails.Select(detail => new WarrantyDetailResponse
                         {
                             Id = detail.Id,
@@ -96,7 +203,23 @@ namespace SAM.BusinessTier.Services.Implements
                             AccountId = detail.AccountId
                         }).ToList()
                     },
+                    predicate: x => x.Id.Equals(id),
                     include: x => x.Include(x => x.WarrantyDetails)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Brand)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Origin)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Category)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.ImagesAlls)
+                                   .Include(x => x.Inventory)
+                                   .ThenInclude(inventory => inventory.Machinery)
+                                   .ThenInclude(machinery => machinery.Specifications)
                 );
 
             if (warranty == null)
@@ -106,6 +229,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return warranty;
         }
+
 
 
         public Task<bool> RemoveWarrantyStatus(Guid id)

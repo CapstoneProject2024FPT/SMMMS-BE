@@ -31,19 +31,8 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public int? Priority { get; set; }
 
-        public Guid? InventoryId { get; set; }
-        public List<WarrantyDetailResponse>? WarrantyDetail { get; set; } = new List<WarrantyDetailResponse>();
+        public InventoryResponse? Inventory { get; set; }
+        public Dictionary<WarrantyDetailStatus, int>? WarrantyDetai { get; set; }
     }
-    public class WarrantyDetailResponse
-    {
-        public Guid? Id { get; set;}
-        public WarrantyDetailStatus? Status { get; set; }
-        public DateTime? CreateDate { get; set;}
-        public DateTime? StartDate { get; set;}
-        public string? Description { get; set; }
-        public string? Comments { get; set; }
-        public Guid? WarrantyId { get; set;}
 
-        public Guid? AccountId { get; set;}
-    }
 }

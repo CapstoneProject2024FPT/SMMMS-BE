@@ -10,11 +10,11 @@ using SAM.BusinessTier.Services.Interfaces;
 namespace SAM.API.Controllers
 {
     [ApiController]
-    public class InventoryService : BaseController<InventoryService>
+    public class InventoryController : BaseController<InventoryController>
     {
         readonly IInventoryService _inventoryService;
 
-        public InventoryService(ILogger<InventoryService> logger, IInventoryService inventoryService) : base(logger)
+        public InventoryController(ILogger<InventoryController> logger, IInventoryService inventoryService) : base(logger)
         {
             _inventoryService = inventoryService;
         }

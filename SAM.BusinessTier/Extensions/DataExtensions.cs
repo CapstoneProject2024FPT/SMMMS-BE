@@ -24,5 +24,17 @@ namespace SAM.BusinessTier.Extensions
             }
             return statusCount;
         }
+        public static Dictionary<WarrantyDetailStatus, int> CountWarrantyDetailEachStatus(this ICollection<WarrantyDetail> warrantyDetails)
+        {
+            var warrantyDetailsCount = new Dictionary<WarrantyDetailStatus, int>();
+
+            foreach (WarrantyDetailStatus status in Enum.GetValues(typeof(InventoryStatus)))
+            {
+                string statusDes = status.GetDescriptionFromEnum();
+                int count = warrantyDetails.Count(item => item.Status.Equals(statusDes));
+                warrantyDetailsCount.Add(status, count);
+            }
+            return warrantyDetailsCount;
+        }
     }
 }

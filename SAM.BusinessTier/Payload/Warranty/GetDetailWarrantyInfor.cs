@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Machinery;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +13,7 @@ namespace SAM.BusinessTier.Payload.Warranty
     {
         public Guid? Id { get; set; }
 
-        public string? Type { get; set; }
+        public WarrantyType? Type { get; set; }
 
         public DateTime? CreateDate { get; set; }
 
@@ -18,7 +21,7 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public DateTime? CompletionDate { get; set; }
 
-        public string? Status { get; set; }
+        public WarrantyStatus? Status { get; set; }
 
         public string? Description { get; set; }
 
@@ -27,7 +30,32 @@ namespace SAM.BusinessTier.Payload.Warranty
         public DateTime? NextMaintenanceDate { get; set; }
 
         public int? Priority { get; set; }
+        public List<WarrantyDetailResponse>? WarrantyDetail { get; set; } = new List<WarrantyDetailResponse>();
 
-        public Guid? InventoryId { get; set; }
+        public InventoryResponse? Inventory { get; set; }
+
+        
+    }
+    public class WarrantyDetailResponse
+    {
+        public Guid? Id { get; set; }
+        public WarrantyDetailStatus? Status { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public string? Description { get; set; }
+        public string? Comments { get; set; }
+        public Guid? WarrantyId { get; set; }
+
+        public Guid? AccountId { get; set; }
+    }
+    public class InventoryResponse
+    {
+        public Guid? Id { get; set; }
+        public string? SerialNumber { get; set; }
+
+        public InventoryType? Type { get; set; }
+
+        public GetMachinerySpecificationsRespone Machinery { get; set; }
+
     }
 }

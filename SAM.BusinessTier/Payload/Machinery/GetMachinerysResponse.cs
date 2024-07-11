@@ -30,49 +30,14 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public Dictionary<InventoryStatus, int>? Quantity { get; set; }
 
-        public OriginAllResponse? Origin { get; set; }
+        public OriginResponse? Origin { get; set; }
 
-        public BrandAllResponse? Brand { get; set; }
+        public BrandResponse? Brand { get; set; }
 
-        public CategoryAllResponse? Category { get; set; }
+        public CategoryResponse? Category { get; set; }
         
-        public List<MachineryImagesAllResponse>? Image { get; set; } = new List<MachineryImagesAllResponse>();
+        public List<MachineryImagesResponse>? Image { get; set; } = new List<MachineryImagesResponse>();
 
-        public List<SpecificationsAllResponse>? Specifications { get; set; } = new List<SpecificationsAllResponse>();
-    }
-    public class SpecificationsAllResponse
-    {
-        public Guid? SpecificationId { get; set; }
-        public Guid? MachineryId { get; set; }
-        public string? Name { get; set; }
-        public string? Value { get; set; }
-
-
-    }
-    public class CategoryAllResponse
-    {
-        public Guid? Id { get; set; }
-        public string? Name { get; set; }
-        public CategoryType? Type { get; set; }
-    }
-    public class BrandAllResponse
-    {
-        public Guid? Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public DateTime? CreateDate { get; set; }
-    }
-    public class OriginAllResponse
-    {
-        public Guid? Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public DateTime? CreateDate { get; set; }
-    }
-    public class MachineryImagesAllResponse
-    {
-        public string? ImageURL { get; set; }
-        public DateTime? CreateDate { get; set; }
-
+        public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
     }
 }
