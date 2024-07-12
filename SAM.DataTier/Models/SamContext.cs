@@ -488,9 +488,12 @@ public partial class SamContext : DbContext
             entity.ToTable("Payment");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Note).HasMaxLength(4000);
             entity.Property(e => e.PaymentDate).HasColumnType("date");
             entity.Property(e => e.PaymentMethod)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
@@ -533,13 +536,18 @@ public partial class SamContext : DbContext
             entity.ToTable("TransactionPayment");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.InvoiceId).HasMaxLength(50);
+            entity.Property(e => e.PayType)
+                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.TransactionDate).HasColumnType("date");
+            entity.Property(e => e.TransactionJson).HasMaxLength(4000);
 
             entity.HasOne(d => d.Payment).WithMany(p => p.TransactionPayments)
                 .HasForeignKey(d => d.PaymentId)

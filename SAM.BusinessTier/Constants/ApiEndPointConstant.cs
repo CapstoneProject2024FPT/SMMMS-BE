@@ -138,6 +138,10 @@ public static class ApiEndPointConstant
         public const string DiscountsEndPointDetail = DiscountsEndPoint + "/detail/{id}";
 
     }
-
+    public static class Payment
+    {
+        public const string PaymentEndpoint = ApiEndpoint + "/payments";
+        public const string VnPayEndpoint = PaymentEndpoint + "/vnpay";
+    }
 
 }

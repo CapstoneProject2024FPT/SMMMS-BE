@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.BusinessTier.Enums.EnumTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,9 @@ namespace SAM.BusinessTier.Payload.VNPay
 {
     public class CreatePaymentRequest
     {
-        public string? Message { get; set; }
-        public string? Url { get; set; }
+        public Guid OrderId { get; set; }
+        public double Amount { get; set; }
+        public PaymentType PaymentType { get; set; }
+        public Guid PaymentId { get; set; }
     }
 }
