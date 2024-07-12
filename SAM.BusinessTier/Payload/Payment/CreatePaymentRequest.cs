@@ -12,6 +12,6 @@ namespace SAM.BusinessTier.Payload.VNPay
         public Guid OrderId { get; set; }
         public double Amount { get; set; }
         public PaymentType PaymentType { get; set; }
-        public Guid PaymentId { get; set; }
+        //public Guid PaymentId { get; set; }
     }
 }

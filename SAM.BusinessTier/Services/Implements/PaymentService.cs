@@ -69,7 +69,7 @@ namespace SAM.BusinessTier.Services.Implements
             var transaction = new TransactionPayment()
             {
                 Id = Guid.NewGuid(),
-                PaymentId = request.PaymentId,
+                PaymentId = payment.Id,
                 InvoiceId = txnRef,
                 TotalAmount = request.Amount,
                 Description = $"Đang tiến hành thanh toán VNPAY mã đơn {txnRef}",
