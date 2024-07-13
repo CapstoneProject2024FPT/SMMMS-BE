@@ -16,7 +16,7 @@ namespace SAM.API.Controllers
 
         public PaymentController(ILogger<PaymentController> logger, IPaymentService paymentService) : base(logger)
         {
-         
+
             _paymentService = paymentService;
         }
         [HttpPost(ApiEndPointConstant.Payment.PaymentEndpoint)]
