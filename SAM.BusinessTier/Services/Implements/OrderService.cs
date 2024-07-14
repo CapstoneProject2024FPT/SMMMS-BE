@@ -126,8 +126,7 @@ namespace SAM.BusinessTier.Services.Implements
                                    .ThenInclude(a => a.Ward)
                                .Include(x => x.Address)
                                    .ThenInclude(a => a.Account)
-                               .Include(x => x.OrderDetails)
-                                   .ThenInclude(detail => detail.Machinery))
+                               .Include(x => x.OrderDetails))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
 
             // Map fetched data to the response DTO
@@ -182,7 +181,7 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     OrderDetailId = detail.Id,
                     ProductId = detail.MachineryId,
-                    ProductName = detail.Machinery?.Name,
+                    ProductName = detail.Inventory?.Machinery.Name,
                     Quantity = detail.Quantity,
                     SellingPrice = detail.SellingPrice,
                     TotalAmount = detail.TotalAmount,
@@ -252,7 +251,7 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         OrderDetailId = detail.Id,
                         ProductId = detail.MachineryId,
-                        ProductName = detail.Machinery.Name,
+                        ProductName = detail.Inventory.Machinery.Name,
                         Quantity = detail.Quantity,
                         SellingPrice = detail.SellingPrice,
                         TotalAmount = detail.TotalAmount,
@@ -271,7 +270,7 @@ namespace SAM.BusinessTier.Services.Implements
                                .Include(x => x.Address)
                                    .ThenInclude(a => a.Account)
                                .Include(x => x.OrderDetails)
-                                   .ThenInclude(detail => detail.Machinery),
+                                   .ThenInclude(detail => detail.Inventory.Machinery),
                 page: pagingModel.page,
                 size: pagingModel.size
             );

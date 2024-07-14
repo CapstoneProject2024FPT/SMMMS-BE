@@ -23,7 +23,5 @@ public partial class OrderDetail
 
     public virtual Inventory? Inventory { get; set; }
 
-    public virtual Machinery? Machinery { get; set; }
-
     public virtual Order? Order { get; set; }
 }

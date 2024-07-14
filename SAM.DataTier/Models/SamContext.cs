@@ -459,10 +459,6 @@ public partial class SamContext : DbContext
                 .HasForeignKey(d => d.InventoryId)
                 .HasConstraintName("FK_OrderDetail_Inventory");
 
-            entity.HasOne(d => d.Machinery).WithMany(p => p.OrderDetails)
-                .HasForeignKey(d => d.MachineryId)
-                .HasConstraintName("FK_OrderDetail_Machinery");
-
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK_OrderDetail_Order");
