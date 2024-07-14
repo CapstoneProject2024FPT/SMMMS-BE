@@ -126,7 +126,8 @@ namespace SAM.BusinessTier.Services.Implements
                                    .ThenInclude(a => a.Ward)
                                .Include(x => x.Address)
                                    .ThenInclude(a => a.Account)
-                               .Include(x => x.OrderDetails))
+                               .Include(x => x.OrderDetails)
+                                   .ThenInclude(detail => detail.Inventory.Machinery))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
 
             // Map fetched data to the response DTO
@@ -181,6 +182,7 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     OrderDetailId = detail.Id,
                     ProductId = detail.MachineryId,
+                    SerialNumber = detail.Inventory.SerialNumber,
                     ProductName = detail.Inventory?.Machinery.Name,
                     Quantity = detail.Quantity,
                     SellingPrice = detail.SellingPrice,
@@ -250,6 +252,7 @@ namespace SAM.BusinessTier.Services.Implements
                     ProductList = x.OrderDetails.Select(detail => new OrderDetailResponse
                     {
                         OrderDetailId = detail.Id,
+                        SerialNumber = detail.Inventory.SerialNumber,
                         ProductId = detail.MachineryId,
                         ProductName = detail.Inventory.Machinery.Name,
                         Quantity = detail.Quantity,
