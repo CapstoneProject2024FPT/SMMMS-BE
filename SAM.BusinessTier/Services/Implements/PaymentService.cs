@@ -36,7 +36,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             var txnRef = currentTime.ToString("yyMMdd") + "_" + currentTimeStamp;
             var pay = new VnPayLibrary();
-            var urlCallBack = _configuration["VnPayPaymentCallBack:ReturnUrl"];
+            var urlCallBack = !string.IsNullOrEmpty(request.CallbackUrl) ? request.CallbackUrl : _configuration["VnPayPaymentCallBack:ReturnUrl"];
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);

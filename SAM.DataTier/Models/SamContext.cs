@@ -41,8 +41,6 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<MachineComponent> MachineComponents { get; set; }
 
-    public virtual DbSet<MachinePartMachine> MachinePartMachines { get; set; }
-
     public virtual DbSet<Machinery> Machineries { get; set; }
 
     public virtual DbSet<News> News { get; set; }
@@ -298,9 +296,17 @@ public partial class SamContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
+            entity.HasOne(d => d.MachineComponents).WithMany(p => p.Inventories)
+                .HasForeignKey(d => d.MachineComponentsId)
+                .HasConstraintName("FK_Inventory_MachineComponents");
+
             entity.HasOne(d => d.Machinery).WithMany(p => p.Inventories)
                 .HasForeignKey(d => d.MachineryId)
                 .HasConstraintName("FK_Inventory_Machinery");
+
+            entity.HasOne(d => d.MasterInventory).WithMany(p => p.InverseMasterInventory)
+                .HasForeignKey(d => d.MasterInventoryId)
+                .HasConstraintName("FK_Inventory_Inventory");
         });
 
         modelBuilder.Entity<MachineComponent>(entity =>
@@ -312,24 +318,6 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.Name).HasMaxLength(255);
-        });
-
-        modelBuilder.Entity<MachinePartMachine>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__MachineP__3214EC07DFE70D19");
-
-            entity.HasIndex(e => e.Quantity, "UQ__MachineP__DC4401B25E041C9A").IsUnique();
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Status).HasMaxLength(255);
-
-            entity.HasOne(d => d.MachineComponent).WithMany(p => p.MachinePartMachines)
-                .HasForeignKey(d => d.MachineComponentId)
-                .HasConstraintName("FK_MachinePartMachines_MachineComponents");
-
-            entity.HasOne(d => d.Machinery).WithMany(p => p.MachinePartMachines)
-                .HasForeignKey(d => d.MachineryId)
-                .HasConstraintName("FK_MachinePartMachines_Machinery");
         });
 
         modelBuilder.Entity<Machinery>(entity =>

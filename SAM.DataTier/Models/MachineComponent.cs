@@ -11,5 +11,5 @@ public partial class MachineComponent
 
     public string? Description { get; set; }
 
-    public virtual ICollection<MachinePartMachine> MachinePartMachines { get; set; } = new List<MachinePartMachine>();
+    public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
 }
