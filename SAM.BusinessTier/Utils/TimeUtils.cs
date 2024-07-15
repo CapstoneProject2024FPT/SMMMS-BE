@@ -4,7 +4,7 @@
     {
         public static string GetTimestamp(DateTime value)
         {
-            return value.ToString("yyyyMMddHHmmssffff"); 
+            return value.ToString("yyyyMMddHHmmss");
         }
 
         public static string GetHoursTime(DateTime value)

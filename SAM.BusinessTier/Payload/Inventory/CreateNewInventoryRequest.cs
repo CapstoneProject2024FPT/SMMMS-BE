@@ -9,5 +9,7 @@ namespace SAM.BusinessTier.Payload.Inventory
     public class CreateNewInventoryRequest
     {
         public Guid? MachineryId { get; set; }
+
+        //public Guid? MachineComponentId { get; set; }
     }
 }

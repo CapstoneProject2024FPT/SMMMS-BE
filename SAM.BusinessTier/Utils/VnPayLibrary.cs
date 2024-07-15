@@ -48,7 +48,7 @@ namespace SAM.BusinessTier.Utils
             return new VnPaymentResponse()
             {
                 Success = true,
-                PaymentMethod = "VnPay",
+                PaymentMethod = "VNPAY",
                 OrderDescription = orderInfo,
                 OrderId = orderId.ToString(),
                 PaymentId = vnPayTranId.ToString(),
@@ -105,29 +105,29 @@ namespace SAM.BusinessTier.Utils
         {
             return _responseData.TryGetValue(key, out var retValue) ? retValue : string.Empty;
         }
-        public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
-        {
-            var data = new StringBuilder();
+        //public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
+        //{
+        //    var data = new StringBuilder();
 
-            foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
-            {
-                data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
-            }
+        //    foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
+        //    {
+        //        data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
+        //    }
 
-            var querystring = data.ToString();
+        //    var querystring = data.ToString();
 
-            baseUrl += "?" + querystring;
-            var signData = querystring;
-            if (signData.Length > 0)
-            {
-                signData = signData.Remove(data.Length - 1, 1);
-            }
+        //    baseUrl += "?" + querystring;
+        //    var signData = querystring;
+        //    if (signData.Length > 0)
+        //    {
+        //        signData = signData.Remove(data.Length - 1, 1);
+        //    }
 
-            var vnpSecureHash = HmacSha512(vnpHashSecret, signData);
-            baseUrl += "vnp_SecureHash=" + vnpSecureHash;
+        //    var vnpSecureHash = HmacSha512(vnpHashSecret, signData);
+        //    baseUrl += "vnp_SecureHash=" + vnpSecureHash;
 
-            return baseUrl;
-        }
+        //    return baseUrl;
+        //}
 
         public bool ValidateSignature(string inputHash, string secretKey)
         {
@@ -136,14 +136,39 @@ namespace SAM.BusinessTier.Utils
             return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
         }
 
+        public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
+        {
+            StringBuilder data = new StringBuilder();
+            foreach (KeyValuePair<string, string> kv in _requestData)
+            {
+                if (!String.IsNullOrEmpty(kv.Value))
+                {
+                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+                }
+            }
+            string queryString = data.ToString();
+
+            baseUrl += "?" + queryString;
+            String signData = queryString;
+            if (signData.Length > 0)
+            {
+
+                signData = signData.Remove(data.Length - 1, 1);
+            }
+            string vnp_SecureHash = HmacSha512(vnpHashSecret, signData);
+            baseUrl += "vnp_SecureHash=" + vnp_SecureHash;
+
+            return baseUrl;
+        }
+
         private string HmacSha512(string key, string inputData)
         {
             var hash = new StringBuilder();
-            var keyBytes = Encoding.UTF8.GetBytes(key);
-            var inputBytes = Encoding.UTF8.GetBytes(inputData);
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            byte[] inputBytes = Encoding.UTF8.GetBytes(inputData);
             using (var hmac = new HMACSHA512(keyBytes))
             {
-                var hashValue = hmac.ComputeHash(inputBytes);
+                byte[] hashValue = hmac.ComputeHash(inputBytes);
                 foreach (var theByte in hashValue)
                 {
                     hash.Append(theByte.ToString("x2"));

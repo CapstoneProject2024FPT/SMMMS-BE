@@ -1,5 +1,6 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Enums.Other;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,10 @@ namespace SAM.BusinessTier.Payload.Inventory
         public InventoryStatus? Status { get; set; }
 
         public InventoryType? Type { get; set; }
+
+        public InventoryCondition? Condition { get; set; }
+
+        public InventoryIsRepaired? IsRepaired { get; set; }
 
     }
 }
