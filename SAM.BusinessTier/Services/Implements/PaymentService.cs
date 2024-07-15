@@ -32,7 +32,7 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<CreatePaymentResponse> ExecutePayment(CreatePaymentRequest request)
         {
             var currentTime = TimeUtils.GetCurrentSEATime();
-            var currentTimeStamp = TimeUtils.GetTimestamp(currentTime);
+            var currentTimeStamp = currentTime.ToString("yyyyMMddHHmmss"); // Ensure the format matches the expected DateTime format
 
             var txnRef = currentTime.ToString("yyMMdd") + "_" + currentTimeStamp;
             var pay = new VnPayLibrary();
@@ -42,6 +42,7 @@ namespace SAM.BusinessTier.Services.Implements
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
             pay.AddRequestData("vnp_Amount", ((int)request.Amount * 100).ToString());
+            pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]); // Currency code
             pay.AddRequestData("vnp_CreateDate", currentTimeStamp);
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(_httpContextAccessor.HttpContext));
@@ -51,15 +52,39 @@ namespace SAM.BusinessTier.Services.Implements
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
             pay.AddRequestData("vnp_TxnRef", txnRef);
 
-            var paymentUrl = pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+            // Optional: Add expiration date
+            var expireDate = currentTime.AddMinutes(15); // Example: expires in 15 minutes
+            var expireDateString = expireDate.ToString("yyyyMMddHHmmss"); // Ensure the format matches the expected DateTime format
+            pay.AddRequestData("vnp_ExpireDate", expireDateString);
 
-            var paymentResponse = new CreatePaymentResponse()
+            // Generate secure hash
+            var hashSecret = _configuration["Vnpay:HashSecret"];
+            var rawData = pay.GetRequestData();
+            var secureHash = VnPayHelper.GenerateSecureHash(rawData, hashSecret);
+            pay.AddRequestData("vnp_SecureHash", secureHash);
+
+            string paymentUrl;
+            try
+            {
+                paymentUrl = pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], hashSecret);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error creating VnPay payment request: {Message}", ex.Message);
+                return new CreatePaymentResponse
+                {
+                    Message = "Error creating payment request",
+                    Url = string.Empty
+                };
+            }
+
+            var paymentResponse = new CreatePaymentResponse
             {
                 Message = "Đang tiến hành thanh toán VNPAY",
                 Url = paymentUrl
             };
 
-            var payment = new Payment()
+            var payment = new Payment
             {
                 Id = Guid.NewGuid(),
                 Amount = request.Amount,
@@ -67,7 +92,8 @@ namespace SAM.BusinessTier.Services.Implements
                 PaymentMethod = request.PaymentType.GetDescriptionFromEnum(),
                 OrderId = request.OrderId,
             };
-            var transaction = new TransactionPayment()
+
+            var transaction = new TransactionPayment
             {
                 Id = Guid.NewGuid(),
                 PaymentId = payment.Id,
@@ -87,11 +113,18 @@ namespace SAM.BusinessTier.Services.Implements
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                _logger.LogError("Error logging payment transaction: {Message}", e.Message);
+                return new CreatePaymentResponse
+                {
+                    Message = "Error logging payment transaction",
+                    Url = string.Empty
+                };
             }
+
             return paymentResponse;
         }
+
+
 
         public async Task<bool> ExecuteVnPayCallback(IQueryCollection collections, string url, string? status, string? transId)
         {

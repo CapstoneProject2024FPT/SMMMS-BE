@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
+using SAM.BusinessTier.Payload.Payment;
 using System.Globalization;
-using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using SAM.BusinessTier.Payload.Payment;
 
 namespace SAM.BusinessTier.Utils
 {
@@ -32,12 +28,10 @@ namespace SAM.BusinessTier.Utils
             var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-            var vnpSecureHash =
-                collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
+            var vnpSecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
             var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
 
-            var checkSignature =
-                vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
+            var checkSignature = vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
             if (!checkSignature)
                 return new VnPaymentResponse()
@@ -85,6 +79,7 @@ namespace SAM.BusinessTier.Utils
 
             return "127.0.0.1";
         }
+
         public void AddRequestData(string key, string value)
         {
             if (!string.IsNullOrEmpty(value))
@@ -105,6 +100,7 @@ namespace SAM.BusinessTier.Utils
         {
             return _responseData.TryGetValue(key, out var retValue) ? retValue : string.Empty;
         }
+<<<<<<< HEAD
         //public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
         //{
         //    var data = new StringBuilder();
@@ -128,6 +124,23 @@ namespace SAM.BusinessTier.Utils
 
         //    return baseUrl;
         //}
+=======
+
+        public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
+        {
+            var querystring = GetRequestData();
+            var signData = querystring;
+            if (signData.Length > 0)
+            {
+                signData = signData.Remove(signData.Length - 1, 1);
+            }
+
+            var vnpSecureHash = HmacSha512(vnpHashSecret, signData);
+            var paymentUrl = $"{baseUrl}?{querystring}&vnp_SecureHash={vnpSecureHash}";
+
+            return paymentUrl;
+        }
+>>>>>>> ed7155e48341696eac2bab53379e8a9c35e54b52
 
         public bool ValidateSignature(string inputHash, string secretKey)
         {
@@ -205,6 +218,22 @@ namespace SAM.BusinessTier.Utils
             return data.ToString();
         }
 
+        public string GetRequestData()
+        {
+            var data = new StringBuilder();
+            foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
+            {
+                data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
+            }
+
+            // Remove the last '&'
+            if (data.Length > 0)
+            {
+                data.Remove(data.Length - 1, 1);
+            }
+
+            return data.ToString();
+        }
     }
 
     public class VnPayCompare : IComparer<string>
