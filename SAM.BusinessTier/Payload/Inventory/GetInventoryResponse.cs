@@ -23,8 +23,6 @@ namespace SAM.BusinessTier.Payload.Inventory
 
         public InventoryIsRepaired? IsRepaired { get; set; }
 
-
-
         public DateTime? CreateDate { get; set; }
 
         public DateTime? SoldDate { get; set; }

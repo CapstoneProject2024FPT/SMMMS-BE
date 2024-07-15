@@ -21,6 +21,8 @@ public partial class Category
 
     public virtual ICollection<Category> InverseMasterCategory { get; set; } = new List<Category>();
 
+    public virtual ICollection<MachineComponent> MachineComponents { get; set; } = new List<MachineComponent>();
+
     public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
 
     public virtual Category? MasterCategory { get; set; }

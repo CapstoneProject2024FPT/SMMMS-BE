@@ -102,7 +102,7 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         },
                         // Add Account information
-                        Customer = warranty.Inventory.Machinery.OrderDetails
+                        Customer = warranty.Inventory.OrderDetails
                             .Where(detail => detail.MachineryId == warranty.Inventory.Machinery.Id)
                             .Select(detail => new AccountResponse
                             {
@@ -130,7 +130,7 @@ namespace SAM.BusinessTier.Services.Implements
                                        .ThenInclude(inventory => inventory.Machinery)
                                            .ThenInclude(machinery => machinery.Specifications)
                                    // Include OrderDetails and Account for retrieving Account info
-                                   .Include(x => x.Inventory.Machinery.OrderDetails)
+                                   .Include(x => x.Inventory.OrderDetails)
                                        .ThenInclude(detail => detail.Order.Account)
                 ) ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
 
@@ -219,7 +219,7 @@ namespace SAM.BusinessTier.Services.Implements
                             WarrantyId = detail.WarrantyId,
                             AccountId = detail.AccountId
                         }).ToList(),
-                        Customer = warranty.Inventory.Machinery.OrderDetails
+                        Customer = warranty.Inventory.OrderDetails
                             .Select(detail => detail.Order.Account)
                             .Where(account => account != null)
                             .Select(account => new AccountResponse
@@ -246,10 +246,9 @@ namespace SAM.BusinessTier.Services.Implements
                                    .Include(x => x.Inventory)
                                        .ThenInclude(inventory => inventory.Machinery)
                                            .ThenInclude(machinery => machinery.Specifications)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.OrderDetails)
-                                               .ThenInclude(detail => detail.Order.Account));
+                                   // Include OrderDetails and Account for retrieving Account info
+                                   .Include(x => x.Inventory.OrderDetails)
+                                       .ThenInclude(detail => detail.Order.Account));
 
             if (warranty == null)
             {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Enums.Other;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Inventory;
 using SAM.BusinessTier.Payload.Origin;
@@ -31,6 +32,11 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var inventoryIds = new List<Guid>();
 
+            if (createNewInventoryRequest.MachineryId.HasValue && createNewInventoryRequest.MachineComponentId.HasValue)
+            {
+                throw new ArgumentException("Only one of MachineryId or MachineComponentId can be provided.");
+            }
+
             if (createNewInventoryRequest.MachineryId.HasValue)
             {
                 var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
@@ -39,19 +45,67 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 }
+
+                for (int i = 0; i < quantity; i++)
+                {
+                    var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
+                    inventory.Id = Guid.NewGuid();
+                    inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
+                    inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
+                    inventory.Type = InventoryType.Machinery.GetDescriptionFromEnum();
+                    inventory.CreateDate = DateTime.Now;
+                    inventory.Condition = InventoryCondition.New.GetDescriptionFromEnum();
+                    inventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum();
+                    inventory.MasterInventoryId = createNewInventoryRequest.MasterInventoryId; // Set MasterInventoryId if provided
+                    await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
+                    inventoryIds.Add(inventory.Id);
+                }
             }
-
-            for (int i = 0; i < quantity; i++)
+            else if (createNewInventoryRequest.MachineComponentId.HasValue)
             {
-                var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
-                inventory.Id = Guid.NewGuid();
-                inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
-                inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-                inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
-                inventory.CreateDate = DateTime.Now;
+                var component = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
+                    predicate: x => x.Id == createNewInventoryRequest.MachineComponentId.Value);
+                if (component == null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
+                }
 
-                await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
-                inventoryIds.Add(inventory.Id);
+                for (int i = 0; i < quantity; i++)
+                {
+                    var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
+                    inventory.Id = Guid.NewGuid();
+                    inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
+
+                    // Determine status based on MasterInventoryId
+                    if (createNewInventoryRequest.MasterInventoryId.HasValue)
+                    {
+                        // Check if MasterInventoryId belongs to Machinery
+                        var masterInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                            predicate: x => x.Id == createNewInventoryRequest.MasterInventoryId.Value && x.Type == "Machinery");
+
+                        if (masterInventory != null)
+                        {
+                            inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
+                            inventory.SoldDate = TimeUtils.GetCurrentSEATime();
+                        }
+                        else
+                        {
+                            throw new BadHttpRequestException("MasterInventoryId does not belong to a Machinery.");
+                        }
+                    }
+                    else
+                    {
+                        inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
+                    }
+
+                    inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
+                    inventory.CreateDate = TimeUtils.GetCurrentSEATime();
+                    inventory.Condition = InventoryCondition.New.GetDescriptionFromEnum();
+                    inventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum();
+                    inventory.MasterInventoryId = createNewInventoryRequest.MasterInventoryId;
+                    await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
+                    inventoryIds.Add(inventory.Id);
+                }
             }
 
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
@@ -59,6 +113,9 @@ namespace SAM.BusinessTier.Services.Implements
 
             return inventoryIds;
         }
+
+
+
 
 
         public async Task<GetInventoryResponse> GetInventoryById(Guid id)

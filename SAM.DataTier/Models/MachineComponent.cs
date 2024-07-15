@@ -11,5 +11,29 @@ public partial class MachineComponent
 
     public string? Description { get; set; }
 
-    public virtual ICollection<MachinePartMachine> MachinePartMachines { get; set; } = new List<MachinePartMachine>();
+    public DateTime? CreateDate { get; set; }
+
+    public string? Status { get; set; }
+
+    public double? StockPrice { get; set; }
+
+    public double? SellingPrice { get; set; }
+
+    public int? TimeWarranty { get; set; }
+
+    public Guid? CategoryId { get; set; }
+
+    public Guid? BrandId { get; set; }
+
+    public Guid? OriginId { get; set; }
+
+    public virtual Brand? Brand { get; set; }
+
+    public virtual Category? Category { get; set; }
+
+    public virtual ICollection<ImageComponent> ImageComponents { get; set; } = new List<ImageComponent>();
+
+    public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
+
+    public virtual Origin? Origin { get; set; }
 }

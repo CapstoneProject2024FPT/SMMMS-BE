@@ -17,5 +17,7 @@ public partial class Brand
 
     public string? Urlimage { get; set; }
 
+    public virtual ICollection<MachineComponent> MachineComponents { get; set; } = new List<MachineComponent>();
+
     public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
 }

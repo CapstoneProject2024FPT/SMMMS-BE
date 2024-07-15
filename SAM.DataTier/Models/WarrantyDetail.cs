@@ -27,6 +27,10 @@ public partial class WarrantyDetail
 
     public Guid WarrantyId { get; set; }
 
+    public Guid? InventoryId { get; set; }
+
+    public Guid? OldInventoryId { get; set; }
+
     public virtual Account? Account { get; set; }
 
     public virtual Warranty Warranty { get; set; } = null!;

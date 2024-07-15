@@ -15,5 +15,7 @@ public partial class Origin
 
     public string? Status { get; set; }
 
+    public virtual ICollection<MachineComponent> MachineComponents { get; set; } = new List<MachineComponent>();
+
     public virtual ICollection<Machinery> Machineries { get; set; } = new List<Machinery>();
 }

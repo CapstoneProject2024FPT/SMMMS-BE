@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Discount;
 using SAM.BusinessTier.Payload.MachineryComponent;
 using SAM.BusinessTier.Services.Implements;
@@ -24,9 +25,9 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.MachineryComponent.MachineryComponentsEndPoint)]
-        public async Task<IActionResult> GetMachineryComponentList([FromQuery] MachineryComponentFilter filter)
+        public async Task<IActionResult> GetMachineryComponentList([FromQuery] MachineryComponentFilter filter, [FromQuery] PagingModel pagingModel)
         {
-            var response = await _machineryComponentService.GetMachineryComponentList(filter);
+            var response = await _machineryComponentService.GetMachineryComponentList(filter, pagingModel);
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.MachineryComponent.MachineryComponentEndPoint)]
