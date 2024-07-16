@@ -20,5 +20,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<IPaginate<GetMachinerySpecificationsRespone>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel);
         Task<bool> RemoveMachineryStatus(Guid id);
         Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id);
+
+        Task<GetMachineryAndComponentsResponse> GetMachineryAndComponentsByInventoryId(Guid id);
     }
 }

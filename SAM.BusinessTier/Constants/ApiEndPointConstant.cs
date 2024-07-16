@@ -70,6 +70,7 @@ public static class ApiEndPointConstant
     {
         public const string InventoriesEndPoint = ApiEndpoint + "/inventories";
         public const string InventoryEndPoint = InventoriesEndPoint + "/{id}";
+        public const string MachineriesInventoryDetailEndPoint = InventoryEndPoint + "/machinery";
     }
     public static class Product
     {
@@ -142,6 +143,8 @@ public static class ApiEndPointConstant
     {
         public const string PaymentEndpoint = ApiEndpoint + "/payments";
         public const string VnPayEndpoint = PaymentEndpoint + "/vnpay";
+        public const string PaymentsEndpoint = PaymentEndpoint + "/{id}";
+
     }
 
 }

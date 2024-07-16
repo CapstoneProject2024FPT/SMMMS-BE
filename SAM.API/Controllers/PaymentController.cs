@@ -26,6 +26,13 @@ namespace SAM.API.Controllers
             var url = await _paymentService.ExecutePayment(createPaymentRequest);
             return Ok(url);
         }
+        [HttpPut(ApiEndPointConstant.Payment.PaymentsEndpoint)]
+        [ProducesResponseType(typeof(CreatePaymentResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdatePayment(Guid id,[FromBody] UpdatePaymentRequest createPaymentRequest)
+        {
+            var url = await _paymentService.UpdatePayment(id,createPaymentRequest);
+            return Ok(url);
+        }
 
         [HttpGet(ApiEndPointConstant.Payment.VnPayEndpoint)]
         public async Task<IActionResult> VnPayPaymentCallBack([Required] string url, string? vnp_ResponseCode, string? vnp_TxnRef)

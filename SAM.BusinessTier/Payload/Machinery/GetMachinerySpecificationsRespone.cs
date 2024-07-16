@@ -34,6 +34,8 @@ namespace SAM.BusinessTier.Payload.Machinery
         //public int? Quantity { get; set; }
         public Dictionary<InventoryStatus, int>? Quantity { get; set; }
 
+        //public Dictionary<InventoryStatus, int>? ComponentQuantity { get; set; }
+
         public OriginResponse? Origin { get; set; }
 
         public BrandResponse? Brand { get; set; }

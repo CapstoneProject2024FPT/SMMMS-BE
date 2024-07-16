@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public enum PaymentStatus
+    public enum TransactionStatus
     {
         PENDING,
         PAID,

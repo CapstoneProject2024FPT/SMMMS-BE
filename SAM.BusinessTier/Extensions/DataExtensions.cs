@@ -36,5 +36,18 @@ namespace SAM.BusinessTier.Extensions
             }
             return warrantyDetailsCount;
         }
+        public static Dictionary<InventoryStatus, int> CountComponentInventoryEachStatus(this ICollection<Inventory> inventories, Guid masterInventoryId)
+        {
+            var statusCount = new Dictionary<InventoryStatus, int>();
+
+            foreach (InventoryStatus status in Enum.GetValues(typeof(InventoryStatus)))
+            {
+                string statusDes = status.GetDescriptionFromEnum();
+                int count = inventories.Count(item => item.MasterInventoryId == masterInventoryId && item.Status.Equals(statusDes));
+                statusCount.Add(status, count);
+            }
+            return statusCount;
+        }
+
     }
 }
