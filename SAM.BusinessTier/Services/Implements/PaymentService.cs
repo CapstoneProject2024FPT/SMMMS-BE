@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SAM.API.Utils;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Payment;
 using SAM.BusinessTier.Payload.VNPay;
 using SAM.BusinessTier.Services.Interfaces;
@@ -23,10 +24,11 @@ namespace SAM.BusinessTier.Services.Implements
     public class PaymentService : BaseService<PaymentService>, IPaymentService
     {
         private readonly IConfiguration _configuration;
-
+        private readonly IOrderService _orderService;
         public PaymentService(IUnitOfWork<SamContext> unitOfWork, ILogger<PaymentService> logger, IMapper mapper,
-            IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(unitOfWork, logger, mapper, httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOrderService orderService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
+            _orderService = orderService;
             _configuration = configuration;
         }
         public async Task<CreatePaymentResponse> ExecutePayment(CreatePaymentRequest request)
@@ -126,20 +128,17 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<bool> UpdatePayment(Guid id, UpdatePaymentRequest updatePaymentRequest)
         {
-            // Retrieve the current user
             string currentUser = GetUsernameFromJwt();
             var userId = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser),
                 selector: x => x.Id);
 
-            // Retrieve the payment by ID
             var payment = await _unitOfWork.GetRepository<Payment>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException("Payment not found");
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
-            // Update the payment status based on the request
             if (updatePaymentRequest.Status.HasValue)
             {
                 payment.Status = updatePaymentRequest.Status.Value.GetDescriptionFromEnum();
@@ -149,28 +148,43 @@ namespace SAM.BusinessTier.Services.Implements
                 return false;
             }
 
-            // Save the payment note if provided
             if (!string.IsNullOrEmpty(updatePaymentRequest.Note))
             {
                 payment.Note = updatePaymentRequest.Note;
             }
 
-            // Retrieve the associated transaction
             var transaction = await _unitOfWork.GetRepository<TransactionPayment>().SingleOrDefaultAsync(
                 predicate: x => x.PaymentId.Equals(payment.Id))
                 ?? throw new BadHttpRequestException("Associated transaction not found");
 
-            // Update the transaction status based on the payment status
             transaction.Status = updatePaymentRequest.Status.GetDescriptionFromEnum();
 
-            // Update the repositories
             _unitOfWork.GetRepository<Payment>().UpdateAsync(payment);
             _unitOfWork.GetRepository<TransactionPayment>().UpdateAsync(transaction);
+
+            if (updatePaymentRequest.Status.GetDescriptionFromEnum() == "SUCCESS")
+            {
+                Guid orderId = (Guid)payment.OrderId; 
+
+                var orderUpdateRequest = new UpdateOrderRequest
+                {
+                    Status = OrderStatus.Paid
+                };
+
+                bool orderUpdateSuccessful = await _orderService.UpdateOrder(orderId, orderUpdateRequest);
+
+                if (!orderUpdateSuccessful)
+                {
+                    throw new Exception("Failed to update order status");
+                }
+            }
 
             // Commit the changes
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
+
+
 
 
 
