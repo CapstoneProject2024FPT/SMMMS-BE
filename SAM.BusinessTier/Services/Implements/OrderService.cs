@@ -55,7 +55,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TotalAmount = request.TotalAmount,
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
-                Status = OrderStatus.Pending.GetDescriptionFromEnum(),
+                Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
                 AccountId = account.Id,
                 AddressId = request.AddressId
             };
@@ -344,8 +344,8 @@ namespace SAM.BusinessTier.Services.Implements
                         }
                     }
                     break;
-                case OrderStatus.Confirmed:
-                    updateOrder.Status = OrderStatus.Confirmed.GetDescriptionFromEnum();
+                case OrderStatus.Delivery:
+                    updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Paid:
                     var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
@@ -378,9 +378,6 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
-                    break;
-                case OrderStatus.Pending:
-                    updateOrder.Status = OrderStatus.Pending.GetDescriptionFromEnum();
                     break;
                 default:
                     return false;

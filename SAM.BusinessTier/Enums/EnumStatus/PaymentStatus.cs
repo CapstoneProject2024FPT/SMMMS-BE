@@ -9,8 +9,7 @@ namespace SAM.BusinessTier.Enums.EnumStatus
     public enum PaymentStatus
     {
         PENDING,
-        PAID,
-        FAILED,
-        CANCELED
+        SUCCESS,
+        FAILED
     }
 }

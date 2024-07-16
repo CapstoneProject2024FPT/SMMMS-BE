@@ -8,12 +8,11 @@ namespace SAM.BusinessTier.Enums.EnumStatus
 {
     public enum OrderStatus
     {
-        Pending,
-        Confirmed,
         Paid,
         UnPaid,
         Completed,
-        Canceled
+        Canceled,
+        Delivery
 
     }
 

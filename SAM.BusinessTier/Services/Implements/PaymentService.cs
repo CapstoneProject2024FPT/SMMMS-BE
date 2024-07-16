@@ -106,7 +106,7 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 paymentTransaction.Description = "VNPAY payment failed";
                 paymentTransaction.Status = "Canceled";
-                paymentTransaction.Payment.Status = PaymentStatus.PAID.GetDescriptionFromEnum();
+                paymentTransaction.Payment.Status = PaymentStatus.FAILED.GetDescriptionFromEnum();
 
                 _unitOfWork.GetRepository<TransactionPayment>().UpdateAsync(paymentTransaction);
             }
