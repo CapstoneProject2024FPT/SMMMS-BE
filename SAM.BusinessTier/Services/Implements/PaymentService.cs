@@ -53,12 +53,6 @@ namespace SAM.BusinessTier.Services.Implements
 
             var paymentUrl = pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
 
-            var paymentResponse = new CreatePaymentResponse()
-            {
-                Message = "Đang tiến hành thanh toán VNPAY",
-                Url = paymentUrl
-            };
-
             var payment = new Payment()
             {
                 Id = Guid.NewGuid(),
@@ -78,6 +72,15 @@ namespace SAM.BusinessTier.Services.Implements
                 PayType = request.PaymentType.GetDescriptionFromEnum(),
                 Status = PaymentStatus.PENDING.GetDescriptionFromEnum()
             };
+            var paymentResponse = new CreatePaymentResponse()
+            {
+                Message = "Đang tiến hành thanh toán VNPAY",
+                Url = paymentUrl,
+                PaymentId = payment.Id
+
+            };
+
+            
 
             try
             {

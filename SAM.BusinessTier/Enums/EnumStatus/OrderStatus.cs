@@ -13,7 +13,6 @@ namespace SAM.BusinessTier.Enums.EnumStatus
         Completed,
         Canceled,
         Delivery
-
     }
 
 }

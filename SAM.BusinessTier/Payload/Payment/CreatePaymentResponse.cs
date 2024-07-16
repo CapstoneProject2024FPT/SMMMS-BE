@@ -10,5 +10,7 @@ namespace SAM.BusinessTier.Payload.Payment
     {
         public string? Message { get; set; }
         public string? Url { get; set; }
+
+        public Guid? PaymentId { get; set; }
     }
 }
