@@ -96,7 +96,8 @@ namespace SAM.BusinessTier.Services.Implements
             updateCategory.Description = string.IsNullOrEmpty(request.Description) ? updateCategory.Description : request.Description;
             updateCategory.Status = request.Status.GetDescriptionFromEnum();
             updateCategory.Kind = request.Kind.GetDescriptionFromEnum();
-            updateCategory.MasterCategoryId = request.MasterCategoryId;
+            updateCategory.MasterCategoryId = request.MasterCategoryId == Guid.Empty ? updateCategory.MasterCategoryId : request.MasterCategoryId;
+
 
             if (request.MasterCategoryId != null)
             {
