@@ -48,7 +48,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 if (warrantyDetail == null)
                 {
-                    throw new BadHttpRequestException("WarrantyDetail not found.");
+                    throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
                 }
 
                 addressId = warrantyDetail.AddressId;
@@ -60,7 +60,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 if (order == null)
                 {
-                    throw new BadHttpRequestException("Order not found.");
+                    throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
                 }
 
                 addressId = order.AddressId;
@@ -71,7 +71,7 @@ namespace SAM.BusinessTier.Services.Implements
             }
             else
             {
-                throw new BadHttpRequestException("Either WarrantyDetailId or OrderId must be provided.");
+                throw new BadHttpRequestException("cần nhập WarrantyDetail hoặc order để giao task cho nhân viên");
             }
 
             TaskManager newTask = new()
@@ -91,7 +91,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (!isSuccessful)
             {
-                throw new BadHttpRequestException("Failed to create a new task.");
+                throw new BadHttpRequestException(MessageConstant.TaskManager.CreateNewTaskFailedMessage);
             }
 
             return newTask.Id;
