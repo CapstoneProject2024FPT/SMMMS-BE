@@ -127,7 +127,17 @@ namespace SAM.BusinessTier.Services.Implements
 
                 warrantyDetail.Account = account;
             }
+            if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Completed")
+            {
+                var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+                    predicate: t => t.WarrantyDetailId == warrantyDetail.Id);
 
+                if (taskManager != null)
+                {
+                    taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
+                    _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
+                }
+            }
             _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
