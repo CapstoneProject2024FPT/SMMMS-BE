@@ -181,6 +181,7 @@ namespace SAM.BusinessTier.Services.Implements
                 ProductList = order.OrderDetails?.Select(detail => new OrderDetailResponse
                 {
                     OrderDetailId = detail.Id,
+                    InventoryId = detail.InventoryId,
                     ProductId = detail.MachineryId,
                     ProductName = detail.Inventory.Machinery?.Name,
                     Quantity = detail.Quantity,
@@ -251,6 +252,7 @@ namespace SAM.BusinessTier.Services.Implements
                     ProductList = x.OrderDetails.Select(detail => new OrderDetailResponse
                     {
                         OrderDetailId = detail.Id,
+                        InventoryId = detail.InventoryId,
                         ProductId = detail.MachineryId,
                         ProductName = detail.Inventory.Machinery.Name,
                         Quantity = detail.Quantity,
@@ -418,14 +420,16 @@ namespace SAM.BusinessTier.Services.Implements
                     foreach (var detail in orderDetails)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                            predicate: x => x.Id == detail.InventoryId);
-                        if (inventory == null) continue;
+                            predicate: x => x.Id == detail.InventoryId,
+                            include: i => i.Include(i => i.Machinery));
 
-                        var machinery = inventory.Machinery;
-                        if (machinery == null) continue;
+                        if (inventory == null || inventory.Machinery == null)
+                        {
+                            throw new BadHttpRequestException(MessageConstant.Inventory. NotFoundFailedMessage);
+                        }
 
-                        int warrantyDurationYears = inventory.Machinery.TimeWarranty ?? 0;
-                        int totalCycles = warrantyDurationYears * 2; 
+                        int warrantyYears = (int)inventory.Machinery.TimeWarranty;
+                        int numberOfDetails = (warrantyYears * 12) / 6; // Number of details based on 6 months intervals
 
                         Warranty newWarranty = new Warranty
                         {
@@ -440,21 +444,25 @@ namespace SAM.BusinessTier.Services.Implements
                         };
                         await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
 
-                        for (int i = 1; i <= totalCycles; i++)
+                        // Tạo WarrantyDetail cho Periodic Warranty dựa trên TimeWarranty
+                        if (newWarranty.Type == WarrantyType.Periodic.GetDescriptionFromEnum())
                         {
-                            DateTime maintenanceDate = currentTime.AddMonths(i * 6);
-
-                            WarrantyDetail newWarrantyDetail = new WarrantyDetail
+                            for (int i = 1; i <= numberOfDetails; i++)
                             {
-                                Id = Guid.NewGuid(),
-                                Type = newWarranty.Type,
-                                CreateDate = currentTime,
-                                StartDate = maintenanceDate,
-                                Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
-                                Description = $"Periodic Warranty Detail - Start on {maintenanceDate:yyyy-MM-dd HH:mm:ss}",
-                                WarrantyId = newWarranty.Id
-                            };
-                            await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
+                                DateTime maintenanceDate = currentTime.AddMonths(i * 6);
+
+                                WarrantyDetail newWarrantyDetail = new WarrantyDetail
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Type = newWarranty.Type,
+                                    CreateDate = currentTime,
+                                    StartDate = maintenanceDate,
+                                    Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                                    Description = $"Periodic Warranty Detail - Start on {maintenanceDate.ToString("yyyy-MM-dd HH:mm:ss")}",
+                                    WarrantyId = newWarranty.Id
+                                };
+                                await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
+                            }
                         }
                     }
                     break;
@@ -507,11 +515,6 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
-
-
-
-
-
 
 
     }
