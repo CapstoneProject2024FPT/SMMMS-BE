@@ -203,6 +203,18 @@ public static class MessageConstant
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
+    public static class TaskManager
+    {
+        public const string TaskNameExisted = "Task đã tồn tại";
+        public const string CreateNewTaskFailedMessage = "Tạo mới Task thất bại";
+        public const string UpdateTaskFailedMessage = "Cập nhật thông tin Task thất bại";
+        public const string UpdateTaskSuccessMessage = "Cập nhật thông tin Task thành công";
+        public const string EmptyTaskIdMessage = "Task Id không hợp lệ";
+        public const string TaskNotFoundMessage = "Task không tồn tại trong hệ thống";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
+        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
     public static class MachineryComponents
     {
         public const string MachineryComponentsNameExisted = "MachineryComponents đã tồn tại";

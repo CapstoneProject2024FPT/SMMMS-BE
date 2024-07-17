@@ -29,5 +29,7 @@ public partial class Address
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
+    public virtual ICollection<TaskManager> TaskManagers { get; set; } = new List<TaskManager>();
+
     public virtual Ward? Ward { get; set; }
 }

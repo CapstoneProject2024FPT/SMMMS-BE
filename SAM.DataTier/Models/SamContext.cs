@@ -63,7 +63,7 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Specification> Specifications { get; set; }
 
-    public virtual DbSet<Task> Tasks { get; set; }
+    public virtual DbSet<TaskManager> TaskManagers { get; set; }
 
     public virtual DbSet<TransactionPayment> TransactionPayments { get; set; }
 
@@ -553,16 +553,37 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK_Specifications_Machinery");
         });
 
-        modelBuilder.Entity<Task>(entity =>
+        modelBuilder.Entity<TaskManager>(entity =>
         {
-            entity.ToTable("Task");
+            entity.HasKey(e => e.Id).HasName("PK_Task");
+
+            entity.ToTable("TaskManager");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CompletedDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Type)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.TaskManagers)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_TaskManager_Account");
+
+            entity.HasOne(d => d.Address).WithMany(p => p.TaskManagers)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("FK_TaskManager_Address");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.TaskManagers)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK_TaskManager_Order");
+
+            entity.HasOne(d => d.WarrantyDetail).WithMany(p => p.TaskManagers)
+                .HasForeignKey(d => d.WarrantyDetailId)
+                .HasConstraintName("FK_TaskManager_WarrantyDetail");
         });
 
         modelBuilder.Entity<TransactionPayment>(entity =>

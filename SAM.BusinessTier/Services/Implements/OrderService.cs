@@ -417,6 +417,14 @@ namespace SAM.BusinessTier.Services.Implements
                     var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
 
+                    var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+                    predicate: t => t.OrderId == orderId);
+
+                    if (taskManager != null)
+                    {
+                        taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
+                        _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
+                    }
                     foreach (var detail in orderDetails)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
@@ -459,7 +467,8 @@ namespace SAM.BusinessTier.Services.Implements
                                     StartDate = maintenanceDate,
                                     Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
                                     Description = $"Periodic Warranty Detail - Start on {maintenanceDate.ToString("yyyy-MM-dd HH:mm:ss")}",
-                                    WarrantyId = newWarranty.Id
+                                    WarrantyId = newWarranty.Id,
+                                    AddressId = updateOrder.AddressId
                                 };
                                 await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
                             }

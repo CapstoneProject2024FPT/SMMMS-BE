@@ -31,7 +31,11 @@ public partial class WarrantyDetail
 
     public Guid? OldInventoryId { get; set; }
 
+    public Guid? AddressId { get; set; }
+
     public virtual Account? Account { get; set; }
+
+    public virtual ICollection<TaskManager> TaskManagers { get; set; } = new List<TaskManager>();
 
     public virtual Warranty Warranty { get; set; } = null!;
 }

@@ -132,6 +132,12 @@ public static class ApiEndPointConstant
         public const string RanksUpdateStatusEndPoint = RanksEndPoint + "/updateStatus/{id}";
 
     }
+    public static class TaskManager
+    {
+        public const string TasksEndPoint = ApiEndpoint + "/task";
+        public const string TaskEndPoint = TasksEndPoint + "/{id}";
+
+    }
     public static class Discount
     {
         public const string DiscountsEndPoint = ApiEndpoint + "/discount";

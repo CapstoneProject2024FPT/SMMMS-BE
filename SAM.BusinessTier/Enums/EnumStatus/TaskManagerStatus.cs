@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Services.Interfaces
+namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public interface IAreaService
+    public enum TaskManagerStatus
     {
+        Process,
+        Completed
     }
 }
