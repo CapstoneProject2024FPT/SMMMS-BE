@@ -1,5 +1,6 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Enums.Other;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace SAM.BusinessTier.Payload.Category
         public string? name { get; set; }
         public CategoryStatus? status { get; set; }
         public CategoryType? type { get; set; }
+        public CategoryKind? kind { get; set; }
         public Guid? MasterCategoryId { get; set; }
 
     }
