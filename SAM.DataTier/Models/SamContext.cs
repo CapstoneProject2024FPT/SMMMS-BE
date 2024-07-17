@@ -63,6 +63,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Specification> Specifications { get; set; }
 
+    public virtual DbSet<Task> Tasks { get; set; }
+
     public virtual DbSet<TransactionPayment> TransactionPayments { get; set; }
 
     public virtual DbSet<Ward> Wards { get; set; }
@@ -176,6 +178,7 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.Kind).HasMaxLength(50);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Type).HasMaxLength(255);
@@ -548,6 +551,18 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Machinery).WithMany(p => p.Specifications)
                 .HasForeignKey(d => d.MachineryId)
                 .HasConstraintName("FK_Specifications_Machinery");
+        });
+
+        modelBuilder.Entity<Task>(entity =>
+        {
+            entity.ToTable("Task");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CompletedDate).HasColumnType("datetime");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Type)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<TransactionPayment>(entity =>

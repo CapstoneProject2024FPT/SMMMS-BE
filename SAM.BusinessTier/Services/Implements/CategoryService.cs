@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Machinery;
+using SAM.BusinessTier.Enums.Other;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -33,6 +34,7 @@ namespace SAM.BusinessTier.Services.Implements
             _logger.LogInformation($"Start create new category: {request}");
 
             Category newCategory = _mapper.Map<Category>(request);
+            newCategory.Kind = request.Kind.GetDescriptionFromEnum();
 
             if (request.MasterCategoryId != null)
             {
@@ -93,6 +95,7 @@ namespace SAM.BusinessTier.Services.Implements
             updateCategory.Name = string.IsNullOrEmpty(request.Name) ? updateCategory.Name : request.Name;
             updateCategory.Description = string.IsNullOrEmpty(request.Description) ? updateCategory.Description : request.Description;
             updateCategory.Status = request.Status.GetDescriptionFromEnum();
+            updateCategory.Kind = request.Kind.GetDescriptionFromEnum();
             updateCategory.MasterCategoryId = request.MasterCategoryId;
 
             if (request.MasterCategoryId != null)
