@@ -1,4 +1,5 @@
-﻿using SAM.BusinessTier.Enums.EnumTypes;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace SAM.BusinessTier.Payload.Task
 
         public DateTime? CreateDate { get; set; }
 
-        public TaskStatus? Status { get; set; }
+        public TaskManagerStatus? Status { get; set; }
 
         public Guid? WarrantyDetailId { get; set; }
 
