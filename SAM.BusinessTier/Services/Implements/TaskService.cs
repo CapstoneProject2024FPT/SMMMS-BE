@@ -291,8 +291,16 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.TaskManager.TaskNameExisted);
 
-            updateTaskRequest.AccountId = updateTaskRequest.AccountId.HasValue && updateTaskRequest.AccountId.Value != Guid.Empty ? updateTaskRequest.AccountId.Value : task.AccountId;
-            updateTaskRequest.AddressId = updateTaskRequest.AddressId.HasValue && updateTaskRequest.AddressId.Value != Guid.Empty ? updateTaskRequest.AddressId.Value : task.AddressId;
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateTaskRequest.AccountId))
+            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+
+            Address address = await _unitOfWork.GetRepository<Address>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateTaskRequest.AddressId))
+            ?? throw new BadHttpRequestException(MessageConstant.Address.NotFoundFailedMessage);
+
+            task.Account = account;
+            task.Address = address;
 
             _unitOfWork.GetRepository<TaskManager>().UpdateAsync(task);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
