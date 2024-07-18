@@ -52,6 +52,8 @@ namespace SAM.BusinessTier.Services.Implements
                 }
 
                 addressId = warrantyDetail.AddressId;
+                warrantyDetail.AccountId = request.AccountId;
+                _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
             }
             else if (request.OrderId.HasValue)
             {
