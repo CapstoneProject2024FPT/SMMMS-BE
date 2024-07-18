@@ -53,6 +53,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 addressId = warrantyDetail.AddressId;
                 warrantyDetail.AccountId = request.AccountId;
+                warrantyDetail.Status = WarrantyDetailStatus.Process.GetDescriptionFromEnum();
                 _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
             }
             else if (request.OrderId.HasValue)
