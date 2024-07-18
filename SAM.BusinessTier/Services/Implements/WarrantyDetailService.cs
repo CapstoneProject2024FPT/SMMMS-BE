@@ -108,19 +108,22 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<bool> UpdateWarrantyDetail(Guid id, UpdateWarrantyDetailRequest updateDetailRequest)
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.WarrantyDetail.EmptyWarrantyDetailIdMessage);
+
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
+
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
+
             Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateDetailRequest.InventoryId))
             ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-            
+
             warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
             warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
             warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
             warrantyDetail.NextMaintenanceDate = updateDetailRequest.NextMaintenanceDate.HasValue ? updateDetailRequest.NextMaintenanceDate.Value : warrantyDetail.NextMaintenanceDate;
-            
+
             if (updateDetailRequest.AccountId.HasValue)
             {
                 Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
@@ -129,18 +132,42 @@ namespace SAM.BusinessTier.Services.Implements
 
                 warrantyDetail.Account = account;
             }
+
             if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Completed")
             {
                 warrantyDetail.CompletionDate = currentTime;
+
                 var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                     predicate: t => t.WarrantyDetailId == warrantyDetail.Id);
-                
+
                 if (taskManager != null)
                 {
                     taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
                     _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
                 }
+
+                // Find the next scheduled maintenance detail
+                var nextWarrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
+                    predicate: wd => wd.WarrantyId == warrantyDetail.WarrantyId && wd.StartDate > warrantyDetail.StartDate && wd.Status != WarrantyDetailStatus.Completed.GetDescriptionFromEnum(),
+                    orderBy: q => q.OrderBy(wd => wd.StartDate));
+
+                // Update the NextMaintenanceDate of the Warranty
+                Warranty warranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
+                    predicate: w => w.Id == warrantyDetail.WarrantyId)
+                ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
+
+                if (nextWarrantyDetail != null)
+                {
+                    warranty.NextMaintenanceDate = nextWarrantyDetail.StartDate;
+                }
+                else
+                {
+                    warranty.NextMaintenanceDate = null; // No more scheduled maintenance
+                }
+
+                _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
             }
+
             _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
