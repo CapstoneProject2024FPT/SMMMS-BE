@@ -142,6 +142,8 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = task.Address.Id,
                             Name = task.Address.Name,
+                            Status = EnumUtil.ParseEnum<AddressStatus>(task.Address.Status),
+                            Note = task.Address.Note,
                             City = task.Address.City == null ? null : new CityResponse
                             {
                                 Id = task.Address.City.Id,
