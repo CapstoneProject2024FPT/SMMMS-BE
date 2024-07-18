@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
@@ -9,6 +10,7 @@ using SAM.BusinessTier.Payload.Address;
 using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.Order;
+using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Payload.Task;
 using SAM.BusinessTier.Payload.Wards;
 using SAM.BusinessTier.Payload.Warranty;
@@ -282,9 +284,19 @@ namespace SAM.BusinessTier.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<bool> UpdateTask(Guid id, UpdateTaskRequest updateTaskRequest)
+        public async Task<bool> UpdateTask(Guid id, UpdateTaskRequest updateTaskRequest)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.TaskManager.EmptyTaskIdMessage);
+            TaskManager task = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+            ?? throw new BadHttpRequestException(MessageConstant.TaskManager.TaskNameExisted);
+
+            updateTaskRequest.AccountId = updateTaskRequest.AccountId.HasValue && updateTaskRequest.AccountId.Value != Guid.Empty ? updateTaskRequest.AccountId.Value : task.AccountId;
+            updateTaskRequest.AddressId = updateTaskRequest.AddressId.HasValue && updateTaskRequest.AddressId.Value != Guid.Empty ? updateTaskRequest.AddressId.Value : task.AddressId;
+
+            _unitOfWork.GetRepository<TaskManager>().UpdateAsync(task);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
         }
     }
 }
