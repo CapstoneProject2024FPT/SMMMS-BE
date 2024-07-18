@@ -18,6 +18,7 @@ namespace SAM.BusinessTier.Payload.Order
         //public double? Discount { get; set; }
         public double? FinalAmount { get; set; }
         public string? Note { get; set; }
+        public string? Description { get; set; }
         public OrderStatus? Status { get; set; }
 
         public GetOrderResponse(Guid? id, string? invoiceCode, DateTime? createdDate, DateTime? completedDate, double? totalAmount, double? finalAmount, string? note, OrderStatus? status)

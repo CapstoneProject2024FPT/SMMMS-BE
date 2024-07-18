@@ -15,6 +15,8 @@ public partial class Order
 
     public string? Note { get; set; }
 
+    public string? Description { get; set; }
+
     public string? Status { get; set; }
 
     public double? FinalAmount { get; set; }

@@ -55,6 +55,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TotalAmount = request.TotalAmount,
                 FinalAmount = request.FinalAmount,
                 Note = request.Note,
+                Description = request.Description,
                 Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
                 AccountId = account.Id,
                 AddressId = request.AddressId
@@ -140,6 +141,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TotalAmount = order.TotalAmount,
                 FinalAmount = order.FinalAmount,
                 Note = order.Note,
+                Description = order.Description,
                 Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
                 UserInfo = order.Account == null ? null : new OrderUserResponse
                 {
@@ -211,6 +213,7 @@ namespace SAM.BusinessTier.Services.Implements
                     TotalAmount = x.TotalAmount,
                     FinalAmount = x.FinalAmount,
                     Note = x.Note,
+                    Description = x.Description,
                     Status = EnumUtil.ParseEnum<OrderStatus>(x.Status),
                     UserInfo = x.Account == null ? null : new OrderUserResponse
                     {
@@ -518,6 +521,7 @@ namespace SAM.BusinessTier.Services.Implements
             if (!string.IsNullOrEmpty(request.Note))
             {
                 updateOrder.Note = request.Note;
+                updateOrder.Description = request.Description;
             }
 
             _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);

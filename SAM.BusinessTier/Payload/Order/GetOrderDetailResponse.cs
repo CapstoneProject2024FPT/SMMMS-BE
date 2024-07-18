@@ -21,6 +21,7 @@ namespace SAM.BusinessTier.Payload.Order
         //public double? Discount { get; set; }
         public double? FinalAmount { get; set; }
         public string? Note { get; set; }
+        public string? Description { get; set; }
         public OrderStatus? Status { get; set; }
         public OrderUserResponse? UserInfo { get; set; }
 

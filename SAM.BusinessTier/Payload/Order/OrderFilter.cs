@@ -17,7 +17,7 @@ namespace SAM.BusinessTier.Payload.Order
         public DateTime? CompletedDate { get; set; }
 
         public string? Note { get; set; }
-
+        public string? Description { get; set; }
         public OrderStatus? Status { get; set; }
 
         public double? FinalAmount { get; set; }

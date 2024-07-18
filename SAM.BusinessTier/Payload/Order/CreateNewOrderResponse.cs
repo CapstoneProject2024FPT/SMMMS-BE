@@ -19,8 +19,7 @@ namespace SAM.BusinessTier.Payload.Order
 
         public Guid? AccountId { get; set; }
 
-        //public Guid? PaymentId { get; set; }
-
+        public string? Description { get; set; }
         public Guid AddressId { get; set; }
 
     }
