@@ -140,7 +140,6 @@ namespace SAM.BusinessTier.Services.Implements
                                 Quantity = warranty.Inventory.Machinery.Inventories.CountInventoryEachStatus()
                             }
                         },
-                        // Add Account information
                         Customer = warranty.Inventory.OrderDetails
                             .Where(detail => detail.MachineryId == warranty.Inventory.Machinery.Id)
                             .Select(detail => new AccountResponse
@@ -168,7 +167,6 @@ namespace SAM.BusinessTier.Services.Implements
                                    .Include(x => x.Inventory)
                                        .ThenInclude(inventory => inventory.Machinery)
                                            .ThenInclude(machinery => machinery.Specifications)
-                                   // Include OrderDetails and Account for retrieving Account info
                                    .Include(x => x.Inventory.OrderDetails)
                                        .ThenInclude(detail => detail.Order.Account)
                 ) ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
@@ -285,7 +283,6 @@ namespace SAM.BusinessTier.Services.Implements
                                    .Include(x => x.Inventory)
                                        .ThenInclude(inventory => inventory.Machinery)
                                            .ThenInclude(machinery => machinery.Specifications)
-                                   // Include OrderDetails and Account for retrieving Account info
                                    .Include(x => x.Inventory.OrderDetails)
                                        .ThenInclude(detail => detail.Order.Account));
 
@@ -314,7 +311,6 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
 
-            // Update warranty properties
             warranty.Status = updateWarrantyRequest.Status.GetDescriptionFromEnum();
             warranty.Description = !string.IsNullOrEmpty(updateWarrantyRequest.Description) ? updateWarrantyRequest.Description : warranty.Description;
             warranty.Comments = !string.IsNullOrEmpty(updateWarrantyRequest.Comments) ? updateWarrantyRequest.Comments : warranty.Comments;
@@ -326,7 +322,6 @@ namespace SAM.BusinessTier.Services.Implements
             
             if (isSuccess)
             {
-                // Check if all associated WarrantyDetails are completed
                 var warrantyDetails = await _unitOfWork.GetRepository<WarrantyDetail>().GetListAsync(
                     predicate: wd => wd.WarrantyId.Equals(id) && wd.Status != WarrantyDetailStatus.Completed.GetDescriptionFromEnum());
 

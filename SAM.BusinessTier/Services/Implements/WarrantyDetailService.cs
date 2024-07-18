@@ -58,7 +58,7 @@ namespace SAM.BusinessTier.Services.Implements
                     },
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.StartDate),
-                    include: x => x.Include(x => x.Account) // Include related user information
+                    include: x => x.Include(x => x.Account) 
                 ) ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
             return warrantyDetails;
@@ -146,12 +146,11 @@ namespace SAM.BusinessTier.Services.Implements
                     _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
                 }
 
-                // Find the next scheduled maintenance detail
+
                 var nextWarrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                     predicate: wd => wd.WarrantyId == warrantyDetail.WarrantyId && wd.StartDate > warrantyDetail.StartDate && wd.Status != WarrantyDetailStatus.Completed.GetDescriptionFromEnum(),
                     orderBy: q => q.OrderBy(wd => wd.StartDate));
 
-                // Update the NextMaintenanceDate of the Warranty
                 Warranty warranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
                     predicate: w => w.Id == warrantyDetail.WarrantyId)
                 ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
@@ -162,7 +161,7 @@ namespace SAM.BusinessTier.Services.Implements
                 }
                 else
                 {
-                    warranty.NextMaintenanceDate = null; // No more scheduled maintenance
+                    warranty.NextMaintenanceDate = null;
                 }
 
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
