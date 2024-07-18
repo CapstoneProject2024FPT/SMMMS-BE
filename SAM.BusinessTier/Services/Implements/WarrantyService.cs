@@ -307,6 +307,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<bool> UpdateWarranty(Guid id, UpdateWarrantyRequest updateWarrantyRequest)
         {
+            DateTime currentTime = TimeUtils.GetCurrentSEATime();
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Warranty.EmptyWarrantyIdMessage);
 
             Warranty warranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
@@ -322,7 +323,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
-
+            
             if (isSuccess)
             {
                 // Check if all associated WarrantyDetails are completed
@@ -332,6 +333,7 @@ namespace SAM.BusinessTier.Services.Implements
                 if (!warrantyDetails.Any())
                 {
                     warranty.Status = WarrantyStatus.Completed.GetDescriptionFromEnum();
+                    warranty.CompletionDate = currentTime;
                     _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
                     isSuccess = await _unitOfWork.CommitAsync() > 0;
                 }

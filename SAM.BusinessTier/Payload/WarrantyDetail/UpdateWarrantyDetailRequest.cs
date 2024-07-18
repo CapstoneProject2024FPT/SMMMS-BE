@@ -9,7 +9,6 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
 {
     public class UpdateWarrantyDetailRequest
     {
-        public DateTime? CompletionDate { get; set; }
 
         public WarrantyDetailStatus? Status { get; set; }
 

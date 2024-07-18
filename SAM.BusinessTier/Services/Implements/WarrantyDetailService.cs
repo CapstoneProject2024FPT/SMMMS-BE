@@ -8,6 +8,7 @@ using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Task;
+using SAM.BusinessTier.Payload.Warranty;
 using SAM.BusinessTier.Payload.WarrantyDetail;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -107,7 +108,7 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<bool> UpdateWarrantyDetail(Guid id, UpdateWarrantyDetailRequest updateDetailRequest)
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.WarrantyDetail.EmptyWarrantyDetailIdMessage);
-
+            DateTime currentTime = TimeUtils.GetCurrentSEATime();
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
@@ -115,7 +116,6 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(updateDetailRequest.InventoryId))
             ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
             
-            warrantyDetail.CompletionDate = updateDetailRequest.CompletionDate.HasValue ? updateDetailRequest.CompletionDate.Value : warrantyDetail.CompletionDate;
             warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
             warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
             warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
@@ -131,9 +131,10 @@ namespace SAM.BusinessTier.Services.Implements
             }
             if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Completed")
             {
+                warrantyDetail.CompletionDate = currentTime;
                 var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                     predicate: t => t.WarrantyDetailId == warrantyDetail.Id);
-
+                
                 if (taskManager != null)
                 {
                     taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
