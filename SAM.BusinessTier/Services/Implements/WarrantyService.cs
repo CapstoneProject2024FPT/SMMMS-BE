@@ -29,9 +29,48 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public Task<Guid> CreateNewWarranty(CreateNewWarrantyRequest createNewWarrantyRequest)
+        public async Task<Guid> CreateNewWarranty(CreateNewWarrantyRequest request)
         {
-            throw new NotImplementedException();
+            var currentUser = GetUsernameFromJwt();
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Username.Equals(currentUser));
+            DateTime currentTime = TimeUtils.GetCurrentSEATime();
+
+            Warranty newWarranty = new Warranty
+            {
+                Id = Guid.NewGuid(),
+                Type = WarrantyType.CustomerRequest.GetDescriptionFromEnum(),
+                CreateDate = currentTime,
+                StartDate = currentTime,
+                Status = WarrantyStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                Description = request.Description,
+                Priority = 1,
+                InventoryId = request.InventoryId
+            };
+
+            await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
+
+            WarrantyDetail newWarrantyDetail = new WarrantyDetail
+            {
+                Id = Guid.NewGuid(),
+                Type = newWarranty.Type,
+                CreateDate = currentTime,
+                StartDate = currentTime,
+                Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                Description = $"Customer Request Warranty Detail - Start on {currentTime:yyyy-MM-dd HH:mm:ss}",
+                WarrantyId = newWarranty.Id,
+                AddressId = request.AddressId
+            };
+
+            await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
+
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccessful)
+            {
+                throw new BadHttpRequestException("Failed to create new warranty.");
+            }
+
+            return newWarranty.Id;
         }
 
         public async Task<ICollection<GetWarrantyInforResponse>> GetWarrantyList(WarrantyFilter filter)
@@ -275,16 +314,32 @@ namespace SAM.BusinessTier.Services.Implements
             ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
 
             // Update warranty properties
-            warranty.Status = updateWarrantyRequest.Status.GetDescriptionFromEnum(); ;
-            warranty.Description = string.IsNullOrEmpty(updateWarrantyRequest.Description) ? updateWarrantyRequest.Description : warranty.Description;
-            warranty.Comments = string.IsNullOrEmpty(updateWarrantyRequest.Comments) ? updateWarrantyRequest.Comments : warranty.Comments;
+            warranty.Status = updateWarrantyRequest.Status.GetDescriptionFromEnum();
+            warranty.Description = !string.IsNullOrEmpty(updateWarrantyRequest.Description) ? updateWarrantyRequest.Description : warranty.Description;
+            warranty.Comments = !string.IsNullOrEmpty(updateWarrantyRequest.Comments) ? updateWarrantyRequest.Comments : warranty.Comments;
             warranty.NextMaintenanceDate = updateWarrantyRequest.NextMaintenanceDate.HasValue ? updateWarrantyRequest.NextMaintenanceDate.Value : warranty.NextMaintenanceDate;
             warranty.Priority = updateWarrantyRequest.Priority.HasValue ? updateWarrantyRequest.Priority.Value : warranty.Priority;
 
             _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+
+            if (isSuccess)
+            {
+                // Check if all associated WarrantyDetails are completed
+                var warrantyDetails = await _unitOfWork.GetRepository<WarrantyDetail>().GetListAsync(
+                    predicate: wd => wd.WarrantyId.Equals(id) && wd.Status != WarrantyDetailStatus.Completed.GetDescriptionFromEnum());
+
+                if (!warrantyDetails.Any())
+                {
+                    warranty.Status = WarrantyStatus.Completed.GetDescriptionFromEnum();
+                    _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
+                    isSuccess = await _unitOfWork.CommitAsync() > 0;
+                }
+            }
+
             return isSuccess;
         }
+
 
     }
 }

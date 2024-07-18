@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.BusinessTier.Enums.EnumStatus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace SAM.BusinessTier.Payload.Warranty
     public class UpdateWarrantyRequest
     {
 
-        public string? Status { get; set; }
+        public WarrantyStatus? Status { get; set; }
 
         public string? Description { get; set; }
 

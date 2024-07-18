@@ -10,7 +10,7 @@ namespace SAM.BusinessTier.Enums.EnumStatus
     {
         AwaitingAssignment,  // Đang đợi giao cho nhân viên
         Process,          // Đang tiến hành (chuẩn bị tới nhà)
-        Complete,            // Hoàn thành
+        Completed,            // Hoàn thành
         Cancel
     }
 }

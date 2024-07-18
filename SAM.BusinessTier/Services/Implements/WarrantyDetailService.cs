@@ -7,6 +7,7 @@ using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Order;
+using SAM.BusinessTier.Payload.Task;
 using SAM.BusinessTier.Payload.WarrantyDetail;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -85,7 +86,7 @@ namespace SAM.BusinessTier.Services.Implements
                         } : null
                     },
                     predicate: detail => detail.Id == id,
-                    include: x => x.Include(x => x.Account) // Include related account information
+                    include: x => x.Include(x => x.Account)
                 );
 
             if (warrantyDetail == null)
@@ -110,15 +111,16 @@ namespace SAM.BusinessTier.Services.Implements
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
-
-            // Update warranty detail properties
+            Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(updateDetailRequest.InventoryId))
+            ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
+            
             warrantyDetail.CompletionDate = updateDetailRequest.CompletionDate.HasValue ? updateDetailRequest.CompletionDate.Value : warrantyDetail.CompletionDate;
             warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
             warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
             warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
             warrantyDetail.NextMaintenanceDate = updateDetailRequest.NextMaintenanceDate.HasValue ? updateDetailRequest.NextMaintenanceDate.Value : warrantyDetail.NextMaintenanceDate;
-
-            // Update associated account if AccountId is provided
+            
             if (updateDetailRequest.AccountId.HasValue)
             {
                 Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
