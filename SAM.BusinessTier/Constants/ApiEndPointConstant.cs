@@ -79,7 +79,7 @@ public static class ApiEndPointConstant
         public const string MachineryEndPoint = MachineriesEndPoint + "/{id}";
         public const string MachineriesEndPointDetail = MachineriesEndPoint + "/{id}/detail";
         public const string MachineriesUpdateStatusEndPoint = MachineriesEndPoint + "/updateStatus/{id}";
-        public const string MachineryAddComponentEndPoint = MachineriesEndPoint + "/{id}/addCompoent";
+        public const string MachineryAddComponentEndPoint = MachineriesEndPoint + "/{id}/addComponent";
 
 
     }
