@@ -16,6 +16,8 @@ using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Azure;
+using SAM.BusinessTier.Payload.User;
 
 
 namespace SAM.BusinessTier.Services.Implements
@@ -24,6 +26,52 @@ namespace SAM.BusinessTier.Services.Implements
     {
         public MachineryService(IUnitOfWork<SamContext> unitOfWork, ILogger<MachineryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
+        }
+        public async Task<bool> AddComponentToMachinery(Guid id, List<Guid> request)
+        {
+            _logger.LogInformation($"Add Rank to Customer: {id}");
+
+            // Retrieve the account or throw an exception if not found
+            Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+            ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+
+            // Retrieve current rank IDs associated with the account
+            List<Guid> currentMachineryComponentPartIds = (List<Guid>)await _unitOfWork.GetRepository<MachineryComponentPart>().GetListAsync(
+                selector: x => x.MachineComponentsId,
+                predicate: x => x.MachineryId.Equals(id));
+
+            // Determine the IDs to add, remove, and keep
+            (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedComponentIds =
+                CustomListUtil.splitidstoaddandremove(currentMachineryComponentPartIds, request);
+
+            // Add new Component
+            if (splittedComponentIds.idsToAdd.Count > 0)
+            {
+                List<MachineryComponentPart> ComponentToInserts = new List<MachineryComponentPart>();
+                splittedComponentIds.idsToAdd.ForEach(rankId => ComponentToInserts.Add(new MachineryComponentPart
+                {
+                    Id = Guid.NewGuid(),
+                    MachineryId = id,
+                    MachineComponentsId = rankId, 
+                }));
+                await _unitOfWork.GetRepository<MachineryComponentPart>().InsertRangeAsync(ComponentToInserts);
+            }
+
+            // Remove obsolete ranks
+            if (splittedComponentIds.idsToRemove.Count > 0)
+            {
+                List<MachineryComponentPart> ranksToDelete = (List<MachineryComponentPart>)await _unitOfWork.GetRepository<MachineryComponentPart>()
+                    .GetListAsync(predicate: x =>
+                        x.MachineryId.Equals(id) &&
+                        splittedComponentIds.idsToRemove.Contains(x.MachineComponentsId));
+
+                _unitOfWork.GetRepository<MachineryComponentPart>().DeleteRangeAsync(ranksToDelete);
+            }
+
+            // Commit the changes to the database
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
         }
         public async Task<Guid> CreateNewMachinerys(CreateNewMachineryRequest request)
         {
@@ -148,6 +196,15 @@ namespace SAM.BusinessTier.Services.Implements
                             Name = machinery.Category.Name,
                             Type = EnumUtil.ParseEnum<CategoryType>(machinery.Category.Type),
                         },
+                        Component = machinery.MachineryComponentParts.Select(part => new ComponentResponse
+                        {
+                            Id = part.MachineComponents.Id,
+                            Name = part.MachineComponents.Name,
+                            Description = part.MachineComponents.Description,
+                            Status = EnumUtil.ParseEnum<ComponentStatus>(part.MachineComponents.Status),
+                            StockPrice = part.MachineComponents.StockPrice,
+                            SellingPrice = part.MachineComponents.SellingPrice
+                        }).ToList(),
                         Image = machinery.ImagesAlls.Select(image => new MachineryImagesResponse
                         {
                             Id = image.Id,
@@ -161,8 +218,8 @@ namespace SAM.BusinessTier.Services.Implements
                             Name = spec.Name,
                             Value = spec.Value
                         }).ToList(),
+                        Quantity = machinery.Inventories.CountInventoryEachStatus(),
 
-                        Quantity = machinery.Inventories.CountInventoryEachStatus()
                     },
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.Priority),
@@ -171,75 +228,100 @@ namespace SAM.BusinessTier.Services.Implements
                                    .Include(x => x.Origin)
                                    .Include(x => x.Category)
                                    .Include(x => x.ImagesAlls)
-                                   .Include(x => x.Specifications))
+                                   .Include(x => x.Specifications)
+                                   .Include(x => x.MachineryComponentParts)
+                                   .ThenInclude(part => part.MachineComponents))
                 ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
+
             return machineryList;
         }
+
+
         public async Task<IPaginate<GetMachinerySpecificationsRespone>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
         {
-            IPaginate<GetMachinerySpecificationsRespone> machineryList = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync
-                (
-                     selector: x => new GetMachinerySpecificationsRespone
-                     {
-                         Id = x.Id,
-                         Name = x.Name,
-                         Brand = new BrandResponse
-                         {
-                             Id = x.BrandId,
-                             Name = x.Brand.Name,
-                             Description = x.Brand.Description,
-                         },
-                         Model = x.Model,
-                         Description = x.Description,
-                         SellingPrice = x.SellingPrice,
-                         Priority = x.Priority,
-                         TimeWarranty = x.TimeWarranty,
-                         Status = EnumUtil.ParseEnum<MachineryStatus>(x.Status),
-                         CreateDate = x.CreateDate,
-                         Origin = new OriginResponse
-                         {
-                             Id = x.OriginId,
-                             Name = x.Origin.Name,
-                             Description = x.Origin.Description,
-                         },
-                         Category = new CategoryResponse
-                         {
-                             Id = x.CategoryId,
-                             Name = x.Category.Name,
-                             Type = EnumUtil.ParseEnum<CategoryType>(x.Category.Type),
-                         },
-                         Image = x.ImagesAlls.Select(image => new MachineryImagesResponse
-                         {
-                             Id = image.Id,
-                             ImageURL = image.ImageUrl,
-                             CreateDate = image.CreateDate
-                         }).ToList(),
-                         Specifications = x.Specifications.Select(spec => new SpecificationsResponse
-                         {
-                             SpecificationId = spec.Id,
-                             MachineryId = spec.MachineryId,
-                             Name = spec.Name,
-                             Value = spec.Value
-                         }).ToList(),
-                         Quantity = x.Inventories.CountInventoryEachStatus()
-                     },
-                    filter: filter,
-                    orderBy: x => x.OrderBy(x => x.Priority),
-                    include: x => x.Include(x => x.Inventories)
-                                   .Include(x => x.Brand)
-                                   .Include(x => x.Origin)
-                                   .Include(x => x.Category)
-                                   .Include(x => x.ImagesAlls)
-                                   .Include(x => x.Specifications),
-                    page: pagingModel.page,
-                    size: pagingModel.size
-                    ) ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage
-                );
+            IPaginate<GetMachinerySpecificationsRespone> machineryList = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync(
+                selector: x => new GetMachinerySpecificationsRespone
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Brand = new BrandResponse
+                    {
+                        Id = x.BrandId,
+                        Name = x.Brand.Name,
+                        Description = x.Brand.Description,
+                    },
+                    Model = x.Model,
+                    Description = x.Description,
+                    SellingPrice = x.SellingPrice,
+                    Priority = x.Priority,
+                    TimeWarranty = x.TimeWarranty,
+                    Status = EnumUtil.ParseEnum<MachineryStatus>(x.Status),
+                    CreateDate = x.CreateDate,
+                    Origin = new OriginResponse
+                    {
+                        Id = x.OriginId,
+                        Name = x.Origin.Name,
+                        Description = x.Origin.Description,
+                    },
+                    Category = new CategoryResponse
+                    {
+                        Id = x.CategoryId,
+                        Name = x.Category.Name,
+                        Type = EnumUtil.ParseEnum<CategoryType>(x.Category.Type),
+                    },
+                    Component = x.MachineryComponentParts.Select(part => new ComponentResponse
+                    {
+                        Id = part.MachineComponents.Id,
+                        Name = part.MachineComponents.Name,
+                        Description = part.MachineComponents.Description,
+                        Status = EnumUtil.ParseEnum<ComponentStatus>(part.MachineComponents.Status),
+                        StockPrice = part.MachineComponents.StockPrice,
+                        SellingPrice = part.MachineComponents.SellingPrice
+                    }).ToList(),
+                    Image = x.ImagesAlls.Select(image => new MachineryImagesResponse
+                    {
+                        Id = image.Id,
+                        ImageURL = image.ImageUrl,
+                        CreateDate = image.CreateDate
+                    }).ToList(),
+                    Specifications = x.Specifications.Select(spec => new SpecificationsResponse
+                    {
+                        SpecificationId = spec.Id,
+                        MachineryId = spec.MachineryId,
+                        Name = spec.Name,
+                        Value = spec.Value
+                    }).ToList(),
+                    Quantity = x.Inventories.CountInventoryEachStatus()
+                },
+                filter: filter,
+                orderBy: x => x.OrderBy(x => x.Priority),
+                include: x => x.Include(x => x.Inventories)
+                              .Include(x => x.Brand)
+                              .Include(x => x.Origin)
+                              .Include(x => x.Category)
+                              .Include(x => x.ImagesAlls)
+                              .Include(x => x.Specifications)
+                              .Include(x => x.MachineryComponentParts)
+                              .ThenInclude(part => part.MachineComponents),
+                page: pagingModel.page,
+                size: pagingModel.size
+            ) ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
+            //// Map component parts to the response for each machinery item
+            //foreach (var machinery in machineryList.Items)
+            //{
+            //    var componentParts = await _unitOfWork.GetRepository<MachineryComponentPart>()
+            //        .GetListAsync(
+            //            predicate: part => part.MachineryId == machinery.Id,
+            //            include: part => part.Include(p => p.MachineComponents));
+
+            //    machinery.
+            //}
 
             return machineryList;
         }
+
 
 
         public async Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id)
@@ -251,15 +333,16 @@ namespace SAM.BusinessTier.Services.Implements
                                .Include(x => x.Origin)
                                .Include(x => x.Category)
                                .Include(x => x.ImagesAlls)
-                               .Include(x => x.Specifications))
+                               .Include(x => x.Specifications)
+                               .Include(x => x.MachineryComponentParts)
+                               .ThenInclude(part => part.MachineComponents))
                 ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-
 
             var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone
             {
                 Id = machinery.Id,
                 Name = machinery.Name,
-                Brand = new BrandResponse()
+                Brand = new BrandResponse
                 {
                     Id = machinery.BrandId,
                     Name = machinery.Brand.Name,
@@ -272,18 +355,17 @@ namespace SAM.BusinessTier.Services.Implements
                 TimeWarranty = machinery.TimeWarranty,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                 CreateDate = machinery.CreateDate,
-                Origin = new OriginResponse()
+                Origin = new OriginResponse
                 {
                     Id = machinery.OriginId,
                     Name = machinery.Origin.Name,
                     Description = machinery.Origin.Description,
                 },
-                Category = new CategoryResponse()
+                Category = new CategoryResponse
                 {
                     Id = machinery.CategoryId,
                     Name = machinery.Category.Name,
                     Type = EnumUtil.ParseEnum<CategoryType>(machinery.Category.Type),
-
                 },
                 Image = machinery.ImagesAlls.Select(image => new MachineryImagesResponse
                 {
@@ -298,16 +380,25 @@ namespace SAM.BusinessTier.Services.Implements
                     Name = spec.Name,
                     Value = spec.Value
                 }).ToList(),
-                    
+                Quantity = machinery.Inventories.CountInventoryEachStatus(),
 
-                // Set the inventory count here
-                Quantity = machinery.Inventories.CountInventoryEachStatus()
+                // Map the component parts to the response
+                Component = machinery.MachineryComponentParts.Select(part => new ComponentResponse
+                {
+                    Id = part.MachineComponents.Id,
+                    Name = part.MachineComponents.Name,
+                    Description = part.MachineComponents.Description,
+                    Status = EnumUtil.ParseEnum<ComponentStatus>(part.MachineComponents.Status),
+                    StockPrice = part.MachineComponents.StockPrice,
+                    SellingPrice = part.MachineComponents.SellingPrice
+                }).ToList()
             };
 
             return getMachinerySpecificationsRespone;
         }
 
-        public async Task<GetMachineryAndComponentsResponse> GetMachineryAndComponentsByInventoryId(Guid id)
+
+        public async Task<GetMachineryAndComponentsFollowInventoryIdResponse> GetMachineryAndComponentsByInventoryId(Guid id)
         {
             // Lấy thông tin Machinery từ Inventory
             var inventory = await _unitOfWork.GetRepository<Inventory>()
@@ -392,7 +483,7 @@ namespace SAM.BusinessTier.Services.Implements
                 MasterInventoryId = component.MasterInventoryId
             }).ToList();
 
-            var response = new GetMachineryAndComponentsResponse
+            var response = new GetMachineryAndComponentsFollowInventoryIdResponse
             {
                 Machinery = machineryResponse,
                 Components = componentResponses

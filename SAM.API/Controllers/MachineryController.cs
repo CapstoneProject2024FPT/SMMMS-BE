@@ -22,6 +22,12 @@ namespace SAM.API.Controllers
         {
             _iMachineryService = machineryService;
         }
+        [HttpPost(ApiEndPointConstant.Product.MachineryAddComponentEndPoint)]
+        public async Task<IActionResult> AddComponentToMachinery(Guid id, List<Guid> request)
+        {
+            var response = await _iMachineryService.AddComponentToMachinery(id,request);
+            return Ok(response);
+        }
         [HttpPost(ApiEndPointConstant.Product.MachineriesEndPoint)]
         public async Task<IActionResult> CreateNewMachinerys(CreateNewMachineryRequest mechinery)
         {

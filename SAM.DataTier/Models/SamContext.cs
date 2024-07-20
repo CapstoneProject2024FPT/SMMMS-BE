@@ -45,6 +45,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Machinery> Machineries { get; set; }
 
+    public virtual DbSet<MachineryComponentPart> MachineryComponentParts { get; set; }
+
     public virtual DbSet<News> News { get; set; }
 
     public virtual DbSet<NewsCategory> NewsCategories { get; set; }
@@ -388,6 +390,22 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Origin).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.OriginId)
                 .HasConstraintName("FK_Machinery_Origin");
+        });
+
+        modelBuilder.Entity<MachineryComponentPart>(entity =>
+        {
+            entity.ToTable("MachineryComponentPart");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.MachineComponents).WithMany(p => p.MachineryComponentParts)
+                .HasForeignKey(d => d.MachineComponentsId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MachineryComponentPart_MachineComponents");
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.MachineryComponentParts)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK_MachineryComponentPart_Machinery");
         });
 
         modelBuilder.Entity<News>(entity =>

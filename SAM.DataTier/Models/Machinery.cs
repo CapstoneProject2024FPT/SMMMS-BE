@@ -41,6 +41,8 @@ public partial class Machinery
 
     public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
 
+    public virtual ICollection<MachineryComponentPart> MachineryComponentParts { get; set; } = new List<MachineryComponentPart>();
+
     public virtual Origin? Origin { get; set; }
 
     public virtual ICollection<Specification> Specifications { get; set; } = new List<Specification>();

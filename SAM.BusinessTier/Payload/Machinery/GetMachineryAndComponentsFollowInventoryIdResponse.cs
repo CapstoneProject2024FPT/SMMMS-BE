@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.Machinery
 {
-    public class GetMachineryAndComponentsResponse
+    public class GetMachineryAndComponentsFollowInventoryIdResponse
     {
         public GetMachinerySpecificationsRespone? Machinery { get; set; }
         public List<GetInventoryResponse>? Components { get; set; }

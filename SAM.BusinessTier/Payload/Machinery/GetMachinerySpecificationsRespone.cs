@@ -42,9 +42,12 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public CategoryResponse? Category { get; set; }
 
+        public List<ComponentResponse>? Component { get; set; } = new List<ComponentResponse>();
+
         public List<MachineryImagesResponse>? Image { get; set; } = new List<MachineryImagesResponse>();
 
         public List<SpecificationsResponse>? Specifications { get; set; } = new List<SpecificationsResponse>();
+
     }
     public class SpecificationsResponse
     {
@@ -79,6 +82,21 @@ namespace SAM.BusinessTier.Payload.Machinery
         public Guid? Id { get; set; }
         public string? ImageURL { get; set; }
         public DateTime? CreateDate { get; set; }
+
+    }
+    public class ComponentResponse
+    {
+        public Guid Id { get; set; }
+
+        public string? Name { get; set; }
+
+        public string? Description { get; set; }
+
+        public ComponentStatus? Status { get; set; }
+
+        public double? StockPrice { get; set; }
+
+        public double? SellingPrice { get; set; }
 
     }
 }

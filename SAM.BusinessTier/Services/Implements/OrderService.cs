@@ -428,7 +428,16 @@ namespace SAM.BusinessTier.Services.Implements
                         taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
                         _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
                     }
-                    foreach (var detail in orderDetails)
+                    
+                    break;
+                case OrderStatus.Delivery:
+                    updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
+                    break;
+                case OrderStatus.Paid:
+
+                    var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
+                        predicate: x => x.OrderId == orderId);
+                    foreach (var detail in orderDetailsPaid)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                             predicate: x => x.Id == detail.InventoryId,
@@ -436,7 +445,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                         if (inventory == null || inventory.Machinery == null)
                         {
-                            throw new BadHttpRequestException(MessageConstant.Inventory. NotFoundFailedMessage);
+                            throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
                         }
 
                         int warrantyYears = (int)inventory.Machinery.TimeWarranty;
@@ -477,13 +486,6 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         }
                     }
-                    break;
-                case OrderStatus.Delivery:
-                    updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
-                    break;
-                case OrderStatus.Paid:
-                    var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
-                        predicate: x => x.OrderId == orderId);
                     foreach (var detail in orderDetailsPaid)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
