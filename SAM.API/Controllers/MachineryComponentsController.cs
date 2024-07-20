@@ -30,7 +30,7 @@ namespace SAM.API.Controllers
             var response = await _machineryComponentService.GetMachineryComponentList(filter, pagingModel);
             return Ok(response);
         }
-        [HttpGet(ApiEndPointConstant.MachineryComponent.MachineryComponentsEndPoint)]
+        [HttpGet(ApiEndPointConstant.MachineryComponent.MachineryComponentsEndPointNoPaginate)]
         public async Task<IActionResult> GetMachineryComponentListNoPagingNate([FromQuery] MachineryComponentFilter filter)
         {
             var response = await _machineryComponentService.GetMachineryComponentListNoPagingNate(filter);
