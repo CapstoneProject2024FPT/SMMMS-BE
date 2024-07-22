@@ -40,6 +40,7 @@ namespace SAM.BusinessTier.Services.Implements
                         PayType = transaction.PayType != null ? EnumUtil.ParseEnum<PaymentType>(transaction.PayType) : (PaymentType?)null,
                         TransactionJson = transaction.TransactionJson,
                         PaymentId = transaction.PaymentId,
+                        OrderId = transaction.Payment.OrderId,
                         AccountId = transaction.Payment != null ? transaction.Payment.Order.AccountId : (Guid?)null
                     },
                     predicate: x => x.Id == id,
@@ -65,6 +66,7 @@ namespace SAM.BusinessTier.Services.Implements
                         PayType = transaction.PayType != null ? EnumUtil.ParseEnum<PaymentType>(transaction.PayType) : (PaymentType?)null,
                         TransactionJson = transaction.TransactionJson,
                         PaymentId = transaction.PaymentId,
+                        OrderId = transaction.Payment.OrderId,
                         AccountId = transaction.Payment != null ? transaction.Payment.Order.AccountId : (Guid?)null
                     },
                     filter: filter,

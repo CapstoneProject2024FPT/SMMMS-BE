@@ -26,6 +26,7 @@ namespace SAM.BusinessTier.Payload.Transaction
 
         public string? TransactionJson { get; set; }
         public Guid? PaymentId { get; set; }
+        public Guid? OrderId { get; set; }
         public Guid? AccountId { get; set; }
 
     }
