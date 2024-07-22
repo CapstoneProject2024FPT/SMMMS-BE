@@ -285,10 +285,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
-
-
-
-
         public async Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request)
         {
             string currentUser = GetUsernameFromJwt();
@@ -435,6 +431,7 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
+
 
 
     }

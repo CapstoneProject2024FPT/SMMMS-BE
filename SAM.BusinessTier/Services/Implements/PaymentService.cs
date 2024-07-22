@@ -43,7 +43,7 @@ namespace SAM.BusinessTier.Services.Implements
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
-            pay.AddRequestData("vnp_Amount", ((double)request.Amount).ToString());
+            pay.AddRequestData("vnp_Amount", (((double)request.Amount)*100).ToString());
             pay.AddRequestData("vnp_CreateDate", currentTimeStamp);
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(_httpContextAccessor.HttpContext));
@@ -55,25 +55,41 @@ namespace SAM.BusinessTier.Services.Implements
 
             var paymentUrl = pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
 
+            var paymentId = Guid.NewGuid();
             var payment = new Payment()
             {
-                Id = Guid.NewGuid(),
+                Id = paymentId,
                 Amount = request.Amount,
                 PaymentDate = currentTime,
                 PaymentMethod = request.PaymentType.GetDescriptionFromEnum(),
                 OrderId = request.OrderId,
+                Status = PaymentStatus.PENDING.GetDescriptionFromEnum(),
+                TransactionPayments = new List<TransactionPayment>()
+                {
+                    new ()
+                    {
+                        Id = Guid.NewGuid(),
+                        PaymentId = paymentId,
+                        InvoiceId = txnRef,
+                        TotalAmount = request.Amount,
+                        Description = $"Đang tiến hành thanh toán VNPAY mã đơn {txnRef}",
+                        CreatedAt = currentTime,
+                        PayType = request.PaymentType.GetDescriptionFromEnum(),
+                        Status = PaymentStatus.PENDING.GetDescriptionFromEnum()
+                    }
+                }
             };
-            var transaction = new TransactionPayment()
-            {
-                Id = Guid.NewGuid(),
-                PaymentId = payment.Id,
-                InvoiceId = txnRef,
-                TotalAmount = request.Amount,
-                Description = $"Đang tiến hành thanh toán VNPAY mã đơn {txnRef}",
-                CreatedAt = currentTime,
-                PayType = request.PaymentType.GetDescriptionFromEnum(),
-                Status = PaymentStatus.PENDING.GetDescriptionFromEnum()
-            };
+            //var transaction = new TransactionPayment()
+            //{
+            //    Id = Guid.NewGuid(),
+            //    PaymentId = payment.Id,
+            //    InvoiceId = txnRef,
+            //    TotalAmount = request.Amount,
+            //    Description = $"Đang tiến hành thanh toán VNPAY mã đơn {txnRef}",
+            //    CreatedAt = currentTime,
+            //    PayType = request.PaymentType.GetDescriptionFromEnum(),
+            //    Status = PaymentStatus.PENDING.GetDescriptionFromEnum()
+            //};
             var paymentResponse = new CreatePaymentResponse()
             {
                 Message = "Đang tiến hành thanh toán VNPAY",
@@ -82,11 +98,11 @@ namespace SAM.BusinessTier.Services.Implements
 
             };
 
-            
+
 
             try
             {
-                await _unitOfWork.GetRepository<TransactionPayment>().InsertAsync(transaction);
+                //await _unitOfWork.GetRepository<TransactionPayment>().InsertAsync(transaction);
                 await _unitOfWork.GetRepository<Payment>().InsertAsync(payment);
                 await _unitOfWork.CommitAsync();
             }
@@ -98,29 +114,27 @@ namespace SAM.BusinessTier.Services.Implements
             return paymentResponse;
         }
 
-        public async Task<bool> ExecuteVnPayCallback(IQueryCollection collections, string url, string? status, string? transId)
+        public async Task<bool> ExecuteVnPayCallback(string? status, string? transId, string? urlCallBack)
         {
             var paymentTransaction = await _unitOfWork.GetRepository<TransactionPayment>().SingleOrDefaultAsync(
                   predicate: x => x.InvoiceId.Equals(transId),
                   include: x => x.Include(x => x.Payment));
 
-            var response = VnPayLibrary.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
-            var responseJson = await CallApiUtils.CallApiEndpoint(url, response);
-
+            //var response = VnPayLibrary.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+            //var responseJson = await CallApiUtils.CallApiEndpoint(url, response);
             if (!status.Equals("00"))
             {
                 paymentTransaction.Description = "VNPAY payment failed";
-                paymentTransaction.Status = "Canceled";
-                paymentTransaction.Payment.Status = PaymentStatus.FAILED.GetDescriptionFromEnum();
-
+                paymentTransaction.Status = PaymentStatus.FAILED.GetDescriptionFromEnum();
+                paymentTransaction.Payment.Status = PaymentStatus.FAILED.GetDescriptionFromEnum(); 
                 _unitOfWork.GetRepository<TransactionPayment>().UpdateAsync(paymentTransaction);
             }
             else
             {
                 paymentTransaction.Description = "VnPay payment successful";
-                paymentTransaction.Status = "Completed";
-                paymentTransaction.TransactionJson = responseJson.Content.ReadAsStringAsync().Result;
-
+                paymentTransaction.Status = PaymentStatus.SUCCESS.GetDescriptionFromEnum();
+                paymentTransaction.Payment.Status = PaymentStatus.SUCCESS.GetDescriptionFromEnum();
+                paymentTransaction.Payment.Order.Status = OrderStatus.Paid.GetDescriptionFromEnum();
                 _unitOfWork.GetRepository<TransactionPayment>().UpdateAsync(paymentTransaction);
             }
             return await _unitOfWork.CommitAsync() > 0;
@@ -164,7 +178,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (updatePaymentRequest.Status.GetDescriptionFromEnum() == "SUCCESS")
             {
-                Guid orderId = (Guid)payment.OrderId; 
+                Guid orderId = (Guid)payment.OrderId;
 
                 var orderUpdateRequest = new UpdateOrderRequest
                 {

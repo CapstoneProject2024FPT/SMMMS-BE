@@ -135,40 +135,37 @@ namespace SAM.BusinessTier.Utils
             var myChecksum = HmacSha512(secretKey, rspRaw);
             return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
         }
-
         public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
         {
-            StringBuilder data = new StringBuilder();
-            foreach (KeyValuePair<string, string> kv in _requestData)
-            {
-                if (!String.IsNullOrEmpty(kv.Value))
-                {
-                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
-                }
-            }
-            string queryString = data.ToString();
+            var data = new StringBuilder();
 
-            baseUrl += "?" + queryString;
-            String signData = queryString;
+            foreach (var (key, value) in _requestData.Where(kv => !string.IsNullOrEmpty(kv.Value)))
+            {
+                data.Append(WebUtility.UrlEncode(key) + "=" + WebUtility.UrlEncode(value) + "&");
+            }
+
+            var querystring = data.ToString();
+
+            baseUrl += "?" + querystring;
+            var signData = querystring;
             if (signData.Length > 0)
             {
-
                 signData = signData.Remove(data.Length - 1, 1);
             }
-            string vnp_SecureHash = HmacSha512(vnpHashSecret, signData);
-            baseUrl += "vnp_SecureHash=" + vnp_SecureHash;
+
+            var vnpSecureHash = HmacSha512(vnpHashSecret, signData);
+            baseUrl += "vnp_SecureHash=" + vnpSecureHash;
 
             return baseUrl;
         }
-
         private string HmacSha512(string key, string inputData)
         {
             var hash = new StringBuilder();
-            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
-            byte[] inputBytes = Encoding.UTF8.GetBytes(inputData);
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var inputBytes = Encoding.UTF8.GetBytes(inputData);
             using (var hmac = new HMACSHA512(keyBytes))
             {
-                byte[] hashValue = hmac.ComputeHash(inputBytes);
+                var hashValue = hmac.ComputeHash(inputBytes);
                 foreach (var theByte in hashValue)
                 {
                     hash.Append(theByte.ToString("x2"));
@@ -177,6 +174,47 @@ namespace SAM.BusinessTier.Utils
 
             return hash.ToString();
         }
+        //public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
+        //{
+        //    StringBuilder data = new StringBuilder();
+        //    foreach (KeyValuePair<string, string> kv in _requestData)
+        //    {
+        //        if (!String.IsNullOrEmpty(kv.Value))
+        //        {
+        //            data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+        //        }
+        //    }
+        //    string queryString = data.ToString();
+
+        //    baseUrl += "?" + queryString;
+        //    String signData = queryString;
+        //    if (signData.Length > 0)
+        //    {
+
+        //        signData = signData.Remove(data.Length - 1, 1);
+        //    }
+        //    string vnp_SecureHash = HmacSha512(vnpHashSecret, signData);
+        //    baseUrl += "vnp_SecureHash=" + vnp_SecureHash;
+
+        //    return baseUrl;
+        //}
+
+        //private string HmacSha512(string key, string inputData)
+        //{
+        //    var hash = new StringBuilder();
+        //    byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+        //    byte[] inputBytes = Encoding.UTF8.GetBytes(inputData);
+        //    using (var hmac = new HMACSHA512(keyBytes))
+        //    {
+        //        byte[] hashValue = hmac.ComputeHash(inputBytes);
+        //        foreach (var theByte in hashValue)
+        //        {
+        //            hash.Append(theByte.ToString("x2"));
+        //        }
+        //    }
+
+        //    return hash.ToString();
+        //}
 
         private string GetResponseData()
         {

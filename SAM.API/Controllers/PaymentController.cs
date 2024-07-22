@@ -28,26 +28,24 @@ namespace SAM.API.Controllers
         }
         [HttpPut(ApiEndPointConstant.Payment.PaymentsEndpoint)]
         [ProducesResponseType(typeof(CreatePaymentResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdatePayment(Guid id,[FromBody] UpdatePaymentRequest createPaymentRequest)
+        public async Task<IActionResult> UpdatePayment(Guid id, [FromBody] UpdatePaymentRequest createPaymentRequest)
         {
-            var url = await _paymentService.UpdatePayment(id,createPaymentRequest);
+            var url = await _paymentService.UpdatePayment(id, createPaymentRequest);
             return Ok(url);
         }
 
         [HttpGet(ApiEndPointConstant.Payment.VnPayEndpoint)]
-        public async Task<IActionResult> VnPayPaymentCallBack([Required] string url, string? vnp_ResponseCode, string? vnp_TxnRef)
+        public async Task<IActionResult> VnPayPaymentCallBack(string? vnp_ResponseCode, string? vnp_TxnRef,string? urlCallBack)
         {
-            var isSuccessful = await _paymentService.ExecuteVnPayCallback(Request.Query, url, vnp_ResponseCode, vnp_TxnRef);
+            var isSuccessful = await _paymentService.ExecuteVnPayCallback(vnp_ResponseCode, vnp_TxnRef, urlCallBack);
 
             if (isSuccessful && vnp_ResponseCode == "00")
             {
-                // Payment success redirect
-                return RedirectToAction("PaymentSuccessAction", "PaymentController");
+                return RedirectPermanent(urlCallBack);
             }
             else
             {
-                // Payment failure redirect
-                return RedirectToAction("PaymentFailureAction", "PaymentController");
+                return RedirectPermanent(urlCallBack);
             }
         }
 

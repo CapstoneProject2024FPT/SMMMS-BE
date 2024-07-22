@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azure.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
@@ -111,6 +112,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return inventoryIds;
         }
+
 
 
 

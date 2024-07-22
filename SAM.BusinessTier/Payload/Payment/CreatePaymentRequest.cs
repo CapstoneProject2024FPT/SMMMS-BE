@@ -13,7 +13,7 @@ namespace SAM.BusinessTier.Payload.VNPay
         public double Amount { get; set; }
         public PaymentType PaymentType { get; set; }
 
-        public string CallbackUrl { get; set; }
+        public string? CallbackUrl { get; set; }
         //public Guid PaymentId { get; set; }
     }
 }

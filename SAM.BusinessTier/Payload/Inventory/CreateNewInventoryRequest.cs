@@ -12,6 +12,5 @@ namespace SAM.BusinessTier.Payload.Inventory
 
         public Guid? MachineComponentsId { get; set; }
 
-        public Guid? MasterInventoryId { get; set; }
     }
 }
