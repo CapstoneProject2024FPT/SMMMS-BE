@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Payload.VNPay
+namespace SAM.BusinessTier.Payload.Payment
 {
     public class CreatePaymentRequest
     {

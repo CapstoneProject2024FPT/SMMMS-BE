@@ -54,6 +54,7 @@ namespace SAM.API.Configs
             services.AddScoped<IDistrictService, DistrictService>();
             services.AddScoped<IWardService, WardService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<ITransactionService, TransactionService>();
 
             return services;
         }

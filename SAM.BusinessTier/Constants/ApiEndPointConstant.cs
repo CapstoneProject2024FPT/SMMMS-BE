@@ -154,5 +154,10 @@ public static class ApiEndPointConstant
         public const string PaymentsEndpoint = PaymentEndpoint + "/{id}";
 
     }
+    public static class Transaction
+    {
+        public const string TransactionsEndPoint = ApiEndpoint + "/transaction";
+        public const string TransactionEndPoint = TransactionsEndPoint + "/{id}";
+    }
 
 }

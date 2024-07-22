@@ -7,7 +7,6 @@ using SAM.API.Utils;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Payment;
-using SAM.BusinessTier.Payload.VNPay;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
@@ -138,6 +137,16 @@ namespace SAM.BusinessTier.Services.Implements
                 _unitOfWork.GetRepository<TransactionPayment>().UpdateAsync(paymentTransaction);
             }
             return await _unitOfWork.CommitAsync() > 0;
+        }
+
+        public Task<GetPaymentResponse> GetPaymentById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ICollection<GetPaymentResponse>> GetPaymentList(PaymentFilter filter)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdatePayment(Guid id, UpdatePaymentRequest updatePaymentRequest)

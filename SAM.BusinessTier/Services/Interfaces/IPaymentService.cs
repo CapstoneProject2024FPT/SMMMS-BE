@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.Payment;
 using SAM.BusinessTier.Payload.Rank;
-using SAM.BusinessTier.Payload.VNPay;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +16,8 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> ExecuteVnPayCallback(string? status, string? transId, string? urlCallBack);
 
         Task<bool> UpdatePayment(Guid id, UpdatePaymentRequest updatePaymentRequest);
+
+        Task<ICollection<GetPaymentResponse>> GetPaymentList(PaymentFilter filter);
+        Task<GetPaymentResponse> GetPaymentById(Guid id);
     }
 }

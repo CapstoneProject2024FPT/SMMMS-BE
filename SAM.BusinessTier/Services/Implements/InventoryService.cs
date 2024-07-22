@@ -73,7 +73,7 @@ namespace SAM.BusinessTier.Services.Implements
                             Status = InventoryStatus.Available.GetDescriptionFromEnum(),
                             Type = InventoryType.Material.GetDescriptionFromEnum(),
                             CreateDate = DateTime.Now,
-                            Condition = InventoryCondition.New.GetDescriptionFromEnum(),
+                            Condition = InventoryCondition.CurrentlyinUse.GetDescriptionFromEnum(),
                             IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum(),
                             MasterInventoryId = inventory.Id,
                             MachineComponentsId = componentPart.MachineComponentsId

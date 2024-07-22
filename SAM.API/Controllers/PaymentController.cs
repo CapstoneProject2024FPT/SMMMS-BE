@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Payload.Payment;
-using SAM.BusinessTier.Payload.VNPay;
 using SAM.BusinessTier.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 

@@ -40,6 +40,16 @@ public static class MessageConstant
         public const string OriginExistedMessage = "Origin đã tồn tại";
         public const string OriginEmptyMessage = "Origin không hợp lệ";
     }
+    public static class Transaction
+    {
+        public const string CreateTransactionFailedMessage = "Tạo mới Transaction thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent Transaction ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Transaction ko có trong hệ thống";
+        public const string UpdateTransactionSuccessMessage = "Transaction được cập nhật thành công";
+        public const string UpdateTransactionFailedMessage = "Transaction cập nhật thất bại";
+        public const string TransactionExistedMessage = "Transaction đã tồn tại";
+        public const string TransactionEmptyMessage = "Transaction không hợp lệ";
+    }
     public static class Brand
     {
         public const string CreateBrandFailedMessage = "Tạo mới Brand thất bại";
