@@ -27,7 +27,7 @@ namespace SAM.BusinessTier.Payload.Inventory
         public DateTime? SoldDate { get; set; }
 
         public Guid? MachineryId { get; set; }
-        public Guid? MachinerycomponentId { get; set; }
+        public Guid? MachineComponentsId { get; set; }
 
         public Guid? MasterInventoryId { get; set; }
     }

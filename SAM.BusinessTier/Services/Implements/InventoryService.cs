@@ -32,7 +32,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var inventoryIds = new List<Guid>();
 
-            if (createNewInventoryRequest.MachineryId.HasValue && createNewInventoryRequest.MachineComponentId.HasValue)
+            if (createNewInventoryRequest.MachineryId.HasValue && createNewInventoryRequest.MachineComponentsId.HasValue)
             {
                 throw new ArgumentException("Only one of MachineryId or MachineComponentId can be provided.");
             }
@@ -40,7 +40,10 @@ namespace SAM.BusinessTier.Services.Implements
             if (createNewInventoryRequest.MachineryId.HasValue)
             {
                 var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                    predicate: x => x.Id == createNewInventoryRequest.MachineryId.Value);
+                    predicate: x => x.Id.Equals(createNewInventoryRequest.MachineryId.Value),
+                    include: x => x.Include(x => x.MachineryComponentParts)
+                                    .ThenInclude(cp => cp.MachineComponents));
+
                 if (machinery == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
@@ -56,15 +59,33 @@ namespace SAM.BusinessTier.Services.Implements
                     inventory.CreateDate = DateTime.Now;
                     inventory.Condition = InventoryCondition.New.GetDescriptionFromEnum();
                     inventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum();
-                    inventory.MasterInventoryId = createNewInventoryRequest.MasterInventoryId; // Set MasterInventoryId if provided
                     await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
                     inventoryIds.Add(inventory.Id);
+
+                    // Tạo Inventory cho các component của Machinery
+                    foreach (var componentPart in machinery.MachineryComponentParts)
+                    {
+                        var componentInventory = new Inventory
+                        {
+                            Id = Guid.NewGuid(),
+                            SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime()),
+                            Status = InventoryStatus.Available.GetDescriptionFromEnum(),
+                            Type = InventoryType.Material.GetDescriptionFromEnum(),
+                            CreateDate = DateTime.Now,
+                            Condition = InventoryCondition.New.GetDescriptionFromEnum(),
+                            IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum(),
+                            MasterInventoryId = inventory.Id,
+                            MachineComponentsId = componentPart.MachineComponentsId
+                        };
+                        await _unitOfWork.GetRepository<Inventory>().InsertAsync(componentInventory);
+                        inventoryIds.Add(componentInventory.Id);
+                    }
                 }
             }
-            else if (createNewInventoryRequest.MachineComponentId.HasValue)
+            else if (createNewInventoryRequest.MachineComponentsId.HasValue)
             {
                 var component = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
-                    predicate: x => x.Id == createNewInventoryRequest.MachineComponentId.Value);
+                    predicate: x => x.Id == createNewInventoryRequest.MachineComponentsId.Value);
                 if (component == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
@@ -75,34 +96,11 @@ namespace SAM.BusinessTier.Services.Implements
                     var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
                     inventory.Id = Guid.NewGuid();
                     inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
-
-                    // Determine status based on MasterInventoryId
-                    if (createNewInventoryRequest.MasterInventoryId.HasValue)
-                    {
-                        // Check if MasterInventoryId belongs to Machinery
-                        var masterInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                            predicate: x => x.Id == createNewInventoryRequest.MasterInventoryId.Value && x.Type == "Machinery");
-
-                        if (masterInventory != null)
-                        {
-                            inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
-                            inventory.SoldDate = TimeUtils.GetCurrentSEATime();
-                        }
-                        else
-                        {
-                            throw new BadHttpRequestException("MasterInventoryId does not belong to a Machinery.");
-                        }
-                    }
-                    else
-                    {
-                        inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-                    }
-
+                    inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
                     inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
                     inventory.CreateDate = TimeUtils.GetCurrentSEATime();
                     inventory.Condition = InventoryCondition.New.GetDescriptionFromEnum();
                     inventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum();
-                    inventory.MasterInventoryId = createNewInventoryRequest.MasterInventoryId;
                     await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
                     inventoryIds.Add(inventory.Id);
                 }
