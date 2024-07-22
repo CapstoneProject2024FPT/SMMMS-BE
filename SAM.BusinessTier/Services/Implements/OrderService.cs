@@ -285,7 +285,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
-
         public async Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request)
         {
             string currentUser = GetUsernameFromJwt();
