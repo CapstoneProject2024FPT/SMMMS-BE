@@ -29,7 +29,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
 
         public DateTime? NextMaintenanceDate { get; set; }
 
-        public OrderUserResponse? UserInfor { get; set; }
+        public OrderUserResponse? Staff { get; set; }
 
 
     }

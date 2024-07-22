@@ -48,7 +48,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Description = detail.Description,
                         Comments = detail.Comments,
                         NextMaintenanceDate = detail.NextMaintenanceDate,
-                        UserInfor = detail.Account != null ? new OrderUserResponse
+                        Staff = detail.Account != null ? new OrderUserResponse
                         {
                             Id = detail.Account.Id,
                             FullName = detail.Account.FullName,
@@ -79,7 +79,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Description = detail.Description,
                         Comments = detail.Comments,
                         NextMaintenanceDate = detail.NextMaintenanceDate,
-                        UserInfor = detail.Account != null ? new OrderUserResponse
+                        Staff = detail.Account != null ? new OrderUserResponse
                         {
                             Id = detail.Account.Id,
                             FullName = detail.Account.FullName,
