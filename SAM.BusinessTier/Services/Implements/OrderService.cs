@@ -286,119 +286,6 @@ namespace SAM.BusinessTier.Services.Implements
 
 
 
-
-
-
-        //public async Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request)
-        //{
-        //    string currentUser = GetUsernameFromJwt();
-        //    var userId = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-        //        predicate: x => x.Username.Equals(currentUser),
-        //        selector: x => x.Id);
-        //    Order updateOrder = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
-        //        predicate: x => x.Id.Equals(orderId))
-        //        ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
-        //    DateTime currentTime = TimeUtils.GetCurrentSEATime();
-
-        //    switch (request.Status)
-        //    {
-        //        case OrderStatus.Completed:
-        //            updateOrder.Status = OrderStatus.Completed.GetDescriptionFromEnum();
-        //            updateOrder.CompletedDate = currentTime;
-
-        //            // Tạo Warranty khi Order hoàn thành
-        //            var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
-        //                predicate: x => x.OrderId == orderId);
-
-        //            foreach (var detail in orderDetails)
-        //            {
-        //                Warranty newWarranty = new Warranty
-        //                {
-        //                    Id = Guid.NewGuid(),
-        //                    Type = WarrantyType.Periodic.GetDescriptionFromEnum(),
-        //                    CreateDate = currentTime,
-        //                    StartDate = currentTime,
-        //                    Status = WarrantyStatus.AwaitingAssignment.GetDescriptionFromEnum(),
-        //                    Description = updateOrder.Note,
-        //                    Priority = 1,
-        //                    InventoryId = detail.InventoryId
-        //                };
-        //                await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
-
-        //                // Tạo 4 WarrantyDetail cho Periodic Warranty
-        //                if (newWarranty.Type == WarrantyType.Periodic.GetDescriptionFromEnum())
-        //                {
-        //                    List<int> monthsToAdd = new List<int> { 6, 12 };
-
-        //                    foreach (var months in monthsToAdd)
-        //                    {
-        //                        DateTime maintenanceDate = currentTime.AddMonths(months);
-
-        //                        WarrantyDetail newWarrantyDetail = new WarrantyDetail
-        //                        {
-        //                            Id = Guid.NewGuid(),
-        //                            Type = newWarranty.Type,
-        //                            CreateDate = currentTime,
-        //                            StartDate = maintenanceDate,
-        //                            Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
-        //                            Description = $"Periodic Warranty Detail - Start on {maintenanceDate.ToString("yyyy-MM-dd HH:mm:ss")}",
-        //                            WarrantyId = newWarranty.Id
-        //                        };
-        //                        await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
-        //                    }
-        //                }
-        //            }
-        //            break;
-        //        case OrderStatus.Delivery:
-        //            updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
-        //            break;
-        //        case OrderStatus.Paid:
-        //            var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
-        //                predicate: x => x.OrderId == orderId);
-        //            foreach (var detail in orderDetailsPaid)
-        //            {
-        //                var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-        //                    predicate: x => x.Id == detail.InventoryId);
-        //                if (inventory != null)
-        //                {
-        //                    inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
-        //                    _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
-        //                }
-        //            }
-        //            updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
-        //            break;
-        //        case OrderStatus.Canceled:
-        //            // Cập nhật trạng thái của Inventory sang Available
-        //            var orderDetailsCanceled = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
-        //                predicate: x => x.OrderId == orderId);
-        //            foreach (var detail in orderDetailsCanceled)
-        //            {
-        //                var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-        //                    predicate: x => x.Id == detail.InventoryId);
-        //                if (inventory != null)
-        //                {
-        //                    inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-        //                    _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
-        //                }
-        //            }
-        //            updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
-        //            updateOrder.CompletedDate = currentTime;
-        //            break;
-        //        default:
-        //            return false;
-        //    }
-
-        //    // Lưu trữ ghi chú nếu có
-        //    if (!string.IsNullOrEmpty(request.Note))
-        //    {
-        //        updateOrder.Note = request.Note;
-        //    }
-
-        //    _unitOfWork.GetRepository<Order>().UpdateAsync(updateOrder);
-        //    bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-        //    return isSuccessful;
-        //}
-
         public async Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request)
         {
             string currentUser = GetUsernameFromJwt();
@@ -421,14 +308,14 @@ namespace SAM.BusinessTier.Services.Implements
                         predicate: x => x.OrderId == orderId);
 
                     var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
-                    predicate: t => t.OrderId == orderId);
+                        predicate: t => t.OrderId == orderId);
 
                     if (taskManager != null)
                     {
                         taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
                         _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
                     }
-                    
+
                     break;
                 case OrderStatus.Delivery:
                     updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
@@ -441,7 +328,7 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                             predicate: x => x.Id == detail.InventoryId,
-                            include: i => i.Include(i => i.Machinery));
+                            include: i => i.Include(i => i.Machinery).ThenInclude(m => m.MachineryComponentParts).ThenInclude(cp => cp.MachineComponents));
 
                         if (inventory == null || inventory.Machinery == null)
                         {
@@ -478,7 +365,7 @@ namespace SAM.BusinessTier.Services.Implements
                                     CreateDate = currentTime,
                                     StartDate = maintenanceDate,
                                     Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
-                                    Description = $"Periodic Warranty Detail - Start on {maintenanceDate.ToString("yyyy-MM-dd HH:mm:ss")}",
+                                    Description = $"Periodic Warranty Detail - Start on {maintenanceDate:yyyy-MM-dd HH:mm:ss}",
                                     WarrantyId = newWarranty.Id,
                                     AddressId = updateOrder.AddressId
                                 };
@@ -489,11 +376,26 @@ namespace SAM.BusinessTier.Services.Implements
                     foreach (var detail in orderDetailsPaid)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                            predicate: x => x.Id == detail.InventoryId);
+                            predicate: x => x.Id == detail.InventoryId,
+                            include: i => i.Include(i => i.Machinery).ThenInclude(m => m.MachineryComponentParts).ThenInclude(cp => cp.MachineComponents));
+
                         if (inventory != null)
                         {
                             inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
                             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+
+                            // Cập nhật trạng thái cho các component của Machinery
+                            foreach (var componentPart in inventory.Machinery.MachineryComponentParts)
+                            {
+                                var componentInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                                    predicate: x => x.MachineComponentsId == componentPart.MachineComponentsId && x.MasterInventoryId == inventory.Id);
+
+                                if (componentInventory != null)
+                                {
+                                    componentInventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
+                                    _unitOfWork.GetRepository<Inventory>().UpdateAsync(componentInventory);
+                                }
+                            }
                         }
                     }
                     updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
@@ -530,6 +432,7 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
+
 
 
     }

@@ -33,7 +33,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var inventoryIds = new List<Guid>();
 
-            if (createNewInventoryRequest.MachineryId.HasValue && createNewInventoryRequest.MachineComponentId.HasValue)
+            if (createNewInventoryRequest.MachineryId.HasValue && createNewInventoryRequest.MachineComponentsId.HasValue)
             {
                 throw new ArgumentException("Only one of MachineryId or MachineComponentId can be provided.");
             }
@@ -83,10 +83,10 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                 }
             }
-            else if (createNewInventoryRequest.MachineComponentId.HasValue)
+            else if (createNewInventoryRequest.MachineComponentsId.HasValue)
             {
                 var component = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
-                    predicate: x => x.Id == createNewInventoryRequest.MachineComponentId.Value);
+                    predicate: x => x.Id == createNewInventoryRequest.MachineComponentsId.Value);
                 if (component == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
