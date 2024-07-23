@@ -613,9 +613,7 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.Description)
-                .HasMaxLength(255)
-                .IsUnicode(false);
+            entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.InvoiceId).HasMaxLength(50);
             entity.Property(e => e.PayType)
                 .HasMaxLength(50)

@@ -27,6 +27,10 @@ public partial class Warranty
 
     public Guid? InventoryId { get; set; }
 
+    public Guid? AccountId { get; set; }
+
+    public Guid? AddressId { get; set; }
+
     public virtual Inventory? Inventory { get; set; }
 
     public virtual ICollection<WarrantyDetail> WarrantyDetails { get; set; } = new List<WarrantyDetail>();
