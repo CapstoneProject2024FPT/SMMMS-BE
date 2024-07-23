@@ -43,18 +43,14 @@ namespace SAM.BusinessTier.Services.Implements
                 var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
                     predicate: x => x.Id.Equals(createNewInventoryRequest.MachineryId.Value),
                     include: x => x.Include(x => x.MachineryComponentParts)
-                                    .ThenInclude(cp => cp.MachineComponents));
-
-                if (machinery == null)
-                {
-                    throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-                }
+                                    .ThenInclude(cp => cp.MachineComponents))
+                    ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
                 for (int i = 0; i < quantity; i++)
                 {
                     var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
                     inventory.Id = Guid.NewGuid();
-                    inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
+                    inventory.SerialNumber = TimeUtils.GetTimestamp(DateTime.Now) + i;
                     inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
                     inventory.Type = InventoryType.Machinery.GetDescriptionFromEnum();
                     inventory.CreateDate = DateTime.Now;
@@ -69,7 +65,7 @@ namespace SAM.BusinessTier.Services.Implements
                         var componentInventory = new Inventory
                         {
                             Id = Guid.NewGuid(),
-                            SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime()),
+                            SerialNumber = TimeUtils.GetTimestamp(DateTime.Now) + i,
                             Status = InventoryStatus.Available.GetDescriptionFromEnum(),
                             Type = InventoryType.Material.GetDescriptionFromEnum(),
                             CreateDate = DateTime.Now,
@@ -96,7 +92,7 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
                     inventory.Id = Guid.NewGuid();
-                    inventory.SerialNumber = TimeUtils.GetTimestamp(TimeUtils.GetCurrentSEATime());
+                    inventory.SerialNumber = TimeUtils.GetTimestamp(DateTime.Now) + i;
                     inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
                     inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
                     inventory.CreateDate = TimeUtils.GetCurrentSEATime();

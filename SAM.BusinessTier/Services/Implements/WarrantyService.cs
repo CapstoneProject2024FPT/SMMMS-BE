@@ -45,7 +45,8 @@ namespace SAM.BusinessTier.Services.Implements
                 Status = WarrantyStatus.AwaitingAssignment.GetDescriptionFromEnum(),
                 Description = request.Description,
                 Priority = 1,
-                InventoryId = request.InventoryId
+                InventoryId = request.InventoryId,
+                AccountId = request.AccountId,
             };
 
             await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);

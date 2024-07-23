@@ -346,7 +346,9 @@ namespace SAM.BusinessTier.Services.Implements
                             Status = WarrantyStatus.AwaitingAssignment.GetDescriptionFromEnum(),
                             Description = updateOrder.Note,
                             Priority = 1,
-                            InventoryId = detail.InventoryId
+                            InventoryId = detail.InventoryId,
+                            AccountId = updateOrder.AccountId,
+                            AddressId = updateOrder.AddressId,
                         };
                         await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
 

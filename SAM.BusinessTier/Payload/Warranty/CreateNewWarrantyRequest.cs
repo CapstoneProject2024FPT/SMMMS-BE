@@ -14,5 +14,7 @@ namespace SAM.BusinessTier.Payload.Warranty
         public Guid? InventoryId { get; set; }
 
         public Guid? AddressId { get; set; }
+
+        public Guid? AccountId { get; set; }
     }
 }

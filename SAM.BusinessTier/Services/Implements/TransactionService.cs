@@ -70,7 +70,7 @@ namespace SAM.BusinessTier.Services.Implements
                         AccountId = transaction.Payment != null ? transaction.Payment.Order.AccountId : (Guid?)null
                     },
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.CreatedAt), // Adjust as per your sorting requirements
+                    orderBy: x => x.OrderByDescending(x => x.CreatedAt), // Adjust as per your sorting requirements
                     include: x => x.Include(x => x.Payment))
                 ?? throw new BadHttpRequestException(MessageConstant.Transaction.NotFoundFailedMessage);
 
