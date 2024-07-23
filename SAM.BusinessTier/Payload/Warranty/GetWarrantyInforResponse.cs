@@ -1,5 +1,6 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Address;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.News;
 using System;
@@ -36,6 +37,7 @@ namespace SAM.BusinessTier.Payload.Warranty
         public Dictionary<WarrantyDetailStatus, int>? WarrantyDetai { get; set; }
 
         public AccountResponse? Customer { get; set; }
+        public GetAddressResponse? Address { get; set; }
     }
 
 }

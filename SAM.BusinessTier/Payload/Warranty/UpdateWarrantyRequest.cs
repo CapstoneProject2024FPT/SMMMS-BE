@@ -16,10 +16,7 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public string? Comments { get; set; }
 
-        public DateTime? NextMaintenanceDate { get; set; }
-
         public int? Priority { get; set; }
-        public Guid? AccountId { get; set; }
 
     }
 }

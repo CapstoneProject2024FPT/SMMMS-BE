@@ -6,9 +6,12 @@ using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Extensions;
+using SAM.BusinessTier.Payload.Address;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.News;
+using SAM.BusinessTier.Payload.Wards;
 using SAM.BusinessTier.Payload.Warranty;
 using SAM.BusinessTier.Payload.WarrantyDetail;
 using SAM.BusinessTier.Services.Interfaces;
@@ -148,29 +151,62 @@ namespace SAM.BusinessTier.Services.Implements
                                 Id = detail.Order.Account.Id,
                                 FullName = detail.Order.Account.FullName,
                                 Role = EnumUtil.ParseEnum<RoleEnum>(detail.Order.Account.Role),
+                            }).FirstOrDefault(),
+                        Address = warranty.Inventory.OrderDetails
+                            .Select(detail => detail.Order.Address)
+                            .Where(address => address != null)
+                            .Select(address => new GetAddressResponse
+                            {
+                                Id = address.Id,
+                                Name = address.Name,
+                                Status = EnumUtil.ParseEnum<AddressStatus>(address.Status),
+                                Note = address.Note,
+                                City = address.City == null ? null : new CityResponse
+                                {
+                                    Id = address.City.Id,
+                                    UnitId = address.City.UnitId,
+                                    Name = address.City.Name
+                                },
+                                District = address.District == null ? null : new DistrictResponse
+                                {
+                                    Id = address.District.Id,
+                                    UnitId = address.District.UnitId,
+                                    Name = address.District.Name
+                                },
+                                Ward = address.Ward == null ? null : new WardResponse
+                                {
+                                    Id = address.Ward.Id,
+                                    UnitId = address.Ward.UnitId,
+                                    Name = address.Ward.Name
+                                },
+                                Account = address.Account == null ? null : new AccountResponse
+                                {
+                                    Id = address.Account.Id,
+                                    FullName = address.Account.FullName,
+                                    Role = EnumUtil.ParseEnum<RoleEnum>(address.Account.Role),
+                                }
                             }).FirstOrDefault()
                     },
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.CreateDate),
                     include: x => x.Include(x => x.WarrantyDetails)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Brand)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Origin)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Category)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.ImagesAlls)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Specifications)
-                                   .Include(x => x.Inventory.OrderDetails)
-                                       .ThenInclude(detail => detail.Order.Account)
-                ) ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
+                           .Include(x => x.Inventory)
+                               .ThenInclude(inventory => inventory.Machinery)
+                           .Include(x => x.Inventory.OrderDetails)
+                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                               .ThenInclude(address => address.City)
+                           .Include(x => x.Inventory.OrderDetails)
+                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                               .ThenInclude(address => address.District)
+                           .Include(x => x.Inventory.OrderDetails)
+                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                               .ThenInclude(address => address.Ward)
+                           .Include(x => x.Inventory.OrderDetails)
+                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                               .ThenInclude(address => address.Account)
+                           .Include(x => x.Inventory.OrderDetails)
+                               .ThenInclude(orderDetail => orderDetail.Order.Account))
+                ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
 
             return warrantyList;
         }
@@ -265,32 +301,61 @@ namespace SAM.BusinessTier.Services.Implements
                                 Id = account.Id,
                                 FullName = account.FullName,
                                 Role = EnumUtil.ParseEnum<RoleEnum>(account.Role),
+                            }).FirstOrDefault(),
+                        Address = warranty.Inventory.OrderDetails
+                            .Select(detail => detail.Order.Address)
+                            .Where(address => address != null)
+                            .Select(address => new GetAddressResponse
+                            {
+                                Id = address.Id,
+                                Name = address.Name,
+                                Status = EnumUtil.ParseEnum<AddressStatus>(address.Status),
+                                Note = address.Note,
+                                City = address.City == null ? null : new CityResponse
+                                {
+                                    Id = address.City.Id,
+                                    UnitId = address.City.UnitId,
+                                    Name = address.City.Name
+                                },
+                                District = address.District == null ? null : new DistrictResponse
+                                {
+                                    Id = address.District.Id,
+                                    UnitId = address.District.UnitId,
+                                    Name = address.District.Name
+                                },
+                                Ward = address.Ward == null ? null : new WardResponse
+                                {
+                                    Id = address.Ward.Id,
+                                    UnitId = address.Ward.UnitId,
+                                    Name = address.Ward.Name
+                                },
+                                Account = address.Account == null ? null : new AccountResponse
+                                {
+                                    Id = address.Account.Id,
+                                    FullName = address.Account.FullName,
+                                    Role = EnumUtil.ParseEnum<RoleEnum>(address.Account.Role),
+                                }
                             }).FirstOrDefault()
-                    },
-                    predicate: x => x.Id.Equals(id),
-                    include: x => x.Include(x => x.WarrantyDetails)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Brand)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Origin)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Category)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.ImagesAlls)
-                                   .Include(x => x.Inventory)
-                                       .ThenInclude(inventory => inventory.Machinery)
-                                           .ThenInclude(machinery => machinery.Specifications)
-                                   .Include(x => x.Inventory.OrderDetails)
-                                       .ThenInclude(detail => detail.Order.Account));
-
-            if (warranty == null)
-            {
-                throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
-            }
+                            },
+                            predicate: x => x.Id.Equals(id),
+                            include: x => x.Include(x => x.WarrantyDetails)
+                                           .Include(x => x.Inventory)
+                                               .ThenInclude(inventory => inventory.Machinery)
+                                           .Include(x => x.Inventory.OrderDetails)
+                                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                                               .ThenInclude(address => address.City)
+                                           .Include(x => x.Inventory.OrderDetails)
+                                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                                               .ThenInclude(address => address.District)
+                                           .Include(x => x.Inventory.OrderDetails)
+                                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                                               .ThenInclude(address => address.Ward)
+                                           .Include(x => x.Inventory.OrderDetails)
+                                               .ThenInclude(orderDetail => orderDetail.Order.Address)
+                                               .ThenInclude(address => address.Account)
+                                           .Include(x => x.Inventory.OrderDetails)
+                                               .ThenInclude(orderDetail => orderDetail.Order.Account))
+                ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
 
             return warranty;
         }
@@ -315,7 +380,6 @@ namespace SAM.BusinessTier.Services.Implements
             warranty.Status = updateWarrantyRequest.Status.GetDescriptionFromEnum();
             warranty.Description = !string.IsNullOrEmpty(updateWarrantyRequest.Description) ? updateWarrantyRequest.Description : warranty.Description;
             warranty.Comments = !string.IsNullOrEmpty(updateWarrantyRequest.Comments) ? updateWarrantyRequest.Comments : warranty.Comments;
-            warranty.NextMaintenanceDate = updateWarrantyRequest.NextMaintenanceDate.HasValue ? updateWarrantyRequest.NextMaintenanceDate.Value : warranty.NextMaintenanceDate;
             warranty.Priority = updateWarrantyRequest.Priority.HasValue ? updateWarrantyRequest.Priority.Value : warranty.Priority;
 
             _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
