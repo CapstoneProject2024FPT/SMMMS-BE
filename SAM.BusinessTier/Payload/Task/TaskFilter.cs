@@ -17,6 +17,8 @@ namespace SAM.BusinessTier.Payload.Task
 
         public TaskManagerStatus? Status { get; set; }
 
+        public DateTime? ExcutionDate { get; set; }
+
         public Guid? WarrantyDetailId { get; set; }
 
         public Guid? OrderId { get; set; }

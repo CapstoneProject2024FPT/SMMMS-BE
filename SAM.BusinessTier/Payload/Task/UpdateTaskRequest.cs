@@ -12,5 +12,6 @@ namespace SAM.BusinessTier.Payload.Task
         public Guid? AccountId { get; set; }
 
         public Guid? AddressId { get; set; }
+        public DateTime? ExcutionDate { get; set; }
     }
 }

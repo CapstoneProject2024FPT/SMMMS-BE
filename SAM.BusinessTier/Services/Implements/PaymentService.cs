@@ -158,7 +158,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             var payment = await _unitOfWork.GetRepository<Payment>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException("Payment not found");
+                ?? throw new BadHttpRequestException("Không tìm thấy hóa đơn thanh toán");
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
@@ -178,7 +178,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             var transaction = await _unitOfWork.GetRepository<TransactionPayment>().SingleOrDefaultAsync(
                 predicate: x => x.PaymentId.Equals(payment.Id))
-                ?? throw new BadHttpRequestException("Associated transaction not found");
+                ?? throw new BadHttpRequestException("không tìm thấy giao dịch");
 
             transaction.Status = updatePaymentRequest.Status.GetDescriptionFromEnum();
 
@@ -198,7 +198,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 if (!orderUpdateSuccessful)
                 {
-                    throw new Exception("Failed to update order status");
+                    throw new Exception("Cập nhật hóa đơn thất bại");
                 }
             }
 

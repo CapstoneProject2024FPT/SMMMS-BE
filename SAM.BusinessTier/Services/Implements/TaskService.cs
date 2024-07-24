@@ -76,7 +76,7 @@ namespace SAM.BusinessTier.Services.Implements
             }
             else
             {
-                throw new BadHttpRequestException("cần nhập WarrantyDetail hoặc order để giao task cho nhân viên");
+                throw new BadHttpRequestException("cần nhập chi tiết bảo trì hoặc đơn hàng để giao task cho nhân viên");
             }
 
             TaskManager newTask = new()
@@ -85,6 +85,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Type = request.Type,
                 Status = TaskManagerStatus.Process.GetDescriptionFromEnum(),
                 CreateDate = currentTime,
+                ExcutionDate = request.ExcutionDate,
                 AccountId = request.AccountId,
                 WarrantyDetailId = request.WarrantyDetailId,
                 OrderId = request.OrderId,
@@ -116,6 +117,7 @@ namespace SAM.BusinessTier.Services.Implements
                         CreateDate = task.CreateDate,
                         Status = EnumUtil.ParseEnum<TaskManagerStatus>(task.Status),
                         CompletedDate = task.CompletedDate,
+                        ExcutionDate = task.ExcutionDate,
                         WarrantyDetail = task.WarrantyDetail == null ? null : new WarrantyDetailResponse
                         {
                             Id = task.WarrantyDetail.Id,
@@ -203,6 +205,7 @@ namespace SAM.BusinessTier.Services.Implements
                         CreateDate = task.CreateDate,
                         Status = EnumUtil.ParseEnum<TaskManagerStatus>(task.Status),
                         CompletedDate = task.CompletedDate,
+                        ExcutionDate = task.ExcutionDate,
                         WarrantyDetail = task.WarrantyDetail == null ? null : new WarrantyDetailResponse
                         {
                             Id = task.WarrantyDetail.Id,
@@ -301,6 +304,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             task.Account = account;
             task.Address = address;
+            updateTaskRequest.ExcutionDate = updateTaskRequest.ExcutionDate.HasValue ? task.ExcutionDate : updateTaskRequest.ExcutionDate;
 
             _unitOfWork.GetRepository<TaskManager>().UpdateAsync(task);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;

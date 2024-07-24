@@ -20,6 +20,8 @@ namespace SAM.BusinessTier.Payload.Task
 
         public DateTime? CreateDate { get; set; }
 
+        public DateTime? ExcutionDate { get; set; }
+
         public TaskManagerStatus? Status { get; set; }
 
         public DateTime? CompletedDate { get; set; }

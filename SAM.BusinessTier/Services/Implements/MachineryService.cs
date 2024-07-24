@@ -308,16 +308,6 @@ namespace SAM.BusinessTier.Services.Implements
                 size: pagingModel.size
             ) ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
-            //// Map component parts to the response for each machinery item
-            //foreach (var machinery in machineryList.Items)
-            //{
-            //    var componentParts = await _unitOfWork.GetRepository<MachineryComponentPart>()
-            //        .GetListAsync(
-            //            predicate: part => part.MachineryId == machinery.Id,
-            //            include: part => part.Include(p => p.MachineComponents));
-
-            //    machinery.
-            //}
 
             return machineryList;
         }
@@ -415,7 +405,7 @@ namespace SAM.BusinessTier.Services.Implements
             var machinery = inventory.Machinery;
             if (machinery == null)
             {
-                throw new BadHttpRequestException("Không tìm thấy máy cơ khí cho số serial number này");
+                throw new BadHttpRequestException("Không tìm thấy máy cơ khí cho số định dành này");
             }
 
             var machineryResponse = new GetMachinerySpecificationsRespone
@@ -467,7 +457,7 @@ namespace SAM.BusinessTier.Services.Implements
                 .GetListAsync(
                     predicate: x => x.MasterInventoryId == id,
                     include: x => x.Include(i => i.MachineComponents))
-                ?? throw new BadHttpRequestException("No component inventories found for the given master inventory ID.");
+                ?? throw new BadHttpRequestException("Không tìm thấy sản phẩm theo mã sản phẩm");
 
             var componentResponses = componentInventories.Select(component => new GetInventoryResponse
             {

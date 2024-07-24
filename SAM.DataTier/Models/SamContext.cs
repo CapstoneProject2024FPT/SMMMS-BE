@@ -581,6 +581,7 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CompletedDate).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.ExcutionDate).HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);

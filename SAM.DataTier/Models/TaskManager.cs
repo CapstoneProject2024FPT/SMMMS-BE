@@ -15,6 +15,8 @@ public partial class TaskManager
 
     public DateTime? CompletedDate { get; set; }
 
+    public DateTime? ExcutionDate { get; set; }
+
     public Guid? WarrantyDetailId { get; set; }
 
     public Guid? OrderId { get; set; }
