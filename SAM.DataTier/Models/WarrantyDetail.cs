@@ -27,13 +27,11 @@ public partial class WarrantyDetail
 
     public Guid WarrantyId { get; set; }
 
-    public Guid? InventoryId { get; set; }
-
-    public Guid? OldInventoryId { get; set; }
-
     public Guid? AddressId { get; set; }
 
     public virtual Account? Account { get; set; }
+
+    public virtual ICollection<InventoryChange> InventoryChanges { get; set; } = new List<InventoryChange>();
 
     public virtual ICollection<TaskManager> TaskManagers { get; set; } = new List<TaskManager>();
 

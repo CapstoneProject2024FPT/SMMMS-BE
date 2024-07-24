@@ -30,7 +30,21 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
         public DateTime? NextMaintenanceDate { get; set; }
 
         public OrderUserResponse? Staff { get; set; }
+        public List<InventoryChangeResponse>? InventoryChanges { get; set; }
 
 
+    }
+    public class InventoryChangeResponse
+    {
+        public InventoryInWarrantyDetailResponse? OldInventory { get; set; }
+        public InventoryInWarrantyDetailResponse? NewInventory { get; set; }
+    }
+
+    public class InventoryInWarrantyDetailResponse
+    {
+        public Guid? Id { get; set; }
+        public string? SerialNumber { get; set; }
+        public InventoryType? Type { get; set; }
+        public string? ComponentName { get; set; }
     }
 }

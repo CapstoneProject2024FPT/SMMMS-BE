@@ -41,6 +41,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Inventory> Inventories { get; set; }
 
+    public virtual DbSet<InventoryChange> InventoryChanges { get; set; }
+
     public virtual DbSet<MachineComponent> MachineComponents { get; set; }
 
     public virtual DbSet<Machinery> Machineries { get; set; }
@@ -333,6 +335,17 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.MasterInventory).WithMany(p => p.InverseMasterInventory)
                 .HasForeignKey(d => d.MasterInventoryId)
                 .HasConstraintName("FK_Inventory_Inventory");
+        });
+
+        modelBuilder.Entity<InventoryChange>(entity =>
+        {
+            entity.ToTable("InventoryChange");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.WarrantyDetail).WithMany(p => p.InventoryChanges)
+                .HasForeignKey(d => d.WarrantyDetailId)
+                .HasConstraintName("FK_InventoryChange_WarrantyDetail");
         });
 
         modelBuilder.Entity<MachineComponent>(entity =>
