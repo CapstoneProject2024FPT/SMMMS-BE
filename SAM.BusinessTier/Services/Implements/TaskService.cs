@@ -289,26 +289,58 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<bool> UpdateTask(Guid id, UpdateTaskRequest updateTaskRequest)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.TaskManager.EmptyTaskIdMessage);
+            if (id == Guid.Empty)
+                throw new BadHttpRequestException(MessageConstant.TaskManager.EmptyTaskIdMessage);
+
             TaskManager task = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-            ?? throw new BadHttpRequestException(MessageConstant.TaskManager.TaskNameExisted);
+                ?? throw new BadHttpRequestException(MessageConstant.TaskManager.TaskNameExisted);
 
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateTaskRequest.AccountId))
-            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+                ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
 
             Address address = await _unitOfWork.GetRepository<Address>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(updateTaskRequest.AddressId))
-            ?? throw new BadHttpRequestException(MessageConstant.Address.NotFoundFailedMessage);
+                ?? throw new BadHttpRequestException(MessageConstant.Address.NotFoundFailedMessage);
 
-            task.Account = account;
-            task.Address = address;
+            task.AccountId = updateTaskRequest.AccountId;
+            task.AddressId = updateTaskRequest.AddressId;
             updateTaskRequest.ExcutionDate = updateTaskRequest.ExcutionDate.HasValue ? task.ExcutionDate : updateTaskRequest.ExcutionDate;
 
             _unitOfWork.GetRepository<TaskManager>().UpdateAsync(task);
+
+            if (task.WarrantyDetailId.HasValue)
+            {
+                var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
+                    predicate: wd => wd.Id == task.WarrantyDetailId.Value);
+
+                if (warrantyDetail == null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
+                }
+
+                warrantyDetail.AccountId = updateTaskRequest.AccountId;
+                warrantyDetail.AddressId = updateTaskRequest.AddressId;
+                _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
+            }
+
+            if (task.OrderId.HasValue)
+            {
+                var order = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
+                    predicate: o => o.Id == task.OrderId.Value);
+
+                if (order == null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
+                }
+                order.AddressId = updateTaskRequest.AddressId;
+                _unitOfWork.GetRepository<Order>().UpdateAsync(order);
+            }
+
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
         }
+
     }
 }

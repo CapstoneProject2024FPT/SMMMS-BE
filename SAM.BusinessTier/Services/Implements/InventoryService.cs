@@ -116,20 +116,40 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetInventoryResponse> GetInventoryById(Guid id)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Inventory.InventoryEmptyMessage);
+            if (id == Guid.Empty)
+                throw new BadHttpRequestException(MessageConstant.Inventory.InventoryEmptyMessage);
+
             Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id))
+                predicate: x => x.Id.Equals(id),
+                include: x => x.Include(i => i.MachineComponents)
+                               .Include(x => x.Machinery))
                 ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-            return _mapper.Map<GetInventoryResponse>(inventory);
+
+            var inventoryResponse = _mapper.Map<GetInventoryResponse>(inventory);
+            inventoryResponse.ComponentName = inventory.MachineComponents?.Name;
+            inventoryResponse.MachineryName = inventory.Machinery?.Name;
+            return inventoryResponse;
         }
 
         public async Task<ICollection<GetInventoryResponse>> GetInventoryList(InventoryFilter filter)
         {
-            ICollection<GetInventoryResponse> respone = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
-               selector: x => _mapper.Map<GetInventoryResponse>(x),
-               filter: filter);
-            return respone;
+            var inventoryList = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
+                selector: x => x,
+                include: x => x.Include(i => i.MachineComponents)
+                               .Include(i => i.Machinery),
+                filter: filter);
+
+            var inventoryResponseList = inventoryList.Select(inventory => {
+                var inventoryResponse = _mapper.Map<GetInventoryResponse>(inventory);
+                inventoryResponse.ComponentName = inventory.MachineComponents?.Name;
+                inventoryResponse.MachineryName = inventory.Machinery?.Name;
+                return inventoryResponse;
+            }).ToList();
+
+            return inventoryResponseList;
         }
+
+
 
         public async Task<bool> SwitchInventoryStatus(Guid id)
         {

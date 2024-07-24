@@ -29,8 +29,11 @@ namespace SAM.BusinessTier.Payload.Inventory
 
 
         public Guid? MachineryId { get; set; }
+        public string MachineryName { get; set; }
 
         public Guid? MachineComponentsId { get; set; }
+
+        public string? ComponentName { get; set; }
 
         public Guid? MasterInventoryId { get; set; }
     }
