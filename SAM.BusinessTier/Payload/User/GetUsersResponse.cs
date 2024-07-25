@@ -28,7 +28,7 @@ namespace SAM.BusinessTier.Payload.User
 
         public string? Email { get; set; }
         
-        public double? Amount { get; set; }
+        public int? Point { get; set; }
 
         public int? YearsOfExperience { get; set; }
 

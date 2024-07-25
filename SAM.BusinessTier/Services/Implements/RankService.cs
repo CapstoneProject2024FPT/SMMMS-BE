@@ -64,7 +64,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => accountIds.Contains(x.Id),
                 page: pagingModel.page,
                 size: pagingModel.size,
-                orderBy: x => x.OrderBy(x => x.Amount));
+                orderBy: x => x.OrderBy(x => x.Point));
 
             return response;
         }

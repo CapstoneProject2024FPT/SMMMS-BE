@@ -25,6 +25,7 @@ namespace SAM.BusinessTier.Payload.User
         public UserStatus? Status { get; set; }
 
         public string? Email { get; set; }
+        public int? Point {  get; set; }
 
         //public int? Rank { get; set; }
 
