@@ -49,6 +49,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Description = detail.Description,
                         Comments = detail.Comments,
                         NextMaintenanceDate = detail.NextMaintenanceDate,
+                        WarrantyId = detail.WarrantyId,
                         Staff = detail.Account != null ? new OrderUserResponse
                         {
                             Id = detail.Account.Id,
@@ -77,7 +78,8 @@ namespace SAM.BusinessTier.Services.Implements
                         NewInventory = new InventoryInWarrantyDetailResponse
                         {
                             Id = change.NewInventoryId,
-                        }
+                        },
+                        WarrantyDetailId = change.WarrantyDetail.Id // Add this field to link with warranty details
                     },
                     predicate: change => warrantyDetailIds.Contains(change.WarrantyDetailId)
                 );
@@ -106,7 +108,7 @@ namespace SAM.BusinessTier.Services.Implements
             foreach (var warrantyDetail in warrantyDetails)
             {
                 warrantyDetail.InventoryChanges = inventoryChanges
-                    .Where(ic => ic.OldInventory.Id == warrantyDetail.Id || ic.NewInventory.Id == warrantyDetail.Id)
+                    .Where(ic => ic.WarrantyDetailId == warrantyDetail.Id) // Correct filtering
                     .ToList();
             }
 
@@ -133,6 +135,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Status = detail.Status != null ? EnumUtil.ParseEnum<WarrantyDetailStatus>(detail.Status) : null,
                         Description = detail.Description,
                         Comments = detail.Comments,
+                        WarrantyId = detail.WarrantyId,
                         NextMaintenanceDate = detail.NextMaintenanceDate,
                         Staff = detail.Account != null ? new OrderUserResponse
                         {
@@ -158,6 +161,7 @@ namespace SAM.BusinessTier.Services.Implements
                 .GetListAsync(
                     selector: change => new InventoryChangeResponse
                     {
+                        WarrantyDetailId = change.WarrantyDetail.Id,
                         OldInventory = new InventoryInWarrantyDetailResponse
                         {
                             Id = change.OldInventoryId,
@@ -211,12 +215,11 @@ namespace SAM.BusinessTier.Services.Implements
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
-            // Truy xuất WarrantyDetail
+
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
-            // Cập nhật thông tin WarrantyDetail
             warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
             warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
             warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
@@ -230,7 +233,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 warrantyDetail.Account = account;
             }
-
+            //update inventory theo id của new và old
             if (updateDetailRequest.InventoryUpdates != null && updateDetailRequest.InventoryUpdates.Any())
             {
                 foreach (var inventoryUpdate in updateDetailRequest.InventoryUpdates)
@@ -256,7 +259,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                         var inventoryChange = new InventoryChange
                         {
-                            Id = new Guid(),
+                            Id = Guid.NewGuid(),
                             WarrantyDetailId = warrantyDetail.Id,
                             NewInventoryId = inventoryUpdate.NewInventoryId.Value,
                             OldInventoryId = inventoryUpdate.OldInventoryId.Value
@@ -266,7 +269,7 @@ namespace SAM.BusinessTier.Services.Implements
                 }
             }
 
-            // Xử lý trạng thái hoàn thành
+            // Xử lý trạng thái hoàn thành lần bảo trì
             if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Completed")
             {
                 warrantyDetail.CompletionDate = currentTime;

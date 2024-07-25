@@ -28,6 +28,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
         public string? Comments { get; set; }
 
         public DateTime? NextMaintenanceDate { get; set; }
+        public Guid? WarrantyId { get; set; }
 
         public OrderUserResponse? Staff { get; set; }
         public List<InventoryChangeResponse>? InventoryChanges { get; set; }
@@ -36,6 +37,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
     }
     public class InventoryChangeResponse
     {
+        public Guid? WarrantyDetailId {  get; set; }
         public InventoryInWarrantyDetailResponse? OldInventory { get; set; }
         public InventoryInWarrantyDetailResponse? NewInventory { get; set; }
     }
