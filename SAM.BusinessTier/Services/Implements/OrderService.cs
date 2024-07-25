@@ -30,8 +30,11 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class OrderService : BaseService<OrderService>, IOrderService
     {
-        public OrderService(IUnitOfWork<SamContext> unitOfWork, ILogger<OrderService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        private readonly IUserService _accountService;
+        public OrderService(IUnitOfWork<SamContext> unitOfWork, ILogger<OrderService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor,
+            IUserService accountService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
+
         }
 
         public async Task<Guid> CreateNewOrder(CreateNewOrderResponse request)
@@ -92,7 +95,7 @@ namespace SAM.BusinessTier.Services.Implements
                         MachineryId = machinery.MachineryId,
                         InventoryId = inventory.Id,
                         Quantity = 1, // Chỉnh Quantity thành 1 cho mỗi máy
-                        SellingPrice = machinery.SellingPrice,
+                        SellingPrice = machinery.StockPrice,
                         TotalAmount = machinery.SellingPrice, // Tổng tiền cho mỗi máy
                         CreateDate = DateTime.Now
                     };
@@ -302,7 +305,41 @@ namespace SAM.BusinessTier.Services.Implements
                     updateOrder.Status = OrderStatus.Completed.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
 
-                    // Tạo Warranty khi Order hoàn thành
+                    // Calculate points and update account
+                    int points = (int)(updateOrder.FinalAmount / 100000);
+                    var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                        predicate: x => x.Id.Equals(updateOrder.AccountId))
+                        ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+
+                    // Update points and save account
+                    account.Point += points;
+                    if(account.Point != null)
+                    {
+                        account.Point += points;
+                    }
+                    else
+                    {
+                        account.Point = points;
+                    }
+                    _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+
+                    // Check and update rank
+                    var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync();
+                    var highestEligibleRank = ranks
+                        .Where(r => account.Point >= r.Range)
+                        .OrderByDescending(r => r.Range)
+                        .FirstOrDefault();
+
+                    if (highestEligibleRank != null)
+                    {
+                        var addRankResult = await _accountService.AddRankToAccount(account.Id, new List<Guid> { highestEligibleRank.Id });
+                        if (!addRankResult)
+                        {
+                            _logger.LogError($"Failed to add rank to account {account.Id}");
+                        }
+                    }
+
+                    // Create Warranty when Order is completed
                     var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
 
@@ -320,7 +357,6 @@ namespace SAM.BusinessTier.Services.Implements
                     updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Paid:
-
                     var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
                     foreach (var detail in orderDetailsPaid)
@@ -352,7 +388,7 @@ namespace SAM.BusinessTier.Services.Implements
                         };
                         await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
 
-                        // Tạo WarrantyDetail cho Periodic Warranty dựa trên TimeWarranty
+                        // Create WarrantyDetail for Periodic Warranty based on TimeWarranty
                         if (newWarranty.Type == WarrantyType.Periodic.GetDescriptionFromEnum())
                         {
                             for (int i = 1; i <= numberOfDetails; i++)
@@ -385,7 +421,7 @@ namespace SAM.BusinessTier.Services.Implements
                             inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
                             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
 
-                            // Cập nhật trạng thái cho các component của Machinery
+                            // Update status for components of Machinery
                             foreach (var componentPart in inventory.Machinery.MachineryComponentParts)
                             {
                                 var componentInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
@@ -402,7 +438,7 @@ namespace SAM.BusinessTier.Services.Implements
                     updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Canceled:
-                    // Cập nhật trạng thái của Inventory sang Available
+                    // Update Inventory status to Available
                     var orderDetailsCanceled = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
                     foreach (var detail in orderDetailsCanceled)
@@ -422,7 +458,7 @@ namespace SAM.BusinessTier.Services.Implements
                     return false;
             }
 
-            // Lưu trữ ghi chú nếu có
+            // Save notes if any
             if (!string.IsNullOrEmpty(request.Note))
             {
                 updateOrder.Note = request.Note;
@@ -433,6 +469,7 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
+
 
 
 

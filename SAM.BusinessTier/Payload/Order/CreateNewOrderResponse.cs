@@ -27,6 +27,7 @@ namespace SAM.BusinessTier.Payload.Order
     {
         public Guid? MachineryId { get; set; }
         public int? Quantity { get; set; }
+        public float? StockPrice { get; set; }
         public float? SellingPrice { get; set; }
     }
 

@@ -48,6 +48,18 @@ namespace SAM.BusinessTier.Extensions
             }
             return statusCount;
         }
+        public static Dictionary<OrderStatus, int> CountOrderEachStatus(this ICollection<Order> orders)
+        {
+            var statusCount = new Dictionary<OrderStatus, int>();
+
+            foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
+            {
+                string statusDes = status.GetDescriptionFromEnum();
+                int count = orders.Count(item => item.Status.Equals(statusDes));
+                statusCount.Add(status, count);
+            }
+            return statusCount;
+        }
 
     }
 }

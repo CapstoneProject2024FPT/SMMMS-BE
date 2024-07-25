@@ -46,6 +46,11 @@ public static class ApiEndPointConstant
         public const string AddressSEndPoint = ApiEndpoint + "/address";
         public const string AddressEndPoint = AddressSEndPoint + "/{id}";
     }
+    public static class Admin
+    {
+        public const string AdminsEndPoint = ApiEndpoint + "/admin";
+        public const string AdminEndPoint = AdminsEndPoint + "/{id}";
+    }
     public static class City
     {
         public const string CitiesEndPoint = ApiEndpoint + "/city";
