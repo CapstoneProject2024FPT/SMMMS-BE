@@ -42,7 +42,7 @@ namespace SAM.BusinessTier.Services.Implements
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Guid? addressId = null;
             var tasksForToday = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
-                                predicate: t => t.AccountId == request.AccountId && t.CreateDate.Equals(DateTime.Today));
+                                predicate: t => t.AccountId == request.AccountId && t.CreateDate.HasValue && t.CreateDate.Value.Date == currentTime.Date);
             int taskCount = tasksForToday.Count();
 
             if (taskCount >= 3)

@@ -40,10 +40,10 @@ namespace SAM.BusinessTier.Services.Implements
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
             var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
-                    predicate: w => w.InventoryId == request.InventoryId &&
-                                    w.CreateDate.Equals(DateTime.Today) );
+         predicate: w => w.InventoryId == request.InventoryId &&
+                         w.CreateDate.HasValue && w.CreateDate.Value.Date == currentTime.Date);
 
-            if (existingWarranty == null)
+            if (existingWarranty != null)
             {
                 throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
             }
