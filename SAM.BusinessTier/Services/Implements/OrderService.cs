@@ -41,12 +41,8 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var currentUser = GetUsernameFromJwt();
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Username.Equals(currentUser));
-
-            if (account == null)
-            {
-                throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
-            }
+                predicate: x => x.Username.Equals(currentUser))
+                ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Order newOrder = new()

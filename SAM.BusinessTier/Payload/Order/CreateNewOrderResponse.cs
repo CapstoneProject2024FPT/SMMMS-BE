@@ -12,13 +12,8 @@ namespace SAM.BusinessTier.Payload.Order
         public List<OrderMachinery> MachineryList { get; set; } = new List<OrderMachinery>();
 
         public string? Note { get; set; }
-
         public double? FinalAmount { get; set; }
-
         public double? TotalAmount { get; set; }
-
-        public Guid? AccountId { get; set; }
-
         public string? Description { get; set; }
         public Guid AddressId { get; set; }
 
