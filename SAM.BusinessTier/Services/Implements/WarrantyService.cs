@@ -39,6 +39,11 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
+            //// Check if there is already a warranty for the same inventory on the same day
+            //var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
+            //        predicate: w => w.InventoryId == request.InventoryId &&
+            //           EF.Functions.DateDiffDay(w.CreateDate, currentTime) == 0)
+            //    ?? throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
             Warranty newWarranty = new Warranty
             {
                 Id = Guid.NewGuid(),
@@ -61,7 +66,7 @@ namespace SAM.BusinessTier.Services.Implements
                 CreateDate = currentTime,
                 StartDate = currentTime,
                 Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
-                Description = $"Customer Request Warranty Detail - Start on {currentTime:yyyy-MM-dd HH:mm:ss}",
+                Description = $"Yêu cầu từ khách hàng - Bắt đầu từ {currentTime:yyyy-MM-dd HH:mm:ss}",
                 WarrantyId = newWarranty.Id,
                 AddressId = request.AddressId
             };
@@ -71,11 +76,12 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful)
             {
-                throw new BadHttpRequestException("Failed to create new warranty.");
+                throw new BadHttpRequestException("Tạo phiếu bảo trì thất bại");
             }
 
             return newWarranty.Id;
         }
+
 
         public async Task<ICollection<GetWarrantyInforResponse>> GetWarrantyList(WarrantyFilter filter)
         {
