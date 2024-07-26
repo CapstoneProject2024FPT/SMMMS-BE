@@ -51,8 +51,7 @@ namespace SAM.BusinessTier.Services.Implements
                 InvoiceCode = TimeUtils.GetTimestamp(currentTime),
                 CreateDate = currentTime,
                 CompletedDate = null,
-                TotalAmount = request.TotalAmount,
-                FinalAmount = request.FinalAmount,
+                TotalAmount = 0,
                 Note = request.Note,
                 Description = request.Description,
                 Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
@@ -61,6 +60,7 @@ namespace SAM.BusinessTier.Services.Implements
             };
 
             var orderDetails = new List<OrderDetail>();
+            double totalAmount = 0;
 
             foreach (var machinery in request.MachineryList)
             {
@@ -90,15 +90,19 @@ namespace SAM.BusinessTier.Services.Implements
                         OrderId = newOrder.Id,
                         MachineryId = machinery.MachineryId,
                         InventoryId = inventory.Id,
-                        Quantity = 1, // Chỉnh Quantity thành 1 cho mỗi máy
+                        Quantity = 1,
                         SellingPrice = machinery.StockPrice,
-                        TotalAmount = machinery.SellingPrice, // Tổng tiền cho mỗi máy
+                        TotalAmount = machinery.SellingPrice,
                         CreateDate = DateTime.Now
                     };
 
                     orderDetails.Add(orderDetail);
+                    totalAmount += orderDetail.TotalAmount ?? 0;
                 }
             }
+
+            newOrder.TotalAmount = totalAmount;
+            newOrder.FinalAmount = totalAmount;
 
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
@@ -106,6 +110,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return newOrder.Id;
         }
+
 
 
 

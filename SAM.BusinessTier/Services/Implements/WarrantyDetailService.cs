@@ -56,17 +56,17 @@ namespace SAM.BusinessTier.Services.Implements
                             FullName = detail.Account.FullName,
                             Role = EnumUtil.ParseEnum<RoleEnum>(detail.Account.Role)
                         } : null,
-                        InventoryChanges = new List<InventoryChangeResponse>() // Khởi tạo danh sách trống
+                        InventoryChanges = new List<InventoryChangeResponse>() 
                     },
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.StartDate),
                     include: x => x.Include(x => x.Account)
                 ) ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
-            // Lấy danh sách ID của WarrantyDetail
+
             var warrantyDetailIds = warrantyDetails.Select(wd => wd.Id).ToList();
 
-            // Truy vấn thông tin InventoryChange liên quan đến các WarrantyDetail
+
             var inventoryChanges = await _unitOfWork.GetRepository<InventoryChange>()
                 .GetListAsync(
                     selector: change => new InventoryChangeResponse
@@ -79,12 +79,11 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = change.NewInventoryId,
                         },
-                        WarrantyDetailId = change.WarrantyDetail.Id // Add this field to link with warranty details
+                        WarrantyDetailId = change.WarrantyDetail.Id 
                     },
                     predicate: change => warrantyDetailIds.Contains(change.WarrantyDetailId)
                 );
 
-            // Truy vấn chi tiết về các Inventory từ bảng Inventory
             var inventoryIds = inventoryChanges.SelectMany(ic => new[] { ic.OldInventory.Id, ic.NewInventory.Id }).Distinct().ToList();
             var inventories = await _unitOfWork.GetRepository<Inventory>()
                 .GetListAsync(
@@ -97,18 +96,17 @@ namespace SAM.BusinessTier.Services.Implements
                     predicate: inventory => inventoryIds.Contains(inventory.Id)
                 );
 
-            // Cập nhật thông tin chi tiết cho InventoryChangeResponse
+
             foreach (var change in inventoryChanges)
             {
                 change.OldInventory = inventories.SingleOrDefault(inv => inv.Id == change.OldInventory.Id);
                 change.NewInventory = inventories.SingleOrDefault(inv => inv.Id == change.NewInventory.Id);
             }
 
-            // Gán InventoryChanges cho từng WarrantyDetail
             foreach (var warrantyDetail in warrantyDetails)
             {
                 warrantyDetail.InventoryChanges = inventoryChanges
-                    .Where(ic => ic.WarrantyDetailId == warrantyDetail.Id) // Correct filtering
+                    .Where(ic => ic.WarrantyDetailId == warrantyDetail.Id) 
                     .ToList();
             }
 
@@ -122,7 +120,7 @@ namespace SAM.BusinessTier.Services.Implements
             if (id == Guid.Empty)
                 throw new BadHttpRequestException("Invalid warranty detail ID.");
 
-            // Lấy thông tin WarrantyDetail
+
             var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>()
                 .SingleOrDefaultAsync(
                     selector: detail => new GetWarrantyDetailResponse
@@ -147,8 +145,8 @@ namespace SAM.BusinessTier.Services.Implements
                     },
                     predicate: detail => detail.Id == id,
                     include: x => x.Include(x => x.Account)
-                                  .Include(x => x.Warranty.Inventory) // Include Inventory for detailed information
-                                  .ThenInclude(i => i.MachineComponents) // Include MachineComponents
+                                  .Include(x => x.Warranty.Inventory) 
+                                  .ThenInclude(i => i.MachineComponents) 
                 );
 
             if (warrantyDetail == null)
@@ -156,7 +154,6 @@ namespace SAM.BusinessTier.Services.Implements
                 throw new BadHttpRequestException($"Warranty detail with ID {id} not found.");
             }
 
-            // Truy vấn thông tin InventoryChange liên quan
             var inventoryChanges = await _unitOfWork.GetRepository<InventoryChange>()
                 .GetListAsync(
                     selector: change => new InventoryChangeResponse
@@ -174,7 +171,6 @@ namespace SAM.BusinessTier.Services.Implements
                     predicate: change => change.WarrantyDetailId == id
                 );
 
-            // Truy vấn chi tiết về các Inventory từ bảng Inventory
             var inventoryIds = inventoryChanges.SelectMany(ic => new[] { ic.OldInventory.Id, ic.NewInventory.Id }).Distinct().ToList();
             var inventories = await _unitOfWork.GetRepository<Inventory>()
                 .GetListAsync(
@@ -188,14 +184,12 @@ namespace SAM.BusinessTier.Services.Implements
                     predicate: inventory => inventoryIds.Contains(inventory.Id)
                 );
 
-            // Cập nhật thông tin chi tiết cho InventoryChangeResponse
             foreach (var change in inventoryChanges)
             {
                 change.OldInventory = inventories.SingleOrDefault(inv => inv.Id == change.OldInventory.Id);
                 change.NewInventory = inventories.SingleOrDefault(inv => inv.Id == change.NewInventory.Id);
             }
 
-            // Cập nhật danh sách InventoryChanges vào response
             warrantyDetail.InventoryChanges = inventoryChanges.ToList();
 
             return warrantyDetail;
@@ -233,7 +227,6 @@ namespace SAM.BusinessTier.Services.Implements
 
                 warrantyDetail.Account = account;
             }
-            //update inventory theo id của new và old
             if (updateDetailRequest.InventoryUpdates != null && updateDetailRequest.InventoryUpdates.Any())
             {
                 foreach (var inventoryUpdate in updateDetailRequest.InventoryUpdates)
@@ -269,7 +262,6 @@ namespace SAM.BusinessTier.Services.Implements
                 }
             }
 
-            // Xử lý trạng thái hoàn thành lần bảo trì
             if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Completed")
             {
                 warrantyDetail.CompletionDate = currentTime;

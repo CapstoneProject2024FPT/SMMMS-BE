@@ -43,12 +43,12 @@ namespace SAM.API.Controllers
             if (!isSuccessful) return Ok(MessageConstant.Warranty.UpdateWarrantyFailedMessage);
             return Ok(MessageConstant.Warranty.UpdateWarrantySuccessMessage);
         }
-        [HttpDelete(ApiEndPointConstant.Warranty.WarrantyEndPoint)]
-        public async Task<IActionResult> RemoveWarrantyStatus(Guid id)
-        {
-            var isSuccessful = await _warrantyService.RemoveWarrantyStatus(id);
-            if (!isSuccessful) return Ok(MessageConstant.Warranty.UpdateWarrantyFailedMessage);
-            return Ok(MessageConstant.Warranty.UpdateWarrantySuccessMessage);
-        }
+        //    [HttpDelete(ApiEndPointConstant.Warranty.WarrantyEndPoint)]
+        //    public async Task<IActionResult> RemoveWarrantyStatus(Guid id)
+        //    {
+        //        var isSuccessful = await _warrantyService.RemoveWarrantyStatus(id);
+        //        if (!isSuccessful) return Ok(MessageConstant.Warranty.UpdateWarrantyFailedMessage);
+        //        return Ok(MessageConstant.Warranty.UpdateWarrantySuccessMessage);
+        //    }
     }
 }
