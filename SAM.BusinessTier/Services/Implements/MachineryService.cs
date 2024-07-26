@@ -29,7 +29,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
         public async Task<bool> AddComponentToMachinery(Guid id, List<Guid> request)
         {
-            _logger.LogInformation($"Add Rank to Customer: {id}");
 
             // Retrieve the account or throw an exception if not found
             Machinery machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
@@ -179,6 +178,7 @@ namespace SAM.BusinessTier.Services.Implements
                         },
                         Model = machinery.Model,
                         Description = machinery.Description,
+                        StockPrice =  machinery.StockPrice,
                         SellingPrice = machinery.SellingPrice,
                         Priority = machinery.Priority,
                         TimeWarranty = machinery.TimeWarranty,
@@ -254,6 +254,7 @@ namespace SAM.BusinessTier.Services.Implements
                     Model = x.Model,
                     Description = x.Description,
                     SellingPrice = x.SellingPrice,
+                    StockPrice = x.StockPrice,
                     Priority = x.Priority,
                     TimeWarranty = x.TimeWarranty,
                     Status = EnumUtil.ParseEnum<MachineryStatus>(x.Status),
@@ -340,6 +341,7 @@ namespace SAM.BusinessTier.Services.Implements
                 },
                 Model = machinery.Model,
                 Description = machinery.Description,
+                StockPrice = machinery.StockPrice,
                 SellingPrice = machinery.SellingPrice,
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
@@ -420,6 +422,7 @@ namespace SAM.BusinessTier.Services.Implements
                 },
                 Model = machinery.Model,
                 Description = machinery.Description,
+                StockPrice = machinery.StockPrice,
                 SellingPrice = machinery.SellingPrice,
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,

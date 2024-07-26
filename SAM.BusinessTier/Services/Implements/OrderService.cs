@@ -336,7 +336,7 @@ namespace SAM.BusinessTier.Services.Implements
                         var addRankResult = await _accountService.AddRankToAccount(account.Id, new List<Guid> { highestEligibleRank.Id });
                         if (!addRankResult)
                         {
-                            _logger.LogError($"Failed to add rank to account {account.Id}");
+                            throw new BadHttpRequestException("không thể thêm cấp độ cho tài khoản này");
                         }
                     }
 

@@ -39,11 +39,14 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
-            //// Check if there is already a warranty for the same inventory on the same day
-            //var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
-            //        predicate: w => w.InventoryId == request.InventoryId &&
-            //           EF.Functions.DateDiffDay(w.CreateDate, currentTime) == 0)
-            //    ?? throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
+            var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
+                    predicate: w => w.InventoryId == request.InventoryId &&
+                                    w.CreateDate.Equals(DateTime.Today) );
+
+            if (existingWarranty != null)
+            {
+                throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
+            }
             Warranty newWarranty = new Warranty
             {
                 Id = Guid.NewGuid(),
