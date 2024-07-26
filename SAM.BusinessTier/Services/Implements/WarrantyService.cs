@@ -45,7 +45,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Type = WarrantyType.CustomerRequest.GetDescriptionFromEnum(),
                 CreateDate = currentTime,
                 StartDate = currentTime,
-                Status = WarrantyStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                Status = WarrantyStatus.Process.GetDescriptionFromEnum(),
                 Description = request.Description,
                 Priority = 1,
                 InventoryId = request.InventoryId,

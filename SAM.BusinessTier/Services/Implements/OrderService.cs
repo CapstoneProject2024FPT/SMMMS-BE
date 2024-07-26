@@ -379,7 +379,7 @@ namespace SAM.BusinessTier.Services.Implements
                             Type = WarrantyType.Periodic.GetDescriptionFromEnum(),
                             CreateDate = currentTime,
                             StartDate = currentTime,
-                            Status = WarrantyStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                            Status = WarrantyStatus.Process.GetDescriptionFromEnum(),
                             Description = updateOrder.Note,
                             Priority = 1,
                             InventoryId = detail.InventoryId,
