@@ -23,5 +23,9 @@ public partial class TransactionPayment
 
     public Guid? PaymentId { get; set; }
 
+    public Guid? OrderId { get; set; }
+
+    public Guid? AccountId { get; set; }
+
     public virtual Payment? Payment { get; set; }
 }

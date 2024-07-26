@@ -14,6 +14,6 @@ namespace SAM.BusinessTier.Payload.Payment
         public PaymentType PaymentType { get; set; }
 
         public string? CallbackUrl { get; set; }
-        //public Guid PaymentId { get; set; }
+        public Guid? AccountId { get; set; }
     }
 }
