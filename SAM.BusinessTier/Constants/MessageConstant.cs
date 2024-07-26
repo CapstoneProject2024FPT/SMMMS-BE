@@ -22,103 +22,103 @@ public static class MessageConstant
 
     public static class Category
     {
-        public const string CreateCategoryFailedMessage = "Tạo mới category thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent Category ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "Category ko có trong hệ thống";
-        public const string UpdateCategorySuccessMessage = "Category được cập nhật thành công";
-        public const string UpdateCategoryFailedMessage = "Category cập nhật thất bại";
-        public const string CategoryExistedMessage = "Category đã tồn tại";
-        public const string CategoryEmptyMessage = "Category không hợp lệ";
+        public const string CreateCategoryFailedMessage = "Tạo mới loại thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent loại ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Loại ko có trong hệ thống";
+        public const string UpdateCategorySuccessMessage = "Loại được cập nhật thành công";
+        public const string UpdateCategoryFailedMessage = "Loại cập nhật thất bại";
+        public const string CategoryExistedMessage = "Loại đã tồn tại";
+        public const string CategoryEmptyMessage = "Loại không hợp lệ";
     }
     public static class Origin
     {
-        public const string CreateOriginFailedMessage = "Tạo mới Origin thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent Origin ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "Origin ko có trong hệ thống";
-        public const string UpdateOriginSuccessMessage = "Origin được cập nhật thành công";
-        public const string UpdateOriginFailedMessage = "Origin cập nhật thất bại";
-        public const string OriginExistedMessage = "Origin đã tồn tại";
-        public const string OriginEmptyMessage = "Origin không hợp lệ";
+        public const string CreateOriginFailedMessage = "Tạo mới xuất xứ thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent xuất xứ ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Xuất xứ ko có trong hệ thống";
+        public const string UpdateOriginSuccessMessage = "Xuất xứ được cập nhật thành công";
+        public const string UpdateOriginFailedMessage = "Xuất xứ cập nhật thất bại";
+        public const string OriginExistedMessage = "Xuất xứ đã tồn tại";
+        public const string OriginEmptyMessage = "Xuất xứ không hợp lệ";
     }
     public static class Transaction
     {
-        public const string CreateTransactionFailedMessage = "Tạo mới Transaction thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent Transaction ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "Transaction ko có trong hệ thống";
-        public const string UpdateTransactionSuccessMessage = "Transaction được cập nhật thành công";
-        public const string UpdateTransactionFailedMessage = "Transaction cập nhật thất bại";
-        public const string TransactionExistedMessage = "Transaction đã tồn tại";
-        public const string TransactionEmptyMessage = "Transaction không hợp lệ";
+        public const string CreateTransactionFailedMessage = "Tạo mới giao dịch thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent giao dịch ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Giao dịch ko có trong hệ thống";
+        public const string UpdateTransactionSuccessMessage = "Giao dịch được cập nhật thành công";
+        public const string UpdateTransactionFailedMessage = "Giao dịch cập nhật thất bại";
+        public const string TransactionExistedMessage = "Giao dịch đã tồn tại";
+        public const string TransactionEmptyMessage = "Giao dịch không hợp lệ";
     }
     public static class Brand
     {
-        public const string CreateBrandFailedMessage = "Tạo mới Brand thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent Brand ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "Brand ko có trong hệ thống";
-        public const string UpdateBrandSuccessMessage = "Brand được cập nhật thành công";
-        public const string UpdateBrandFailedMessage = "Brand cập nhật thất bại";
-        public const string BrandExistedMessage = "Brand đã tồn tại";
-        public const string BrandEmptyMessage = "Brand không hợp lệ";
+        public const string CreateBrandFailedMessage = "Tạo mới thương hiệu thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent thương hiệu ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Thương hiệu ko có trong hệ thống";
+        public const string UpdateBrandSuccessMessage = "Thương hiệu được cập nhật thành công";
+        public const string UpdateBrandFailedMessage = "Thương hiệu cập nhật thất bại";
+        public const string BrandExistedMessage = "Thương hiệu đã tồn tại";
+        public const string BrandEmptyMessage = "Thương hiệu không hợp lệ";
     }
     public static class Address
     {
-        public const string CreateAddressFailedMessage = "Tạo mới Address thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent Address ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "Address ko có trong hệ thống";
-        public const string UpdateAddressSuccessMessage = "Address được cập nhật thành công";
-        public const string UpdateAddressFailedMessage = "Address cập nhật thất bại";
-        public const string AddressExisteMessage = "Address đã tồn tại";
-        public const string AddressdEmptyMessage = "Address không hợp lệ";
+        public const string CreateAddressFailedMessage = "Tạo mới địa chỉ thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent địa chỉ ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Địa chỉ ko có trong hệ thống";
+        public const string UpdateAddressSuccessMessage = "Địa chỉ được cập nhật thành công";
+        public const string UpdateAddressFailedMessage = "Địa chỉ cập nhật thất bại";
+        public const string AddressExisteMessage = "Địa chỉ đã tồn tại";
+        public const string AddressdEmptyMessage = "Địa chỉ không hợp lệ";
     }
     public static class City
     {
-        public const string CreateCityFailedMessage = "Tạo mới City thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent City ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "City ko có trong hệ thống";
-        public const string UpdateCitySuccessMessage = "City được cập nhật thành công";
-        public const string UpdateCityFailedMessage = "City cập nhật thất bại";
-        public const string CityExistedMessage = "City đã tồn tại";
-        public const string CityEmptyMessage = "City không hợp lệ";
+        public const string CreateCityFailedMessage = "Tạo mới thành phố thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent thành phố ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Thành phố ko có trong hệ thống";
+        public const string UpdateCitySuccessMessage = "Thành phố được cập nhật thành công";
+        public const string UpdateCityFailedMessage = "Thành phố cập nhật thất bại";
+        public const string CityExistedMessage = "Thành phố đã tồn tại";
+        public const string CityEmptyMessage = "Thành phố không hợp lệ";
     }
     public static class District
     {
-        public const string CreateDistrictFailedMessage = "Tạo mới District thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent District ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "District ko có trong hệ thống";
-        public const string UpdateDistrictSuccessMessage = "District được cập nhật thành công";
-        public const string UpdateDistrictFailedMessage = "District cập nhật thất bại";
-        public const string DistrictExistedMessage = "District đã tồn tại";
-        public const string DistrictEmptyMessage = "District không hợp lệ";
+        public const string CreateDistrictFailedMessage = "Tạo mới quận thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent quận ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Quận ko có trong hệ thống";
+        public const string UpdateDistrictSuccessMessage = "Quận được cập nhật thành công";
+        public const string UpdateDistrictFailedMessage = "Quận cập nhật thất bại";
+        public const string DistrictExistedMessage = "Quận đã tồn tại";
+        public const string DistrictEmptyMessage = "Quận không hợp lệ";
     }
     public static class Ward
     {
-        public const string CreateWardFailedMessage = "Tạo mới Ward thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent Ward ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "Ward ko có trong hệ thống";
-        public const string UpdateWardSuccessMessage = "Ward được cập nhật thành công";
-        public const string UpdateWardFailedMessage = "Ward cập nhật thất bại";
-        public const string WardExistedMessage = "Ward đã tồn tại";
-        public const string WardEmptyMessage = "Ward không hợp lệ";
+        public const string CreateWardFailedMessage = "Tạo mới phường thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent phường ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Phường ko có trong hệ thống";
+        public const string UpdateWardSuccessMessage = "Phường được cập nhật thành công";
+        public const string UpdateWardFailedMessage = "Phường cập nhật thất bại";
+        public const string WardExistedMessage = "Phường đã tồn tại";
+        public const string WardEmptyMessage = "Phường không hợp lệ";
     }
     public static class Inventory
     {
-        public const string CreateInventoryFailedMessage = "Tạo mới Inventory thất bại";
-        public const string Parent_NotFoundFailedMessage = "Parent Inventory ko có trong hệ thống";
-        public const string NotFoundFailedMessage = "Inventory ko có trong hệ thống";
-        public const string UpdateInventorySuccessMessage = "Inventory được cập nhật thành công";
-        public const string UpdateInventoryFailedMessage = "Inventory cập nhật thất bại";
-        public const string InventoryExistedMessage = "Inventory đã tồn tại";
-        public const string InventoryEmptyMessage = "Inventory không hợp lệ";
+        public const string CreateInventoryFailedMessage = "Tạo mới mã sản phẩm thất bại";
+        public const string Parent_NotFoundFailedMessage = "Parent mã sản phẩm ko có trong hệ thống";
+        public const string NotFoundFailedMessage = "Mã sản phẩm ko có trong hệ thống";
+        public const string UpdateInventorySuccessMessage = "Mã sản phẩm được cập nhật thành công";
+        public const string UpdateInventoryFailedMessage = "Mã sản phẩm cập nhật thất bại";
+        public const string InventoryExistedMessage = "Mã sản phẩm đã tồn tại";
+        public const string InventoryEmptyMessage = "Mã sản phẩm không hợp lệ";
         public const string NotAvaliable = "Không còn Machinery nào sẵn sàng để bán";
     }
     public static class Machinery
     {
-        public const string MachineryNameExisted = "Machinery đã tồn tại";
-        public const string CreateNewMachineryFailedMessage = "Tạo mới machinery thất bại";
-        public const string UpdateMachinerytFailedMessage = "Cập nhật thông tin machinery thất bại";
-        public const string UpdateMachinerySuccessMessage = "Cập nhật thông tin machinery thành công";
-        public const string EmptyMachineryIdMessage = "Machinery Id không hợp lệ";
-        public const string MachineryNotFoundMessage = "Machinery không tồn tại trong hệ thống";
+        public const string MachineryNameExisted = "Máy cơ khí đã tồn tại";
+        public const string CreateNewMachineryFailedMessage = "Tạo mới Máy cơ khí thất bại";
+        public const string UpdateMachinerytFailedMessage = "Cập nhật thông tin Máy cơ khí thất bại";
+        public const string UpdateMachinerySuccessMessage = "Cập nhật thông tin Máy cơ khí thành công";
+        public const string EmptyMachineryIdMessage = "Máy cơ khí Id không hợp lệ";
+        public const string MachineryNotFoundMessage = "Máy cơ khí không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
@@ -126,12 +126,12 @@ public static class MessageConstant
     }
     public static class Specification
     {
-        public const string SpecificationNameExisted = "Specification đã tồn tại";
-        public const string CreateNewSpecificationFailedMessage = "Tạo mới Specification thất bại";
-        public const string UpdateSpecificationFailedMessage = "Cập nhật thông tin Specification thất bại";
-        public const string UpdateSpecificationSuccessMessage = "Cập nhật thông tin Specification thành công";
-        public const string EmptySpecificationIdMessage = "Specification Id không hợp lệ";
-        public const string MachineryNotFoundMessage = "Specification không tồn tại trong hệ thống";
+        public const string SpecificationNameExisted = "Thông số kỹ thuật đã tồn tại";
+        public const string CreateNewSpecificationFailedMessage = "Tạo mới Thông số kỹ thuật thất bại";
+        public const string UpdateSpecificationFailedMessage = "Cập nhật thông tin Thông số kỹ thuật thất bại";
+        public const string UpdateSpecificationSuccessMessage = "Cập nhật thông tin Thông số kỹ thuật thành công";
+        public const string EmptySpecificationIdMessage = "Thông số kỹ thuật Id không hợp lệ";
+        public const string MachineryNotFoundMessage = "Thông số kỹ thuật không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
@@ -147,23 +147,23 @@ public static class MessageConstant
 
     public static class Order
     {
-        public const string OrderNotFoundMessage = "Order không tồn tại trong hệ thống";
-        public const string CreateOrderFailedMessage = "Tạo mới order thất bại";
-        public const string UpdateSuccessMessage = "Order được cập nhật thành công";
-        public const string UpdateFailedMessage = "Order cập nhật thất bại";
+        public const string OrderNotFoundMessage = "Đơn hàng không tồn tại trong hệ thống";
+        public const string CreateOrderFailedMessage = "Tạo mới Đơn hàng thất bại";
+        public const string UpdateSuccessMessage = "Đơn hàng được cập nhật thành công";
+        public const string UpdateFailedMessage = "Đơn hàng cập nhật thất bại";
     }
 
     public static class OrderDetail
     {
-        public const string NotFoundMessage = "Order không tồn tại trong hệ thống";
+        public const string NotFoundMessage = "Đơn hàng không tồn tại trong hệ thống";
     }
 
     public static class User
     {
-        public const string UserExisted = "Account đã tồn tại trong hệ thống";
-        public const string CreateFailedMessage = "Tạo mới Account thất bại";
-        public const string UserNotFoundMessage = "Account không tồn tại trong hệ thống";
-        public const string EmptyUserIdMessage = "AccountId ko hợp lệ";
+        public const string UserExisted = "Tài khoản đã tồn tại trong hệ thống";
+        public const string CreateFailedMessage = "Tạo mới Tài khoản thất bại";
+        public const string UserNotFoundMessage = "Tài khoản không tồn tại trong hệ thống";
+        public const string EmptyUserIdMessage = "Số Tài khoản ko hợp lệ";
         public const string UpdateStatusSuccessMessage = "Cập nhật thông tin thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật thông tin thất bại";
         public const string CheckPasswordFailed = "Mật khẩu cũ không đúng";
@@ -178,24 +178,24 @@ public static class MessageConstant
     }
     public static class Warranty
     {
-        public const string WarrantyNameExisted = "Warranty đã tồn tại";
-        public const string CreateNewWarrantyFailedMessage = "Tạo mới Warranty thất bại";
-        public const string UpdateWarrantyFailedMessage = "Cập nhật thông tin Warranty thất bại";
-        public const string UpdateWarrantySuccessMessage = "Cập nhật thông tin Warranty thành công";
-        public const string EmptyWarrantyIdMessage = "Warranty Id không hợp lệ";
-        public const string WarrantyNotFoundMessage = "Warranty không tồn tại trong hệ thống";
+        public const string WarrantyNameExisted = "Bảo trì đã tồn tại";
+        public const string CreateNewWarrantyFailedMessage = "Tạo mới Bảo trì thất bại";
+        public const string UpdateWarrantyFailedMessage = "Cập nhật thông tin Bảo trì thất bại";
+        public const string UpdateWarrantySuccessMessage = "Cập nhật thông tin Bảo trì thành công";
+        public const string EmptyWarrantyIdMessage = "Bảo trì Id không hợp lệ";
+        public const string WarrantyNotFoundMessage = "Bảo trì không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
     public static class WarrantyDetail
     {
-        public const string WarrantyDetailNameExisted = "Warranty Detail đã tồn tại";
-        public const string CreateNewWarrantyDetailFailedMessage = "Tạo mới Warranty Detail thất bại";
-        public const string UpdateWarrantyDetailFailedMessage = "Cập nhật thông tin Warranty Detail thất bại";
-        public const string UpdateWarrantyDetailSuccessMessage = "Cập nhật thông tin Warranty Detail thành công";
-        public const string EmptyWarrantyDetailIdMessage = "Warranty Detail Id không hợp lệ";
-        public const string WarrantyDetailNotFoundMessage = "Warranty Detail không tồn tại trong hệ thống";
+        public const string WarrantyDetailNameExisted = "Chi tiết bao trì đã tồn tại";
+        public const string CreateNewWarrantyDetailFailedMessage = "Tạo mới Chi tiết bao trì Detail thất bại";
+        public const string UpdateWarrantyDetailFailedMessage = "Cập nhật thông tin Chi tiết bao trì Detail thất bại";
+        public const string UpdateWarrantyDetailSuccessMessage = "Cập nhật thông tin Chi tiết bao trì Detail thành công";
+        public const string EmptyWarrantyDetailIdMessage = "Chi tiết bao trì Detail Id không hợp lệ";
+        public const string WarrantyDetailNotFoundMessage = "Chi tiết bao trì Detail không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
@@ -203,60 +203,60 @@ public static class MessageConstant
 
     public static class Rank
     {
-        public const string RankNameExisted = "Rank đã tồn tại";
-        public const string CreateNewRankFailedMessage = "Tạo mới Rank thất bại";
-        public const string UpdateRankFailedMessage = "Cập nhật thông tin Rank thất bại";
-        public const string UpdateRankSuccessMessage = "Cập nhật thông tin Rank thành công";
-        public const string EmptyRankIdMessage = "Rank Id không hợp lệ";
-        public const string RankNotFoundMessage = "Rank không tồn tại trong hệ thống";
+        public const string RankNameExisted = "Cấp độ đã tồn tại";
+        public const string CreateNewRankFailedMessage = "Tạo mới Cấp độ thất bại";
+        public const string UpdateRankFailedMessage = "Cập nhật thông tin Cấp độ thất bại";
+        public const string UpdateRankSuccessMessage = "Cập nhật thông tin Cấp độ thành công";
+        public const string EmptyRankIdMessage = "Mã Cấp độ không hợp lệ";
+        public const string RankNotFoundMessage = "Cấp độ không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
     public static class TaskManager
     {
-        public const string TaskNameExisted = "Task đã tồn tại";
-        public const string CreateNewTaskFailedMessage = "Tạo mới Task thất bại";
-        public const string UpdateTaskFailedMessage = "Cập nhật thông tin Task thất bại";
-        public const string UpdateTaskSuccessMessage = "Cập nhật thông tin Task thành công";
-        public const string EmptyTaskIdMessage = "Task Id không hợp lệ";
-        public const string TaskNotFoundMessage = "Task không tồn tại trong hệ thống";
+        public const string TaskNameExisted = "Nhiệm vụ đã tồn tại";
+        public const string CreateNewTaskFailedMessage = "Tạo mới Nhiệm vụ thất bại";
+        public const string UpdateTaskFailedMessage = "Cập nhật thông tin Nhiệm vụ thất bại";
+        public const string UpdateTaskSuccessMessage = "Cập nhật thông tin Nhiệm vụ thành công";
+        public const string EmptyTaskIdMessage = "Nhiệm vụ Id không hợp lệ";
+        public const string TaskNotFoundMessage = "Nhiệm vụ không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
     public static class MachineryComponents
     {
-        public const string MachineryComponentsNameExisted = "MachineryComponents đã tồn tại";
-        public const string CreateNewMachineryComponentsFailedMessage = "Tạo mới MachineryComponents thất bại";
-        public const string UpdateMachineryComponentsFailedMessage = "Cập nhật thông tin MachineryComponents thất bại";
-        public const string UpdateMachineryComponentsSuccessMessage = "Cập nhật thông tin MachineryComponents thành công";
-        public const string EmptyMachineryComponentsIdMessage = "MachineryComponents Id không hợp lệ";
-        public const string MachineryComponentsNotFoundMessage = "MachineryComponents không tồn tại trong hệ thống";
+        public const string MachineryComponentsNameExisted = "Bộ phận máy cơ khí đã tồn tại";
+        public const string CreateNewMachineryComponentsFailedMessage = "Tạo mới Bộ phận máy cơ khí thất bại";
+        public const string UpdateMachineryComponentsFailedMessage = "Cập nhật thông tin Bộ phận máy cơ khí thất bại";
+        public const string UpdateMachineryComponentsSuccessMessage = "Cập nhật thông tin Bộ phận máy cơ khí thành công";
+        public const string EmptyMachineryComponentsIdMessage = "Bộ phận máy cơ khí Id không hợp lệ";
+        public const string MachineryComponentsNotFoundMessage = "Bộ phận máy cơ khí không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
     public static class News
     {
-        public const string NewsNameExisted = "News đã tồn tại";
-        public const string CreateNewNewsFailedMessage = "Tạo mới News thất bại";
-        public const string UpdateNewsFailedMessage = "Cập nhật thông tin News thất bại";
-        public const string UpdateNewsSuccessMessage = "Cập nhật thông tin News thành công";
-        public const string EmptyNewsIdMessage = "News Id không hợp lệ";
-        public const string NewsNotFoundMessage = "News không tồn tại trong hệ thống";
+        public const string NewsNameExisted = "Tin tức đã tồn tại";
+        public const string CreateNewNewsFailedMessage = "Tạo mới Tin tức thất bại";
+        public const string UpdateNewsFailedMessage = "Cập nhật thông tin Tin tức thất bại";
+        public const string UpdateNewsSuccessMessage = "Cập nhật thông tin Tin tức thành công";
+        public const string EmptyNewsIdMessage = "Tin tức không hợp lệ";
+        public const string NewsNotFoundMessage = "Tin tức không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
     }
     public static class Discount
     {
-        public const string DiscountNameExisted = "Discount đã tồn tại";
-        public const string CreateNewDiscountFailedMessage = "Tạo mới Discount thất bại";
-        public const string UpdateDiscountFailedMessage = "Cập nhật thông tin Discount thất bại";
-        public const string UpdateDiscountSuccessMessage = "Cập nhật thông tin Discount thành công";
-        public const string EmptyDiscountIdMessage = "Discount Id không hợp lệ";
-        public const string DiscountNotFoundMessage = "Discount không tồn tại trong hệ thống";
+        public const string DiscountNameExisted = "Khuyến mãi đã tồn tại";
+        public const string CreateNewDiscountFailedMessage = "Tạo mới Khuyến mãi thất bại";
+        public const string UpdateDiscountFailedMessage = "Cập nhật thông tin Khuyến mãi thất bại";
+        public const string UpdateDiscountSuccessMessage = "Cập nhật thông tin Khuyến mãi thành công";
+        public const string EmptyDiscountIdMessage = "Khuyến mãi Id không hợp lệ";
+        public const string DiscountNotFoundMessage = "Khuyến mãi không tồn tại trong hệ thống";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
