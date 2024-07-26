@@ -50,6 +50,7 @@ public static class ApiEndPointConstant
     {
         public const string AdminsEndPoint = ApiEndpoint + "/admin";
         public const string AdminEndPoint = AdminsEndPoint + "/{id}";
+        public const string AdminDashBoardEndPoint = AdminsEndPoint + "/dashBoard";
     }
     public static class City
     {

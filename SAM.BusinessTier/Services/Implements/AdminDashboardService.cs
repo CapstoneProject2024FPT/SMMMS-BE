@@ -26,20 +26,37 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: o => o.CreateDate.HasValue && o.CreateDate.Value.Year == year,
                 include: o => o.Include(o => o.OrderDetails));
 
-            //var paidOrCompletedOrders = orders.Where(o => o.Status == "paid" || o.Status == "completed").ToList();
-            var paidOrCompletedOrders = orders.Where(o => o.Status.Equals("paid", StringComparison.OrdinalIgnoreCase) || o.Status.Equals("completed", StringComparison.OrdinalIgnoreCase)).ToList();
+            var paidOrCompletedOrders = orders
+                .Where(o => o.Status.Equals("paid", StringComparison.OrdinalIgnoreCase) || o.Status.Equals("completed", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
             double totalCost = paidOrCompletedOrders.Sum(o => o.OrderDetails.Sum(od => (od.Quantity ?? 0) * (od?.SellingPrice ?? 0)));
             double totalRevenue = paidOrCompletedOrders.Sum(o => o.FinalAmount ?? 0);
             double totalProfit = totalRevenue - totalCost;
 
+            // Nhóm các đơn hàng theo tháng và tính toán số liệu thống kê hàng tháng
+            var monthlyStatistics = orders
+                .GroupBy(o => o.CreateDate.Value.Month)
+                .Select(g => new MonthlyStatistics
+                {
+                    Month = g.Key,
+                    TotalOrders = g.Count(),
+                    TotalRevenue = g.Where(o => o.Status.Equals("paid", StringComparison.OrdinalIgnoreCase) || o.Status.Equals("completed", StringComparison.OrdinalIgnoreCase)).Sum(o => o.FinalAmount ?? 0),
+                    TotalProfit = g.Where(o => o.Status.Equals("paid", StringComparison.OrdinalIgnoreCase) || o.Status.Equals("completed", StringComparison.OrdinalIgnoreCase)).Sum(o => o.FinalAmount ?? 0) - g
+                                                        .Where(o => o.Status.Equals("paid", StringComparison.OrdinalIgnoreCase) || o.Status.Equals("completed", StringComparison.OrdinalIgnoreCase)).Sum(o => o.OrderDetails.Sum(od => (od.Quantity ?? 0) * (od?.SellingPrice ?? 0)))
+                })
+                .OrderBy(ms => ms.Month)
+                .ToList();
 
             return new AdminDashboardStatistics
             {
                 TotalOrders = orders.Count,
                 OrdersByStatus = orders.CountOrderEachStatus(),
                 TotalRevenue = totalRevenue,
-                TotalProfit = totalProfit
+                TotalProfit = totalProfit,
+                MonthlyStatistics = monthlyStatistics
             };
         }
+
     }
 }

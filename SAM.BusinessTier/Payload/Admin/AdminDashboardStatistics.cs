@@ -13,5 +13,13 @@ namespace SAM.BusinessTier.Payload.Admin
         public Dictionary<OrderStatus, int>? OrdersByStatus { get; set; }
         public double TotalRevenue { get; set; }
         public double TotalProfit { get; set; }
+        public List<MonthlyStatistics> MonthlyStatistics { get; set; }
+    }
+    public class MonthlyStatistics
+    {
+        public int Month { get; set; }
+        public int TotalOrders { get; set; }
+        public double TotalRevenue { get; set; }
+        public double TotalProfit { get; set; }
     }
 }

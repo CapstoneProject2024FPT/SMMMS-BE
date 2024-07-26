@@ -17,7 +17,7 @@ namespace SAM.API.Controllers
         {
             _adminDashboardService = adminDashboardService;
         }
-        [HttpGet(ApiEndPointConstant.Admin.AdminsEndPoint)]
+        [HttpGet(ApiEndPointConstant.Admin.AdminDashBoardEndPoint)]
         public async Task<IActionResult> GetYearlyStatistics(int year)
         {
             var response = await _adminDashboardService.GetYearlyStatistics(year);
