@@ -35,7 +35,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (createNewInventoryRequest.MachineryId.HasValue && createNewInventoryRequest.MachineComponentsId.HasValue)
             {
-                throw new ArgumentException("Only one of MachineryId or MachineComponentId can be provided.");
+                throw new ArgumentException("Chỉ có thể tạo mã cho 1 máy cơ khí hoặc 1 bộ phận");
             }
 
             if (createNewInventoryRequest.MachineryId.HasValue)
@@ -45,7 +45,10 @@ namespace SAM.BusinessTier.Services.Implements
                     include: x => x.Include(x => x.MachineryComponentParts)
                                     .ThenInclude(cp => cp.MachineComponents))
                     ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-
+                if (machinery.MachineryComponentParts == null || !machinery.MachineryComponentParts.Any())
+                {
+                    throw new BadHttpRequestException("Có vẻ máy này chưa có bộ phận nào");
+                }
                 for (int i = 0; i < quantity; i++)
                 {
                     var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);

@@ -40,9 +40,15 @@ namespace SAM.BusinessTier.Services.Implements
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
-
             Guid? addressId = null;
+            var tasksForToday = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
+                                predicate: t => t.AccountId == request.AccountId && t.CreateDate == currentTime.Date);
+            int taskCount = tasksForToday.Count();
 
+            if (taskCount >= 3)
+            {
+                throw new BadHttpRequestException("Nhân viên đã có 3 task trong ngày. Không thể giao thêm task.");
+            }else
             if (request.WarrantyDetailId.HasValue)
             {
                 var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
