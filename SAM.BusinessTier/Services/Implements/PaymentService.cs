@@ -74,21 +74,13 @@ namespace SAM.BusinessTier.Services.Implements
                         Description = $"Đang tiến hành thanh toán VNPAY mã đơn {txnRef}",
                         CreatedAt = currentTime,
                         PayType = request.PaymentType.GetDescriptionFromEnum(),
-                        Status = PaymentStatus.PENDING.GetDescriptionFromEnum()
+                        Status = PaymentStatus.PENDING.GetDescriptionFromEnum(),
+                        OrderId = request.OrderId,
+                        AccountId = request.AccountId
                     }
                 }
             };
-            //var transaction = new TransactionPayment()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    PaymentId = payment.Id,
-            //    InvoiceId = txnRef,
-            //    TotalAmount = request.Amount,
-            //    Description = $"Đang tiến hành thanh toán VNPAY mã đơn {txnRef}",
-            //    CreatedAt = currentTime,
-            //    PayType = request.PaymentType.GetDescriptionFromEnum(),
-            //    Status = PaymentStatus.PENDING.GetDescriptionFromEnum()
-            //};
+
             var paymentResponse = new CreatePaymentResponse()
             {
                 Message = "Đang tiến hành thanh toán VNPAY",
