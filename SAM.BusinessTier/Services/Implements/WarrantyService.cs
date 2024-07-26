@@ -299,6 +299,7 @@ namespace SAM.BusinessTier.Services.Implements
                             StartDate = detail.StartDate,
                             Description = detail.Description,
                             Comments = detail.Comments,
+                            WarrantyId = detail.WarrantyId,
                             AccountId = detail.AccountId
                         }).ToList(),
                         Customer = warranty.Inventory.OrderDetails

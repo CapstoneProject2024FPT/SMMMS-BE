@@ -49,6 +49,7 @@ namespace SAM.BusinessTier.Payload.Warranty
         public DateTime? StartDate { get; set; }
         public string? Description { get; set; }
         public string? Comments { get; set; }
+        public Guid? WarrantyId { get; set; }
 
         public Guid? AccountId { get; set; }
     }
