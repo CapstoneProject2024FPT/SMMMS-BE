@@ -43,7 +43,7 @@ namespace SAM.BusinessTier.Services.Implements
                     predicate: w => w.InventoryId == request.InventoryId &&
                                     w.CreateDate.Equals(DateTime.Today) );
 
-            if (existingWarranty != null)
+            if (existingWarranty == null)
             {
                 throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
             }
