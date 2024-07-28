@@ -41,15 +41,29 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Guid? addressId = null;
-            var tasksForToday = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
-                                predicate: t => t.AccountId == request.AccountId && t.CreateDate.HasValue && t.CreateDate.Value.Date == currentTime.Date);
-            int taskCount = tasksForToday.Count();
 
-            if (taskCount >= 3)
+            // Lấy danh sách task trong ngày của nhân viên
+            var tasksForToday = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
+                predicate: t => t.AccountId == request.AccountId && t.CreateDate.HasValue && t.CreateDate.Value.Date == currentTime.Date);
+            int taskCountForToday = tasksForToday.Count();
+
+            // Lấy danh sách tất cả task của nhân viên với trạng thái Process
+            var processTasks = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
+                predicate: t => t.AccountId == request.AccountId && t.Status == TaskManagerStatus.Process.GetDescriptionFromEnum());
+            int processTaskCount = processTasks.Count();
+
+            // Kiểm tra xem nhân viên đã có 3 task Process chưa
+            if (processTaskCount >= 3)
+            {
+                throw new BadHttpRequestException("Nhân viên đã có 3 nhiệm vụ đang xử lý. Không thể giao nhiệm vụ mới.");
+            }
+
+            // Kiểm tra số lượng task trong ngày của nhân viên
+            if (taskCountForToday >= 3)
             {
                 throw new BadHttpRequestException(MessageConstant.TaskManager.FullTaskMessage);
             }
-            else
+
             if (request.WarrantyDetailId.HasValue)
             {
                 var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
@@ -83,7 +97,7 @@ namespace SAM.BusinessTier.Services.Implements
             }
             else
             {
-                throw new BadHttpRequestException("cần nhập chi tiết bảo trì hoặc đơn hàng để giao nhiệm vụ cho nhân viên");
+                throw new BadHttpRequestException("Cần nhập chi tiết bảo trì hoặc đơn hàng để giao nhiệm vụ cho nhân viên.");
             }
 
             TaskManager newTask = new()
@@ -109,6 +123,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return newTask.Id;
         }
+
 
 
         public async Task<GetTaskResponse> GetTaskById(Guid id)
