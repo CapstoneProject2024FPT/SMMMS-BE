@@ -17,13 +17,14 @@ public static class ApiEndPointConstant
     public static class User
     {
         public const string UsersEndPoint = ApiEndpoint + "/users";
+        public const string StaffEndPoint = ApiEndpoint + "/staff";
         public const string UserEndPoint = UsersEndPoint + "/{id}";
         public const string UserEndPointMember = UsersEndPoint + "/{id}";
         public const string UserToRankEndPoint = UsersEndPoint + "/{id}/addRank";
         public const string UserEndPointChangePassword = UsersEndPoint + "/{id}/password";
-        public const string StaffEndPoint = ApiEndpoint + "/register/staff";
+        public const string StaffEndPoints = ApiEndpoint + "/register/staff";
         public const string AccountEndPoint = ApiEndpoint + "/register/customer";
-        public const string GetTaskOfStaff = UsersEndPoint + "/staff";
+        public const string GetTaskOfStaff = StaffEndPoint + "/task";
 
     }
 
