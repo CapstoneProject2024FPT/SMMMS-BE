@@ -23,6 +23,7 @@ public static class ApiEndPointConstant
         public const string UserEndPointChangePassword = UsersEndPoint + "/{id}/password";
         public const string StaffEndPoint = ApiEndpoint + "/register/staff";
         public const string AccountEndPoint = ApiEndpoint + "/register/customer";
+        public const string GetTaskOfStaff = UsersEndPoint + "/staff";
 
     }
 

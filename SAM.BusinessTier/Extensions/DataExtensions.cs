@@ -60,6 +60,18 @@ namespace SAM.BusinessTier.Extensions
             }
             return statusCount;
         }
+        public static Dictionary<TaskManagerStatus, int> CountTaskEachStatus(this ICollection<TaskManager> task)
+        {
+            var statusCount = new Dictionary<TaskManagerStatus, int>();
+
+            foreach (TaskManagerStatus status in Enum.GetValues(typeof(TaskManagerStatus)))
+            {
+                string statusDes = status.GetDescriptionFromEnum();
+                int count = task.Count(item => item.Status.Equals(statusDes));
+                statusCount.Add(status, count);
+            }
+            return statusCount;
+        }
 
     }
 }

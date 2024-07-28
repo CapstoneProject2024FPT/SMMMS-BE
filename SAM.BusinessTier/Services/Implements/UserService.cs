@@ -17,6 +17,7 @@ using SAM.BusinessTier.Enums.EnumStatus;
 using Microsoft.Identity.Client;
 using System.Linq;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Extensions;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -150,6 +151,44 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.User.CreateFailedMessage);
             return account.Id;
+        }
+        public async Task<ICollection<StaffTaskStatusResponse>> GetStaffTaskStatusesByRole()
+        {
+            // Lấy danh sách tất cả nhân viên theo vai trò
+            var staffList = await _unitOfWork.GetRepository<Account>()
+                .GetListAsync(predicate: a => a.Role.Equals(RoleEnum.Technical.GetDescriptionFromEnum()));
+
+            var staffTaskStatuses = new List<StaffTaskStatusResponse>();
+
+            var currentDate = DateTime.UtcNow.Date;
+
+            // Duyệt qua từng nhân viên
+            foreach (var staff in staffList)
+            {
+                // Lấy tất cả công việc của nhân viên đó
+                var tasks = await _unitOfWork.GetRepository<TaskManager>()
+                    .GetListAsync(predicate: t => t.AccountId == staff.Id);
+
+                // Đếm số lượng công việc theo trạng thái
+                var taskCountByStatus = tasks.CountTaskEachStatus();
+
+                // Lọc công việc theo ngày hiện tại
+                var todayTasks = tasks.Where(t => t.CreateDate.HasValue && t.CreateDate.Value.Date == currentDate.Date).ToList();
+
+                // Đếm số lượng công việc trong ngày theo trạng thái
+                var todayTaskCountByStatus = todayTasks.CountTaskEachStatus();
+
+                // Thêm thông tin vào danh sách kết quả
+                staffTaskStatuses.Add(new StaffTaskStatusResponse
+                {
+                    StaffId = staff.Id,
+                    StaffName = staff.FullName,
+                    TaskStatusCount = taskCountByStatus,
+                    TodayTaskStatusCount = todayTaskCountByStatus
+                });
+            }
+
+            return staffTaskStatuses;
         }
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)
         {

@@ -64,6 +64,12 @@ namespace SAM.API.Controllers
             var response = await _userService.GetAllUsers(filter, pagingModel);
             return Ok(response);
         }
+        [HttpGet(ApiEndPointConstant.User.GetTaskOfStaff)]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var response = await _userService.GetStaffTaskStatusesByRole();
+            return Ok(response);
+        }
 
         [HttpGet(ApiEndPointConstant.User.UserEndPoint)]
         public async Task<IActionResult> GetUserById(Guid id)

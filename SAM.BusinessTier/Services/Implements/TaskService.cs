@@ -111,7 +111,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
-
         public async Task<GetTaskResponse> GetTaskById(Guid id)
         {
             var task = await _unitOfWork.GetRepository<TaskManager>()
