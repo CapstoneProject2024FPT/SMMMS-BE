@@ -22,4 +22,11 @@ namespace SAM.BusinessTier.Payload.Admin
         public double TotalRevenue { get; set; }
         public double TotalProfit { get; set; }
     }
+    public class CountOrders {
+        public int TolalOrders { get; set; }
+        public Dictionary<OrderStatus, int>? OrdersByStatus { get; set; }
+        public double TotalRevenue { get; set; }
+        public double TotalProfit { get; set; }
+
+    }
 }

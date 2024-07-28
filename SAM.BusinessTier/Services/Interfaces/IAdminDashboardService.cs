@@ -10,5 +10,6 @@ namespace SAM.BusinessTier.Services.Interfaces
     public interface IAdminDashboardService
     {
         Task<AdminDashboardStatistics> GetYearlyStatistics(int year);
+        Task<CountOrders> CountAllOrde();
     }
 }

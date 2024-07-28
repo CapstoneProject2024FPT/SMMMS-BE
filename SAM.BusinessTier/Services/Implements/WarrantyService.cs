@@ -39,14 +39,31 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
+            var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                predicate: i => i.Id == request.InventoryId,
+                include: i => i.Include(inv => inv.OrderDetails).ThenInclude(od => od.Order));
+
+            if (inventory == null)
+            {
+                throw new BadHttpRequestException("Inventory not found.");
+            }
+
+            // Check completed
+            var associatedOrder = inventory.OrderDetails.Select(od => od.Order).FirstOrDefault();
+            if (associatedOrder == null || associatedOrder.Status != OrderStatus.Completed.GetDescriptionFromEnum())
+            {
+                throw new BadHttpRequestException("Cannot create a warranty request for an inventory with an incomplete order.");
+            }
+
             var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
-         predicate: w => w.InventoryId == request.InventoryId &&
-                         w.CreateDate.HasValue && w.CreateDate.Value.Date == currentTime.Date);
+                predicate: w => w.InventoryId == request.InventoryId &&
+                                w.CreateDate.HasValue && w.CreateDate.Value.Date == currentTime.Date);
 
             if (existingWarranty != null)
             {
                 throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
             }
+
             Warranty newWarranty = new Warranty
             {
                 Id = Guid.NewGuid(),
@@ -79,11 +96,12 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful)
             {
-                throw new BadHttpRequestException("Tạo phiếu bảo trì thất bại");
+                throw new BadHttpRequestException(MessageConstant.WarrantyDetail.CreateNewWarrantyDetailFailedMessage);
             }
 
             return newWarranty.Id;
         }
+
 
 
         public async Task<ICollection<GetWarrantyInforResponse>> GetWarrantyList(WarrantyFilter filter)

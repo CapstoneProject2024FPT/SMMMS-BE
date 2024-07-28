@@ -47,7 +47,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (taskCount >= 3)
             {
-                throw new BadHttpRequestException("Nhân viên đã có 3 task trong ngày. Không thể giao thêm task.");
+                throw new BadHttpRequestException(MessageConstant.TaskManager.FullTaskMessage);
             }
             else
             if (request.WarrantyDetailId.HasValue)
@@ -83,7 +83,7 @@ namespace SAM.BusinessTier.Services.Implements
             }
             else
             {
-                throw new BadHttpRequestException("cần nhập chi tiết bảo trì hoặc đơn hàng để giao task cho nhân viên");
+                throw new BadHttpRequestException("cần nhập chi tiết bảo trì hoặc đơn hàng để giao nhiệm vụ cho nhân viên");
             }
 
             TaskManager newTask = new()

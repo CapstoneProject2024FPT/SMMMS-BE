@@ -224,6 +224,7 @@ public static class MessageConstant
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+        public const string FullTaskMessage = "Nhân viên đã có 3 nhiệm vụ trong ngày. Không thể giao thêm nhiệm vụ.";
     }
     public static class MachineryComponents
     {

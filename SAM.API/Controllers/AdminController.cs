@@ -23,5 +23,11 @@ namespace SAM.API.Controllers
             var response = await _adminDashboardService.GetYearlyStatistics(year);
             return Ok(response);
         }
+        [HttpGet(ApiEndPointConstant.Admin.AdminCountOrdersDashBoardEndPoint)]
+        public async Task<IActionResult> CountAllOrde()
+        {
+            var response = await _adminDashboardService.CountAllOrde();
+            return Ok(response);
+        }
     }
 }
