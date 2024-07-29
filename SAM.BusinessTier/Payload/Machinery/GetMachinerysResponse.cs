@@ -25,6 +25,7 @@ namespace SAM.BusinessTier.Payload.Machinery
         public int? Priority { get; set; }
 
         public int? TimeWarranty { get; set; }
+        public int? MonthWarrantyNumber { get; set; }
 
         public DateTime? CreateDate { get; set; }
 

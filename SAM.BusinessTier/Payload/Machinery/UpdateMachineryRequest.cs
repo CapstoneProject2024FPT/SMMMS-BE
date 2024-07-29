@@ -29,6 +29,7 @@ namespace SAM.BusinessTier.Payload.Machinery
         public Guid? BrandId { get; set; }
 
         public int? TimeWarranty { get; set; }
+        public int? MonthWarrantyNumber { get; set; }
 
         public Guid? CategoryId { get; set; }
     }

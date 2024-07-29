@@ -25,6 +25,8 @@ public partial class Machinery
 
     public int? TimeWarranty { get; set; }
 
+    public int? MonthWarrantyNumber { get; set; }
+
     public Guid? CategoryId { get; set; }
 
     public Guid? OriginId { get; set; }

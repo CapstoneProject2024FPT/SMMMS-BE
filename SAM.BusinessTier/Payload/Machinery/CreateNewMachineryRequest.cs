@@ -26,6 +26,7 @@ namespace SAM.BusinessTier.Payload.Machinery
         public Guid? OriginId { get; set; }
 
         public int? TimeWarranty { get; set; }
+        public int? MonthWarrantyNumber { get; set; }
 
         public List<MachineryImages>? Image { get; set; } = new List<MachineryImages>();
 

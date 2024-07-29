@@ -121,6 +121,7 @@ namespace SAM.BusinessTier.Services.Implements
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
                 TimeWarranty = request.TimeWarranty,
+                MonthWarrantyNumber = request.MonthWarrantyNumber,
                 CategoryId = request.CategoryId,
                 CreateDate = DateTime.Now,
 
@@ -189,6 +190,7 @@ namespace SAM.BusinessTier.Services.Implements
                         SellingPrice = machinery.SellingPrice,
                         Priority = machinery.Priority,
                         TimeWarranty = machinery.TimeWarranty,
+                        MonthWarrantyNumber = machinery.MonthWarrantyNumber,
                         Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                         CreateDate = machinery.CreateDate,
                         Origin = new OriginResponse
@@ -264,6 +266,7 @@ namespace SAM.BusinessTier.Services.Implements
                     StockPrice = x.StockPrice,
                     Priority = x.Priority,
                     TimeWarranty = x.TimeWarranty,
+                    MonthWarrantyNumber = x.MonthWarrantyNumber,
                     Status = EnumUtil.ParseEnum<MachineryStatus>(x.Status),
                     CreateDate = x.CreateDate,
                     Origin = new OriginResponse
@@ -352,6 +355,7 @@ namespace SAM.BusinessTier.Services.Implements
                 SellingPrice = machinery.SellingPrice,
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
+                MonthWarrantyNumber = machinery.MonthWarrantyNumber,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                 CreateDate = machinery.CreateDate,
                 Origin = new OriginResponse
@@ -433,6 +437,7 @@ namespace SAM.BusinessTier.Services.Implements
                 SellingPrice = machinery.SellingPrice,
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
+                MonthWarrantyNumber = machinery.MonthWarrantyNumber,
                 Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
                 CreateDate = machinery.CreateDate,
                 Origin = new OriginResponse
@@ -534,6 +539,7 @@ namespace SAM.BusinessTier.Services.Implements
             product.StockPrice = updateProductRequest.StockPrice.HasValue ? updateProductRequest.StockPrice.Value : product.StockPrice;
             product.Description = string.IsNullOrEmpty(updateProductRequest.Description) ? product.Description : updateProductRequest.Description;
             product.TimeWarranty = updateProductRequest.TimeWarranty.HasValue ? updateProductRequest.TimeWarranty.Value : product.TimeWarranty;
+            product.MonthWarrantyNumber = updateProductRequest.MonthWarrantyNumber.HasValue ? updateProductRequest.MonthWarrantyNumber.Value : product.MonthWarrantyNumber;
             product.Status = updateProductRequest.Status.GetDescriptionFromEnum();
             product.Priority = updateProductRequest.Priority.HasValue ? updateProductRequest.Priority.Value : product.Priority;
             
