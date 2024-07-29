@@ -33,6 +33,8 @@ namespace SAM.BusinessTier.Payload.Machinery
 
         public Guid? CategoryId { get; set; }
 
+        public List<Guid>? MachineComponentsId { get; set; }
+
 
     }
     public class MachinerySpecifications

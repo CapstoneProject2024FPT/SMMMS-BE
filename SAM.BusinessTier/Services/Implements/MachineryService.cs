@@ -156,7 +156,14 @@ namespace SAM.BusinessTier.Services.Implements
             await _unitOfWork.GetRepository<ImagesAll>().InsertRangeAsync(imagesUrl);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Machinery.CreateNewMachineryFailedMessage);
-
+            if (request.MachineComponentsId != null && request.MachineComponentsId.Count > 0)
+            {
+                bool componentsAdded = await AddComponentToMachinery(newMachinery.Id, request.MachineComponentsId);
+                if (!componentsAdded)
+                {
+                    throw new BadHttpRequestException("Thêm bộ phận máy thất bại");
+                }
+            }
             return newMachinery.Id;
         }
 
