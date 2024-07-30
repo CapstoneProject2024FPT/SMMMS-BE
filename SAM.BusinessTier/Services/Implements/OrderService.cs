@@ -372,7 +372,7 @@ namespace SAM.BusinessTier.Services.Implements
                         }
 
                         int warrantyYears = (int)inventory.Machinery.TimeWarranty;
-                        int numberOfDetails = (warrantyYears * 12) / (int)inventory.Machinery.MonthWarrantyNumber; // Number of details based on 6 months intervals
+                        int numberOfDetails = (warrantyYears * 12) / (int)inventory.Machinery.MonthWarrantyNumber;
 
                         Warranty newWarranty = new Warranty
                         {

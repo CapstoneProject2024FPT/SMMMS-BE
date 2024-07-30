@@ -45,14 +45,14 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (inventory == null)
             {
-                throw new BadHttpRequestException("Inventory not found.");
+                throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
             }
 
             // Check completed
             var associatedOrder = inventory.OrderDetails.Select(od => od.Order).FirstOrDefault();
             if (associatedOrder == null || associatedOrder.Status != OrderStatus.Completed.GetDescriptionFromEnum())
             {
-                throw new BadHttpRequestException("Cannot create a warranty request for an inventory with an incomplete order.");
+                throw new BadHttpRequestException("không thể tạo yêu cầu bảo hành khi đơn hàng chưa được hoàn thành");
             }
 
             var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
