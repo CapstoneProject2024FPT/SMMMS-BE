@@ -295,6 +295,7 @@ namespace SAM.BusinessTier.Services.Implements
             var loginResponse = new LoginResponse
             {
                 Username = loginRequest.Username,
+                FullName = user.FullName,
                 Role = EnumUtil.ParseEnum<RoleEnum>(user.Role),
                 Status = EnumUtil.ParseEnum<UserStatus>(user.Status),
                 Id = user.Id,

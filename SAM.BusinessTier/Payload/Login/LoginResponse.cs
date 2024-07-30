@@ -13,6 +13,7 @@ namespace SAM.BusinessTier.Payload.Login
         public Guid Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public string FullName { get; set; }
         public UserStatus Status { get; set; }
         public RoleEnum Role { get; set; }
 
@@ -20,12 +21,13 @@ namespace SAM.BusinessTier.Payload.Login
         {
         }
 
-        public LoginResponse(TokenModel tokenModel, Guid id, string username, string password, UserStatus status, RoleEnum role)
+        public LoginResponse(TokenModel tokenModel, Guid id, string username, string password, string fullName, UserStatus status, RoleEnum role)
         {
             TokenModel = tokenModel;
             Id = id;
             Username = username;
             Password = password;
+            FullName = fullName;
             Status = status;
             Role = role;
         }

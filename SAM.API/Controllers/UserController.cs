@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Services.Implements;
+using SAM.BusinessTier.Validators;
 
 namespace SAM.API.Controllers
 {
@@ -52,6 +53,7 @@ namespace SAM.API.Controllers
             var response = await _userService.CreateNewUser(createNewUserRequest);
             return Ok(response);
         }
+        //[CustomAuthorize(RoleEnum.Admin, RoleEnum.Manager)]
         [HttpPost(ApiEndPointConstant.User.StaffEndPoint)]
         public async Task<IActionResult> CreateNewStaff(CreateNewStaffRequest createNewUserRequest)
         {

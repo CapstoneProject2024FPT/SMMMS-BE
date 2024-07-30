@@ -290,6 +290,7 @@ namespace SAM.BusinessTier.Services.Implements
                 else
                 {
                     warranty.NextMaintenanceDate = null;
+                    warranty.CompletionDate = DateTime.Now;
                 }
 
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
