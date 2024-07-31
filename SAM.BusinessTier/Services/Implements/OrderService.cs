@@ -387,29 +387,35 @@ namespace SAM.BusinessTier.Services.Implements
                     updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.ReDelivery:
-                    
-                    var taskManager1 = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
-                        predicate: t => t.OrderId == orderId);
+                    // Fetch the most recent TaskManager related to the order
+                    var taskManager1 = await _unitOfWork.GetRepository<TaskManager>().GetAll()
+                        .Where(t => t.OrderId == orderId)
+                        .OrderByDescending(t => t.CreateDate) // Assuming CreateDate is the date the task was created
+                        .FirstOrDefaultAsync();
+
+                    // Update TaskManager status if it exists
                     if (taskManager1 != null)
                     {
                         taskManager1.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
-                        _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager1);
-                    }
-                    note = new Note()
-                    {
-                        Id = Guid.NewGuid(),
-                        Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
-                        CreateDate = currentTime,
-                        Description = request.Note,
-                        OrderId = updateOrder.Id
+                        await _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager1);
 
-                    };
-                    if(note != null) {
+                        // Create a new note only if taskManager exists
+                        var note = new Note()
+                        {
+                            Id = Guid.NewGuid(),
+                            Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
+                            CreateDate = currentTime,
+                            Description = request.Note,
+                            OrderId = updateOrder.Id
+                        };
+
                         await _unitOfWork.GetRepository<Note>().InsertAsync(note);
                     }
 
+                    // Update the order status
                     updateOrder.Status = OrderStatus.ReDelivery.GetDescriptionFromEnum();
                     break;
+
                 case OrderStatus.Paid:
                     var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
@@ -510,7 +516,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = Guid.NewGuid(),
                         Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
                         CreateDate = currentTime,
-                        Description = request.Note,
+                        Description = request.Note, 
                         OrderId = updateOrder.Id
 
                     };
