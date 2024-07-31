@@ -20,14 +20,22 @@ namespace SAM.BusinessTier.Payload.Order
         public double? TotalAmount { get; set; }
         //public double? Discount { get; set; }
         public double? FinalAmount { get; set; }
-        public string? Note { get; set; }
+        public Dictionary<NoteStatus, int>? NoteStatus { get; set; }
+        public List<NoteResponse>? Note { get; set; } = new List<NoteResponse>();
         public string? Description { get; set; }
         public OrderStatus? Status { get; set; }
         public OrderUserResponse? UserInfo { get; set; }
 
         public GetAddressResponse? Address { get; set; }
     }
+    public class NoteResponse
+    {
+        public Guid? Id { get; set; }
+        public NoteStatus? Status { get; set; }
+        public string? Description { get; set; }
+        public DateTime CreateDate { get; set; }
 
+    }
     public class OrderDetailResponse
     {
         public Guid? OrderDetailId { get; set; }

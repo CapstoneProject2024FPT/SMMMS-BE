@@ -13,8 +13,6 @@ public partial class Order
 
     public DateTime? CompletedDate { get; set; }
 
-    public string? Note { get; set; }
-
     public string? Description { get; set; }
 
     public string? Status { get; set; }
@@ -30,6 +28,8 @@ public partial class Order
     public virtual Account? Account { get; set; }
 
     public virtual Address? Address { get; set; }
+
+    public virtual ICollection<Note> Notes { get; set; } = new List<Note>();
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 

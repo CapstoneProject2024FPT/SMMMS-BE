@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Enums.EnumStatus
 {
-    public enum OrderStatus
+    public enum NoteStatus
     {
-        Paid,
-        UnPaid,
-        Completed,
-        Canceled,
-        Delivery,
-        ReDelivery
+        SUCCESS,
+        FAILED
     }
-
 }

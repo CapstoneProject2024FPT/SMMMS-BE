@@ -154,7 +154,6 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = task.Order.Id,
                             InvoiceCode = task.Order.InvoiceCode,
-                            Note = task.Order.Note,
                             FinalAmount = task.Order.FinalAmount
                         },
                         Staff = task.Account == null ? null : new AccountResponse
@@ -242,7 +241,6 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = task.Order.Id,
                             InvoiceCode = task.Order.InvoiceCode,
-                            Note = task.Order.Note,
                             FinalAmount = task.Order.FinalAmount
                         },
                         Staff = task.Account == null ? null : new AccountResponse

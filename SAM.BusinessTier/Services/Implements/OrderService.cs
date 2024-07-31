@@ -52,7 +52,6 @@ namespace SAM.BusinessTier.Services.Implements
                 CreateDate = currentTime,
                 CompletedDate = null,
                 TotalAmount = 0,
-                Note = request.Note,
                 Description = request.Description,
                 Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
                 AccountId = account.Id,
@@ -132,7 +131,8 @@ namespace SAM.BusinessTier.Services.Implements
                                .Include(x => x.Address)
                                    .ThenInclude(a => a.Account)
                                .Include(x => x.OrderDetails)
-                                   .ThenInclude(detail => detail.Inventory.Machinery))
+                                   .ThenInclude(detail => detail.Inventory.Machinery)
+                               .Include(x => x.Notes))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
 
             // Map fetched data to the response DTO
@@ -144,9 +144,17 @@ namespace SAM.BusinessTier.Services.Implements
                 CompletedDate = order.CompletedDate,
                 TotalAmount = order.TotalAmount,
                 FinalAmount = order.FinalAmount,
-                Note = order.Note,
                 Description = order.Description,
                 Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
+                NoteStatus = order.Notes.CountNoteEachStatus(),
+                Note = order.Notes?.Select(note => new NoteResponse
+                {
+                    Id = note.Id,
+                    Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
+                    Description = note.Description,
+                    CreateDate = note.CreateDate.Value,
+                    
+                }).ToList(),
                 UserInfo = order.Account == null ? null : new OrderUserResponse
                 {
                     Id = order.Account.Id,
@@ -206,8 +214,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<IPaginate<GetOrderDetailResponse>> GetOrderList(OrderFilter filter, PagingModel pagingModel)
         {
-            IPaginate<GetOrderDetailResponse> orderList = await _unitOfWork.GetRepository<Order>().GetPagingListAsync
-            (
+            IPaginate<GetOrderDetailResponse> orderList = await _unitOfWork.GetRepository<Order>().GetPagingListAsync(
                 selector: x => new GetOrderDetailResponse
                 {
                     OrderId = x.Id,
@@ -216,9 +223,16 @@ namespace SAM.BusinessTier.Services.Implements
                     CompletedDate = x.CompletedDate,
                     TotalAmount = x.TotalAmount,
                     FinalAmount = x.FinalAmount,
-                    Note = x.Note,
                     Description = x.Description,
                     Status = EnumUtil.ParseEnum<OrderStatus>(x.Status),
+                    NoteStatus = x.Notes.CountNoteEachStatus(),
+                    Note = x.Notes.Select(note => new NoteResponse
+                    {
+                        Id = note.Id,
+                        Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
+                        Description = note.Description,
+                        CreateDate = note.CreateDate.Value,
+                    }).ToList(),
                     UserInfo = x.Account == null ? null : new OrderUserResponse
                     {
                         Id = x.Account.Id,
@@ -280,13 +294,15 @@ namespace SAM.BusinessTier.Services.Implements
                                .Include(x => x.Address)
                                    .ThenInclude(a => a.Account)
                                .Include(x => x.OrderDetails)
-                                   .ThenInclude(detail => detail.Inventory.Machinery),
+                                   .ThenInclude(detail => detail.Inventory.Machinery)
+                               .Include(x => x.Notes),
                 page: pagingModel.page,
                 size: pagingModel.size
             );
 
             return orderList;
         }
+
 
 
         public async Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request)
@@ -352,10 +368,47 @@ namespace SAM.BusinessTier.Services.Implements
                         taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
                         _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
                     }
+                    var note = new Note()
+                    {
+                        Id = Guid.NewGuid(),
+                        Status = NoteStatus.SUCCESS.GetDescriptionFromEnum(),
+                        CreateDate = currentTime,
+                        Description = request.Note,
+                        OrderId = updateOrder.Id
 
+                    };
+                    if (note != null)
+                    {
+                        await _unitOfWork.GetRepository<Note>().InsertAsync(note);
+                    }
                     break;
+                    
                 case OrderStatus.Delivery:
                     updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
+                    break;
+                case OrderStatus.ReDelivery:
+                    
+                    var taskManager1 = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+                        predicate: t => t.OrderId == orderId);
+                    if (taskManager1 != null)
+                    {
+                        taskManager1.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
+                        _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager1);
+                    }
+                    note = new Note()
+                    {
+                        Id = Guid.NewGuid(),
+                        Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
+                        CreateDate = currentTime,
+                        Description = request.Note,
+                        OrderId = updateOrder.Id
+
+                    };
+                    if(note != null) {
+                        await _unitOfWork.GetRepository<Note>().InsertAsync(note);
+                    }
+
+                    updateOrder.Status = OrderStatus.ReDelivery.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Paid:
                     var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
@@ -381,7 +434,7 @@ namespace SAM.BusinessTier.Services.Implements
                             CreateDate = currentTime,
                             StartDate = currentTime,
                             Status = WarrantyStatus.Process.GetDescriptionFromEnum(),
-                            Description = updateOrder.Note,
+                            Description = "số lần máy được bảo trì là" + numberOfDetails,
                             Priority = 1,
                             InventoryId = detail.InventoryId,
                             AccountId = updateOrder.AccountId,
@@ -403,7 +456,7 @@ namespace SAM.BusinessTier.Services.Implements
                                     CreateDate = currentTime,
                                     StartDate = maintenanceDate,
                                     Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
-                                    Description = $"Periodic Warranty Detail - Start on {maintenanceDate:yyyy-MM-dd HH:mm:ss}",
+                                    Description = $"Thời gian bảo trì định kỳ bắt đầu từ {maintenanceDate:yyyy-MM-dd HH:mm:ss}",
                                     WarrantyId = newWarranty.Id,
                                     AddressId = updateOrder.AddressId
                                 };
@@ -452,6 +505,20 @@ namespace SAM.BusinessTier.Services.Implements
                             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
                         }
                     }
+                    note = new Note()
+                    {
+                        Id = Guid.NewGuid(),
+                        Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
+                        CreateDate = currentTime,
+                        Description = request.Note,
+                        OrderId = updateOrder.Id
+
+                    };
+                    if (note != null)
+                    {
+                        await _unitOfWork.GetRepository<Note>().InsertAsync(note);
+                    }
+
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
                     break;
@@ -462,7 +529,6 @@ namespace SAM.BusinessTier.Services.Implements
             // Save notes if any
             if (!string.IsNullOrEmpty(request.Note))
             {
-                updateOrder.Note = request.Note;
                 updateOrder.Description = request.Description;
             }
 

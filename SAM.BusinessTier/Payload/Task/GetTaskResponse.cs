@@ -38,7 +38,6 @@ namespace SAM.BusinessTier.Payload.Task
     {
         public Guid? Id { get; set; }
         public string? InvoiceCode { get; set; }
-        public string? Note { get; set; }
         public double? FinalAmount { get; set; }
     }
 }

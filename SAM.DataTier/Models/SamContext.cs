@@ -35,6 +35,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<District> Districts { get; set; }
 
+    public virtual DbSet<Favorite> Favorites { get; set; }
+
     public virtual DbSet<ImageComponent> ImageComponents { get; set; }
 
     public virtual DbSet<ImagesAll> ImagesAlls { get; set; }
@@ -54,6 +56,8 @@ public partial class SamContext : DbContext
     public virtual DbSet<NewsCategory> NewsCategories { get; set; }
 
     public virtual DbSet<NewsImage> NewsImages { get; set; }
+
+    public virtual DbSet<Note> Notes { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -268,6 +272,21 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK_District_City");
         });
 
+        modelBuilder.Entity<Favorite>(entity =>
+        {
+            entity.ToTable("Favorite");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Favorite_Account");
+
+            entity.HasOne(d => d.Machinery).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.MachineryId)
+                .HasConstraintName("FK_Favorite_Machinery");
+        });
+
         modelBuilder.Entity<ImageComponent>(entity =>
         {
             entity.ToTable("ImageComponent");
@@ -479,6 +498,22 @@ public partial class SamContext : DbContext
                 .HasConstraintName("FK_NewsImage_News");
         });
 
+        modelBuilder.Entity<Note>(entity =>
+        {
+            entity.ToTable("Note");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Order).WithMany(p => p.Notes)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK_Note_Order");
+        });
+
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Order__3213E83FA756148A");
@@ -492,7 +527,6 @@ public partial class SamContext : DbContext
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(4000);
             entity.Property(e => e.InvoiceCode).HasMaxLength(255);
-            entity.Property(e => e.Note).HasMaxLength(4000);
             entity.Property(e => e.Status).HasMaxLength(255);
 
             entity.HasOne(d => d.Account).WithMany(p => p.Orders)
