@@ -30,6 +30,17 @@ public static class MessageConstant
         public const string CategoryExistedMessage = "Loại đã tồn tại";
         public const string CategoryEmptyMessage = "Loại không hợp lệ";
     }
+    public static class Favorite
+    {
+        public const string CreateFavoriteFailedMessage = "Thêm sản phẩm yêu thích thất bại";
+        public const string NotFoundFailedMessage = "Sản phẩm yêu thích ko có trong hệ thống";
+        public const string UpdateFavoriteSuccessMessage = "cập nhật thành công";
+        public const string UpdateFavoriteFailedMessage = "cập nhật thất bại";
+        public const string FavoriteExistedMessage = "Sản phẩm yêu thích đã tồn tại";
+        public const string FavoriteEmptyMessage = "Sản phẩm yêu thích không hợp lệ";
+        public const string DeleteSuccessMessage = "Xóa sản phẩm yêu thích thành công";
+        public const string DeleteFailedMessage = "Xóa sản phẩm yêu thích thất bại";
+    }
     public static class Origin
     {
         public const string CreateOriginFailedMessage = "Tạo mới xuất xứ thất bại";

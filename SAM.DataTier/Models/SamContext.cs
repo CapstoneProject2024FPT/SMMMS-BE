@@ -284,6 +284,7 @@ public partial class SamContext : DbContext
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.Favorites)
                 .HasForeignKey(d => d.MachineryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Favorite_Machinery");
         });
 

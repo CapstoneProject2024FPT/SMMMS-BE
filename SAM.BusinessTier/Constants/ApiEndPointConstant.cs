@@ -76,6 +76,11 @@ public static class ApiEndPointConstant
         public const string BrandsEndPoint = ApiEndpoint + "/brand";
         public const string BrandEndPoint = BrandsEndPoint + "/{id}";
     }
+    public static class Favorite
+    {
+        public const string FavoritesEndPoint = ApiEndpoint + "/favorite";
+        public const string FavoriteEndPoint = FavoritesEndPoint + "/{id}";
+    }
     public static class Inventory
     {
         public const string InventoriesEndPoint = ApiEndpoint + "/inventories";

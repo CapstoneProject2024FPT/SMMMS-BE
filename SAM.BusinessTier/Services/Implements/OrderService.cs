@@ -366,6 +366,7 @@ namespace SAM.BusinessTier.Services.Implements
                     if (taskManager != null)
                     {
                         taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
+                        taskManager.CompletedDate = currentTime;
                         _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
                     }
                     var note = new Note()
