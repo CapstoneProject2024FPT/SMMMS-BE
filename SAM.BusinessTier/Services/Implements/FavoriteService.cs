@@ -73,8 +73,6 @@ namespace SAM.BusinessTier.Services.Implements
                                .Include(f => f.Account))
                 ?? throw new BadHttpRequestException(MessageConstant.Favorite.NotFoundFailedMessage);
 
-            
-
             var getFavoriteResponse = new GetFavoriteResponse
             {
                 
@@ -113,8 +111,15 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var currentUser = GetUsernameFromJwt();
 
-            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+            // Lấy thông tin người dùng hiện tại
+            var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser));
+
+            if (account == null)
+            {
+                throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
+            }
+
             // Lấy repository cho bảng Favorite
             var favoriteRepository = _unitOfWork.GetRepository<Favorite>();
 
@@ -129,7 +134,7 @@ namespace SAM.BusinessTier.Services.Implements
             }
 
             // Xóa mục yêu thích
-            favoriteRepository.DeleteAsync(favorite);
+            favoriteRepository.DeleteAsync(favorite); // Sử dụng Delete thay vì DeleteAsync
 
             // Cam kết các thay đổi vào cơ sở dữ liệu
             var isSuccessful = await _unitOfWork.CommitAsync() > 0;
@@ -137,6 +142,7 @@ namespace SAM.BusinessTier.Services.Implements
             // Trả về kết quả thành công hoặc thất bại
             return isSuccessful;
         }
+
 
     }
 }

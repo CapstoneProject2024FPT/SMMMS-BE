@@ -21,6 +21,8 @@ public partial class Category
 
     public Guid? MasterCategoryId { get; set; }
 
+    public virtual ICollection<DiscountCategory> DiscountCategories { get; set; } = new List<DiscountCategory>();
+
     public virtual ICollection<Category> InverseMasterCategory { get; set; } = new List<Category>();
 
     public virtual ICollection<MachineComponent> MachineComponents { get; set; } = new List<MachineComponent>();

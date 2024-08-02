@@ -37,8 +37,6 @@ public partial class Machinery
 
     public virtual Category? Category { get; set; }
 
-    public virtual ICollection<DiscountMachinery> DiscountMachineries { get; set; } = new List<DiscountMachinery>();
-
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
     public virtual ICollection<ImagesAll> ImagesAlls { get; set; } = new List<ImagesAll>();

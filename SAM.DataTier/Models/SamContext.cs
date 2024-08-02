@@ -31,7 +31,7 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<Discount> Discounts { get; set; }
 
-    public virtual DbSet<DiscountMachinery> DiscountMachineries { get; set; }
+    public virtual DbSet<DiscountCategory> DiscountCategories { get; set; }
 
     public virtual DbSet<District> Districts { get; set; }
 
@@ -233,26 +233,31 @@ public partial class SamContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__Discount__3214EC06339CFF00").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Name).HasMaxLength(50);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Type).HasMaxLength(250);
         });
 
-        modelBuilder.Entity<DiscountMachinery>(entity =>
+        modelBuilder.Entity<DiscountCategory>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC076F9C4689");
 
-            entity.ToTable("DiscountMachinery");
+            entity.ToTable("DiscountCategory");
 
             entity.HasIndex(e => e.Id, "UQ__Discount__3214EC06E4C28458").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.Discount).WithMany(p => p.DiscountMachineries)
-                .HasForeignKey(d => d.DiscountId)
-                .HasConstraintName("FK_DiscountMachinery_Discount");
+            entity.HasOne(d => d.Category).WithMany(p => p.DiscountCategories)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("FK_DiscountCategory_Category");
 
-            entity.HasOne(d => d.Machinery).WithMany(p => p.DiscountMachineries)
-                .HasForeignKey(d => d.MachineryId)
-                .HasConstraintName("FK_DiscountMachinery_Machinery");
+            entity.HasOne(d => d.Discount).WithMany(p => p.DiscountCategories)
+                .HasForeignKey(d => d.DiscountId)
+                .HasConstraintName("FK_DiscountCategory_Discount");
         });
 
         modelBuilder.Entity<District>(entity =>

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Services.Implements;
 using SAM.BusinessTier.Validators;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SAM.API.Controllers
 {
@@ -46,7 +47,7 @@ namespace SAM.API.Controllers
             }
             return Ok(response);
         }
-        //[CustomAuthorize(RoleEnum.Admin, RoleEnum.User)]
+        
         [HttpPost(ApiEndPointConstant.User.AccountEndPoint)]
         public async Task<IActionResult> CreateNewUser(CreateNewUserRequest createNewUserRequest)
         {
@@ -60,10 +61,14 @@ namespace SAM.API.Controllers
             var response = await _userService.CreateNewStaff(createNewUserRequest);
             return Ok(response);
         }
+
+        //[Authorize]
+        //[CustomAuthorize(RoleEnum.Admin, RoleEnum.Manager)]
         [HttpGet(ApiEndPointConstant.User.UsersEndPoint)]
         public async Task<IActionResult> GetAllUsers([FromQuery] UserFilter filter, [FromQuery] PagingModel pagingModel)
         {
             var response = await _userService.GetAllUsers(filter, pagingModel);
+
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.User.GetTaskOfStaff)]

@@ -330,7 +330,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                     // Update points and save account
                     account.Point += points;
-                    if(account.Point != null)
+                    if (account.Point != null)
                     {
                         account.Point += points;
                     }
@@ -340,25 +340,21 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                     _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 
-                    // Check and update rank
-                    var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync();
-                    var highestEligibleRank = ranks
-                        .Where(r => account.Point >= r.Range)
-                        .OrderByDescending(r => r.Range)
-                        .FirstOrDefault();
+                   // Lấy danh sách các rank
+                   //var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync();
+                   // if (ranks == null || !ranks.Any())
+                   // {
+                   //     throw new BadHttpRequestException("No ranks found.");
+                   // }
 
-                    if (highestEligibleRank != null)
-                    {
-                        var addRankResult = await _accountService.AddRankToAccount(account.Id, new List<Guid> { highestEligibleRank.Id });
-                        if (!addRankResult)
-                        {
-                            throw new BadHttpRequestException("không thể thêm cấp độ cho tài khoản này");
-                        }
-                    }
+                   // Lọc và lấy rank có ngưỡng điểm cao nhất mà account đạt được
+                   //var highestEligibleRank = ranks
+                   //    .Where(r => account.Point >= r.Range)
+                   //    .OrderByDescending(r => r.Range)
+                   //    .FirstOrDefault();
 
-                    // Create Warranty when Order is completed
-                    var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
-                        predicate: x => x.OrderId == orderId);
+                   // Kiểm tra kết quả và thêm rank cho account nếu có
+                   //await _accountService.AddRankToAccount(account.Id, new List<Guid> { highestEligibleRank?.Id ?? Guid.Empty });
 
                     var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                         predicate: t => t.OrderId == orderId);
@@ -369,7 +365,7 @@ namespace SAM.BusinessTier.Services.Implements
                         taskManager.CompletedDate = currentTime;
                         _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
                     }
-                    var note = new Note()
+                    Note note = new Note()
                     {
                         Id = Guid.NewGuid(),
                         Status = NoteStatus.SUCCESS.GetDescriptionFromEnum(),

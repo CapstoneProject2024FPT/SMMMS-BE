@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Discount;
+using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Services.Interfaces;
+using SAM.BusinessTier.Utils;
 using SAM.DataTier.Models;
 using SAM.DataTier.Repository.Interfaces;
 using System;
@@ -20,9 +24,21 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public Task<Guid> CreateNewDiscounts(CreateNewDiscountRequest createNewDiscountRequest)
+        public async Task<Guid> CreateNewDiscounts(CreateNewDiscountRequest createNewDiscountRequest)
         {
-            throw new NotImplementedException();
+            Discount discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync();
+            if (discount != null) throw new BadHttpRequestException(MessageConstant.District.DistrictExistedMessage);
+            discount = _mapper.Map<Discount>(createNewDiscountRequest);
+            discount.Id = Guid.NewGuid();
+            discount.Status = DiscountStatus.Active.GetDescriptionFromEnum();
+            discount.CreateDate = DateTime.Now;
+
+
+            await _unitOfWork.GetRepository<Discount>().InsertAsync(discount);
+
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Discount.CreateNewDiscountFailedMessage);
+            return discount.Id;
         }
 
         public Task<GetBrandResponse> GetDiscountById(Guid id)

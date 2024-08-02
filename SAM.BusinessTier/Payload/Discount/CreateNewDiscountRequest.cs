@@ -8,5 +8,10 @@ namespace SAM.BusinessTier.Payload.Discount
 {
     public class CreateNewDiscountRequest
     {
+        public string? Name { get; set; }
+        public string? Type { get; set; }
+
+        public double? Value { get; set; }
+
     }
 }
