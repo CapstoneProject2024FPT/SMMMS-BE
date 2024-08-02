@@ -6,7 +6,7 @@ namespace SAM.BusinessTier.Payload.Machinery
 {
     public class MachineryFilter
     {
-        public List<string>? Name { get; set; }
+        public string? Name { get; set; }
 
         public List<string>? Model { get; set; }
 

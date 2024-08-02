@@ -340,21 +340,34 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                     _unitOfWork.GetRepository<Account>().UpdateAsync(account);
 
-                   // Lấy danh sách các rank
-                   //var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync();
-                   // if (ranks == null || !ranks.Any())
-                   // {
-                   //     throw new BadHttpRequestException("No ranks found.");
-                   // }
+                    //// Lấy danh sách các rank
+                    //var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync();
+                    //if (ranks == null || !ranks.Any())
+                    //{
+                    //    throw new BadHttpRequestException("No ranks found.");
+                    //}
 
-                   // Lọc và lấy rank có ngưỡng điểm cao nhất mà account đạt được
-                   //var highestEligibleRank = ranks
-                   //    .Where(r => account.Point >= r.Range)
-                   //    .OrderByDescending(r => r.Range)
-                   //    .FirstOrDefault();
+                    //// Lọc và lấy rank có ngưỡng điểm cao nhất mà account đạt được
+                    //var highestEligibleRank = ranks
+                    //    .Where(r => account.Point >= r.Range)
+                    //    .OrderByDescending(r => r.Range)
+                    //    .FirstOrDefault();
 
-                   // Kiểm tra kết quả và thêm rank cho account nếu có
-                   //await _accountService.AddRankToAccount(account.Id, new List<Guid> { highestEligibleRank?.Id ?? Guid.Empty });
+                    //// Kiểm tra kết quả và thêm rank cho account nếu có
+                    //if (highestEligibleRank != null)
+                    //{
+                    //    var addRankResult = await _accountService.AddRankToAccount(account.Id, new List<Guid> { highestEligibleRank.Id });
+                    //    if (!addRankResult)
+                    //    {
+                    //        throw new BadHttpRequestException("Cannot add rank to this account.");
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // Optional: Log or handle the case when no eligible rank is found
+                    //    Console.WriteLine("No eligible rank found for this account.");
+                    //}
+
 
                     var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                         predicate: t => t.OrderId == orderId);
