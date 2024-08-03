@@ -20,6 +20,8 @@ using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Enums.Other;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -76,8 +78,18 @@ namespace SAM.BusinessTier.Services.Implements
         {
             if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.Category.CategoryEmptyMessage);
             Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+                predicate: x => x.Id.Equals(id),
+                include: x => x.Include(x => x.Machineries))
+                ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);         
+            foreach (var item in category.Machineries)
+            {
+                    item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+            }
+            category.Status = CategoryStatus.Inactive.GetDescriptionFromEnum();
+            foreach (var item in category.MachineComponents)
+            {
+                item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+            }
             category.Status = CategoryStatus.Inactive.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Category>().UpdateAsync(category);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
@@ -89,7 +101,8 @@ namespace SAM.BusinessTier.Services.Implements
         {
             _logger.LogInformation($"Start updating product: {categoryId}");
             Category updateCategory = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(categoryId))
+                predicate: x => x.Id.Equals(categoryId),
+                include: x => x.Include(x => x.Machineries))
                 ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
 
             updateCategory.Name = string.IsNullOrEmpty(request.Name) ? updateCategory.Name : request.Name;
@@ -104,7 +117,39 @@ namespace SAM.BusinessTier.Services.Implements
                 updateCategory.Type = CategoryType.Child.GetDescriptionFromEnum();
             }
             else updateCategory.Type = CategoryType.Parent.GetDescriptionFromEnum();
+            if (request.Status == CategoryStatus.Active)
+                {
+                    foreach (var item in updateCategory.Machineries)
+                    {
+                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                    }
+                }
+            switch (request.Status)
+            {
+                case CategoryStatus.Active:
+                    foreach (var item in updateCategory.Machineries)
+                    {
+                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                    }
+                    foreach (var item in updateCategory.MachineComponents)
+                    {
+                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                    }
+                    break;
+                case CategoryStatus.Inactive:
+                    foreach (var item in updateCategory.Machineries)
+                    {
+                        item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+                    }
+                    foreach (var item in updateCategory.MachineComponents)
+                    {
+                        item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+                    }
 
+                    break;
+                default:
+                    return !true;
+            }
             _unitOfWork.GetRepository<Category>().UpdateAsync(updateCategory);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
