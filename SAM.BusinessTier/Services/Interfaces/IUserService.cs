@@ -19,6 +19,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> AddRankToAccount(Guid id, List<Guid> request);
 
         Task<bool> ChangePassword(Guid userId, ChangePasswordRequest changePasswordRequest);
+        Task<Guid> AddrankForAccount(Guid accountId, Guid rankId);
 
         Task<ICollection<StaffTaskStatusResponse>> GetStaffTaskStatusesByRole();
     }
