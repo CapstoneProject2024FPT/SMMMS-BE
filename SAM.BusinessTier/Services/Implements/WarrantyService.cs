@@ -52,7 +52,7 @@ namespace SAM.BusinessTier.Services.Implements
             var associatedOrder = inventory.OrderDetails.Select(od => od.Order).FirstOrDefault();
             if (associatedOrder == null || associatedOrder.Status != OrderStatus.Completed.GetDescriptionFromEnum())
             {
-                throw new BadHttpRequestException("không thể tạo yêu cầu bảo hành khi đơn hàng chưa được hoàn thành");
+                throw new BadHttpRequestException("Không thể tạo yêu cầu bảo hành khi đơn hàng chưa được hoàn thành");
             }
 
             var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
