@@ -50,7 +50,7 @@ namespace SAM.DataTier.Repository.Implement
 
             if (orderBy != null) return await orderBy(query).AsNoTracking().FirstOrDefaultAsync();
 
-            return await query.AsNoTracking().FirstOrDefaultAsync();
+            return await query.FirstOrDefaultAsync();
         }
 
         public virtual async Task<TResult> SingleOrDefaultAsync<TResult>(Expression<Func<T, TResult>> selector, Expression<Func<T, bool>> predicate = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,

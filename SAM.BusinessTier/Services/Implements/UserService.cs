@@ -18,6 +18,7 @@ using Microsoft.Identity.Client;
 using System.Linq;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Extensions;
+using SAM.BusinessTier.Payload.Favorite;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -74,6 +75,31 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccessful;
         }
 
+        public async Task<Guid> AddrankForAccount(Guid accountId, Guid rankId)
+        {
+            var currentUser = GetUsernameFromJwt();
+
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(accountId))
+            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+            Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(rankId))
+            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+
+            AccountRank accountRank = new AccountRank()
+            {
+                Id = Guid.NewGuid(),
+                AccountId = accountId,
+                RankId = rankId,
+               };
+            
+
+            await _unitOfWork.GetRepository<AccountRank>().InsertAsync(accountRank);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Rank.CreateNewRankFailedMessage);
+
+            return accountRank.Id;
+        }
 
         public async Task<bool> ChangePassword(Guid userId, ChangePasswordRequest changePasswordRequest)
         {
