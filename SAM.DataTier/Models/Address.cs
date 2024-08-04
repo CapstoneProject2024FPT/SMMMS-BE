@@ -21,7 +21,7 @@ public partial class Address
 
     public Guid? AccountId { get; set; }
 
-    public string? NamePersional { get; set; }
+    public string? NamePersonal { get; set; }
 
     public string? PhoneNumber { get; set; }
 
