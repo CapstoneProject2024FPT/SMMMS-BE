@@ -74,8 +74,8 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                NamePersonal = address.NamePersonal,
-                PhoneNumber = address.PhoneNumber,
+                NamePersonal = address?.NamePersonal,
+                PhoneNumber = address?.PhoneNumber,
                 City = new CityResponse
                     {
                         Id = address.City.Id,
@@ -127,8 +127,8 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                NamePersonal = address.NamePersonal,
-                PhoneNumber = address.PhoneNumber,
+                NamePersonal = address?.NamePersonal,
+                PhoneNumber = address?.PhoneNumber,
                 City = new CityResponse
                 {
                     Id = address.City.Id,
