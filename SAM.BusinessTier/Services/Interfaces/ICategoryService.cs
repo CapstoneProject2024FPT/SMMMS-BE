@@ -12,6 +12,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public interface ICategoryService
     {
+        Task<bool> AddDiscountToAccount(Guid id, List<Guid> request);
         Task<Guid> CreateNewCategory(CreateNewCategoryRequest createNewCategoryRequest);
         Task<bool> UpdateCategory(Guid id, UpdateCategoryRequest updateCategoryRequest);
         Task<ICollection<GetCategoriesResponse>> GetCategories(CategoryFilter filter);

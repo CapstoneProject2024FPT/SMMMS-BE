@@ -32,6 +32,7 @@ public static class ApiEndPointConstant
     {
         public const string CategoriesEndPoint = ApiEndpoint + "/categories";
         public const string CategoryEndPoint = CategoriesEndPoint + "/{id}";
+        public const string CategoryAddDiscountEndPoint = CategoryEndPoint + "/discount";
     }
     public static class NewsCategory
     {
