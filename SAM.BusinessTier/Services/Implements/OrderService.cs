@@ -161,14 +161,14 @@ namespace SAM.BusinessTier.Services.Implements
                     FullName = order.Account.FullName,
                     Role = EnumUtil.ParseEnum<RoleEnum>(order.Account.Role)
                 },
-                Address = order.Address == null ? null : new GetAddressResponse
+                Address = new GetAddressResponse
                 {
                     Id = order.Address.Id,
                     Name = order.Address.Name,
                     Status = EnumUtil.ParseEnum<AddressStatus>(order.Address.Status),
                     Note = order.Address.Note,
-                    NamePersonal = order.Address?.NamePersonal,
-                    PhoneNumber = order.Address?.PhoneNumber,
+                    NamePersonal = order.Address.NamePersonal,
+                    PhoneNumber = order.Address.PhoneNumber,
                     City = order.Address.City == null ? null : new CityResponse
                     {
                         Id = order.Address.City.Id,
@@ -247,8 +247,8 @@ namespace SAM.BusinessTier.Services.Implements
                         Name = x.Address.Name,
                         Status = EnumUtil.ParseEnum<AddressStatus>(x.Address.Status),
                         Note = x.Address.Note,
-                        NamePersonal = x.Address.NamePersonal,
-                        PhoneNumber = x.Address.PhoneNumber,
+                        NamePersonal = x.Address.NamePersonal.ToString(),
+                        PhoneNumber = x.Address.PhoneNumber.ToString(),
                         City = x.Address.City == null ? null : new CityResponse
                         {
                             Id = x.Address.City.Id,
