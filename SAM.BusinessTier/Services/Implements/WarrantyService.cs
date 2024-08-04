@@ -56,8 +56,7 @@ namespace SAM.BusinessTier.Services.Implements
             }
 
             var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
-                predicate: w => w.InventoryId == request.InventoryId &&
-                                w.CreateDate.HasValue && w.CreateDate.Value.Date == currentTime.Date);
+                predicate: w => w.InventoryId == request.InventoryId);
 
             if (existingWarranty != null)
             {

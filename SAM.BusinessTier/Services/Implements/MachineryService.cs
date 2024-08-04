@@ -231,7 +231,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                     },
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.CreateDate),
+                    orderBy: x => x.OrderByDescending(x => x.CreateDate),
                     include: x => x.Include(x => x.Inventories)
                                    .Include(x => x.Brand)
                                    .Include(x => x.Origin)
@@ -306,7 +306,7 @@ namespace SAM.BusinessTier.Services.Implements
                     Quantity = x.Inventories.CountInventoryEachStatus()
                 },
                 filter: filter,
-                orderBy: x => x.OrderBy(x => x.CreateDate),
+                orderBy: x => x.OrderByDescending(x => x.CreateDate),
                 include: x => x.Include(x => x.Inventories)
                               .Include(x => x.Brand)
                               .Include(x => x.Origin)

@@ -136,7 +136,9 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(250);
+            entity.Property(e => e.NamePersional).HasMaxLength(50);
             entity.Property(e => e.Note).HasMaxLength(4000);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(50);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
