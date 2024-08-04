@@ -19,6 +19,12 @@ namespace SAM.API.Controllers
         {
             _categoryService = categoryService;
         }
+        [HttpPost(ApiEndPointConstant.Category.CategoryAddDiscountEndPoint)]
+        public async Task<IActionResult> AddDiscountToAccount(Guid id,[FromBody] List<Guid> discountId)
+        {
+            var response = await _categoryService.AddDiscountToAccount(id, discountId);
+            return Ok(response);
+        }
         [HttpPost(ApiEndPointConstant.Category.CategoriesEndPoint)]
         public async Task<IActionResult> CreateNewCategory (CreateNewCategoryRequest category)
         {

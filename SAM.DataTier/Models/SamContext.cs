@@ -259,6 +259,7 @@ public partial class SamContext : DbContext
 
             entity.HasOne(d => d.Discount).WithMany(p => p.DiscountCategories)
                 .HasForeignKey(d => d.DiscountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_DiscountCategory_Discount");
         });
 

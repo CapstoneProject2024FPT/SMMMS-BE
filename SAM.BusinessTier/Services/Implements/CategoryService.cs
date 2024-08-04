@@ -30,6 +30,51 @@ namespace SAM.BusinessTier.Services.Implements
         public CategoryService(IUnitOfWork<SamContext> unitOfWork, ILogger<CategoryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
+        public async Task<bool> AddDiscountToAccount(Guid id, List<Guid> request)
+        {
+
+            // Retrieve the account or throw an exception if not found
+            Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+            ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+
+            // Retrieve current rank IDs associated with the account
+            List<Guid> currentDiscountIds = (List<Guid>)await _unitOfWork.GetRepository<DiscountCategory>().GetListAsync(
+                selector: x => x.DiscountId,
+                predicate: x => x.CategoryId.Equals(id));
+
+            // Determine the IDs to add, remove, and keep
+            (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedRankIds =
+                CustomListUtil.splitidstoaddandremove(currentDiscountIds, request);
+
+            // Add new ranks
+            if (splittedRankIds.idsToAdd.Count > 0)
+            {
+                List<DiscountCategory> discountsToInsert = new List<DiscountCategory>();
+                splittedRankIds.idsToAdd.ForEach(discountId => discountsToInsert.Add(new DiscountCategory
+                {
+                    Id = Guid.NewGuid(),
+                    CategoryId = id,
+                    DiscountId = discountId,
+                }));
+                await _unitOfWork.GetRepository<DiscountCategory>().InsertRangeAsync(discountsToInsert);
+            }
+
+            // Remove obsolete ranks
+            if (splittedRankIds.idsToRemove.Count > 0)
+            {
+                List<DiscountCategory> discountsToDelete = (List<DiscountCategory>)await _unitOfWork.GetRepository<DiscountCategory>()
+                    .GetListAsync(predicate: x =>
+                        x.CategoryId.Equals(id) &&
+                        splittedRankIds.idsToRemove.Contains(x.DiscountId));
+
+                _unitOfWork.GetRepository<DiscountCategory>().DeleteRangeAsync(discountsToDelete);
+            }
+
+            // Commit the changes to the database
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful;
+        }
 
         public async Task<Guid> CreateNewCategory(CreateNewCategoryRequest request)
         {
