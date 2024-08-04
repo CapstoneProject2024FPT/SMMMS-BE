@@ -167,6 +167,8 @@ namespace SAM.BusinessTier.Services.Implements
                     Name = order.Address.Name,
                     Status = EnumUtil.ParseEnum<AddressStatus>(order.Address.Status),
                     Note = order.Address.Note,
+                    NamePersonal = order.Address?.NamePersonal,
+                    PhoneNumber = order.Address?.PhoneNumber,
                     City = order.Address.City == null ? null : new CityResponse
                     {
                         Id = order.Address.City.Id,
@@ -245,6 +247,8 @@ namespace SAM.BusinessTier.Services.Implements
                         Name = x.Address.Name,
                         Status = EnumUtil.ParseEnum<AddressStatus>(x.Address.Status),
                         Note = x.Address.Note,
+                        NamePersonal = x.Address.NamePersonal,
+                        PhoneNumber = x.Address.PhoneNumber,
                         City = x.Address.City == null ? null : new CityResponse
                         {
                             Id = x.Address.City.Id,

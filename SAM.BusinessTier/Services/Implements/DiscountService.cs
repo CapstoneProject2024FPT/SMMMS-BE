@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.City;
 using SAM.BusinessTier.Payload.Discount;
 using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Services.Interfaces;
@@ -15,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -59,14 +61,29 @@ namespace SAM.BusinessTier.Services.Implements
             return discount;
         }
 
-        public Task<bool> RemoveDiscountStatus(Guid id)
+        public async Task<bool> RemoveDiscountStatus(Guid id)
         {
-            throw new NotImplementedException();
+            var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
+            discount.Status = DiscountStatus.InActive.GetDescriptionFromEnum();
+            _unitOfWork.GetRepository<Discount>().UpdateAsync(discount);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
         }
 
-        public Task<bool> UpdateDiscount(Guid id, UpdateDiscountRequest updateDiscountRequest)
+        public async Task<bool> UpdateDiscount(Guid id, UpdateDiscountRequest updateDiscountRequest)
         {
-            throw new NotImplementedException();
+            var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
+            discount.Name = string.IsNullOrEmpty(updateDiscountRequest.Name) ? discount.Name : updateDiscountRequest.Name;
+            discount.Value = updateDiscountRequest.Value.HasValue ? updateDiscountRequest.Value.Value : updateDiscountRequest.Value;
+            discount.Status = updateDiscountRequest.Status.GetDescriptionFromEnum();
+            discount.Type = updateDiscountRequest.Type.GetDescriptionFromEnum();
+            _unitOfWork.GetRepository<Discount>().UpdateAsync(discount);
+            bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+            return isSuccess;
         }
     }
 }
