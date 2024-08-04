@@ -138,6 +138,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var inventoryList = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
                 selector: x => x,
+                orderBy: x => x.OrderByDescending(x => x.CreateDate),
                 include: x => x.Include(i => i.MachineComponents)
                                .Include(i => i.Machinery),
                 filter: filter);
