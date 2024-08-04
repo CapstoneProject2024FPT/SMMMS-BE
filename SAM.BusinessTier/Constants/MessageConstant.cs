@@ -10,7 +10,10 @@ public static class MessageConstant
         public const string InvalidUsernameOrPassword = "Tên đăng nhập hoặc mật khẩu không chính xác";
         public const string DeactivatedAccount = "Tài khoản đang bị vô hiệu hoá";
     }
-
+    public static class Status
+    {
+        public const string ExsitingValue = "Cần nhập giá trị cho các loại trạng thái";
+    }
     public static class Account
     {
         public const string AccountExisted = "Tài khoản đã tồn tại";

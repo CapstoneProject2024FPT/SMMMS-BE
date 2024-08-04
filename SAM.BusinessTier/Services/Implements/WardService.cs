@@ -109,8 +109,15 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.Ward.WardExistedMessage);
 
             ward.Name = string.IsNullOrEmpty(updateWardRequest.Name) ? ward.Name : updateWardRequest.Name;
-            ward.Status = updateWardRequest.Status.GetDescriptionFromEnum();
-
+            
+            if (!updateWardRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                ward.Status = updateWardRequest.Status.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<Ward>().UpdateAsync(ward);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;

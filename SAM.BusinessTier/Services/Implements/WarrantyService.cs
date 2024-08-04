@@ -407,11 +407,18 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
 
-            warranty.Status = updateWarrantyRequest.Status.GetDescriptionFromEnum();
+            
             warranty.Description = !string.IsNullOrEmpty(updateWarrantyRequest.Description) ? updateWarrantyRequest.Description : warranty.Description;
             warranty.Comments = !string.IsNullOrEmpty(updateWarrantyRequest.Comments) ? updateWarrantyRequest.Comments : warranty.Comments;
             warranty.Priority = updateWarrantyRequest.Priority.HasValue ? updateWarrantyRequest.Priority.Value : warranty.Priority;
-
+            if (!updateWarrantyRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                warranty.Status = updateWarrantyRequest.Status.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             

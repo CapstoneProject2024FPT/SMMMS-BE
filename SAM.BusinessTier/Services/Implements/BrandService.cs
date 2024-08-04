@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Address;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Category;
 using SAM.BusinessTier.Services.Interfaces;
@@ -90,7 +91,14 @@ namespace SAM.BusinessTier.Services.Implements
 
             brand.Name = string.IsNullOrEmpty(updateBrandRequest.Name) ? brand.Name : updateBrandRequest.Name;
             brand.Description = string.IsNullOrEmpty(updateBrandRequest.Description) ? brand.Description : updateBrandRequest.Description;
-            brand.Status = updateBrandRequest.Status.GetDescriptionFromEnum();
+            if (!updateBrandRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                brand.Status = updateBrandRequest.Status.GetDescriptionFromEnum();
+            }
             switch (updateBrandRequest.Status)
             {
                 case BrandStatus.Active:

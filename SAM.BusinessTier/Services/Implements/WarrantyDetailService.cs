@@ -9,6 +9,7 @@ using SAM.BusinessTier.Enums.Other;
 using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Task;
+using SAM.BusinessTier.Payload.Wards;
 using SAM.BusinessTier.Payload.Warranty;
 using SAM.BusinessTier.Payload.WarrantyDetail;
 using SAM.BusinessTier.Services.Interfaces;
@@ -214,11 +215,18 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
-            warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
+            
             warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
             warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
             warrantyDetail.NextMaintenanceDate = updateDetailRequest.NextMaintenanceDate.HasValue ? updateDetailRequest.NextMaintenanceDate.Value : warrantyDetail.NextMaintenanceDate;
-
+            if (!updateDetailRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
+            }
             if (updateDetailRequest.AccountId.HasValue)
             {
                 Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(

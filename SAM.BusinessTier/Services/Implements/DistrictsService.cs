@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Payload.Discount;
 using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -111,7 +112,15 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.District.DistrictExistedMessage);
 
             district.Name = string.IsNullOrEmpty(updateDistrictRequest.Name) ? district.Name : updateDistrictRequest.Name;
-            district.Status = updateDistrictRequest.Status.GetDescriptionFromEnum();
+            
+            if (!updateDistrictRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                district.Status = updateDistrictRequest.Status.GetDescriptionFromEnum();
+            }
 
             _unitOfWork.GetRepository<District>().UpdateAsync(district);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;

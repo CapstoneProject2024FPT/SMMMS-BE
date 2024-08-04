@@ -21,6 +21,7 @@ using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Enums.Other;
 using Microsoft.EntityFrameworkCore;
+using SAM.BusinessTier.Payload.Brand;
 
 
 namespace SAM.BusinessTier.Services.Implements
@@ -152,10 +153,16 @@ namespace SAM.BusinessTier.Services.Implements
 
             updateCategory.Name = string.IsNullOrEmpty(request.Name) ? updateCategory.Name : request.Name;
             updateCategory.Description = string.IsNullOrEmpty(request.Description) ? updateCategory.Description : request.Description;
-            updateCategory.Status = request.Status.GetDescriptionFromEnum();
-            updateCategory.Kind = request.Kind.GetDescriptionFromEnum();
             updateCategory.MasterCategoryId = request.MasterCategoryId == Guid.Empty ? updateCategory.MasterCategoryId : request.MasterCategoryId;
-
+            if (!request.Status.HasValue && !request.Kind.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                updateCategory.Status = request.Status.GetDescriptionFromEnum();
+                updateCategory.Kind = request.Kind.GetDescriptionFromEnum();
+            }
 
             if (request.MasterCategoryId != null)
             {

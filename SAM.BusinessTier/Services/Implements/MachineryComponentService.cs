@@ -7,6 +7,7 @@ using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Extensions;
 using SAM.BusinessTier.Payload;
+using SAM.BusinessTier.Payload.Inventory;
 using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.MachineryComponent;
 using SAM.BusinessTier.Services.Interfaces;
@@ -308,8 +309,15 @@ namespace SAM.BusinessTier.Services.Implements
             component.SellingPrice = updateComponentRequest.SellingPrice.HasValue ? updateComponentRequest.SellingPrice.Value : component.SellingPrice;
             component.StockPrice = updateComponentRequest.StockPrice.HasValue ? updateComponentRequest.StockPrice.Value : component.StockPrice;
             component.TimeWarranty = updateComponentRequest.TimeWarranty.HasValue ? updateComponentRequest.TimeWarranty.Value : component.TimeWarranty;
-            component.Status = updateComponentRequest.Status?.GetDescriptionFromEnum();
-
+            
+            if (!updateComponentRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                component.Status = updateComponentRequest.Status?.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<MachineComponent>().UpdateAsync(component);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;

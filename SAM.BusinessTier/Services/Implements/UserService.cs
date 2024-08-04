@@ -19,6 +19,7 @@ using System.Linq;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Extensions;
 using SAM.BusinessTier.Payload.Favorite;
+using SAM.BusinessTier.Payload.Origin;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -350,14 +351,22 @@ namespace SAM.BusinessTier.Services.Implements
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
-            user.Role = updateRequest.Role.GetDescriptionFromEnum();
-            user.Status = updateRequest.Status.GetDescriptionFromEnum();
+            
             user.FullName = string.IsNullOrEmpty(updateRequest.FullName) ? user.FullName : updateRequest.FullName;
-            user.Gender = updateRequest.Gender.GetDescriptionFromEnum();
             user.PhoneNumber = string.IsNullOrEmpty(updateRequest.PhoneNumber) ? user.PhoneNumber : updateRequest.PhoneNumber;
             user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
             user.YearsOfExperience = updateRequest.YearsOfExperience.HasValue ? updateRequest.YearsOfExperience.Value : user.YearsOfExperience;
             user.Image = string.IsNullOrEmpty(updateRequest.Image) ? user.Image : updateRequest.Image;
+            if (!updateRequest.Status.HasValue && !updateRequest.Role.HasValue && !updateRequest.Gender.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                user.Role = updateRequest.Role.GetDescriptionFromEnum();
+                user.Status = updateRequest.Status.GetDescriptionFromEnum();
+                user.Gender = updateRequest.Gender.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
