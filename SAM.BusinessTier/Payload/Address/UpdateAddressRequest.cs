@@ -10,7 +10,8 @@ namespace SAM.BusinessTier.Payload.Address
     public class UpdateAddressRequest
     {
         public string? Name { get; set; }
-
+        public string? NamePersional { get; set; }
+        public string? PhoneNumber { get; set; }
         public AddressStatus? Status { get; set; }
 
         public string? Note { get; set; }

@@ -88,7 +88,7 @@ namespace SAM.BusinessTier.Services.Implements
             category.Status = CategoryStatus.Inactive.GetDescriptionFromEnum();
             foreach (var item in category.MachineComponents)
             {
-                item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+                item.Status = ComponentStatus.InActive.GetDescriptionFromEnum();
             }
             category.Status = CategoryStatus.Inactive.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Category>().UpdateAsync(category);
@@ -117,13 +117,6 @@ namespace SAM.BusinessTier.Services.Implements
                 updateCategory.Type = CategoryType.Child.GetDescriptionFromEnum();
             }
             else updateCategory.Type = CategoryType.Parent.GetDescriptionFromEnum();
-            if (request.Status == CategoryStatus.Active)
-                {
-                    foreach (var item in updateCategory.Machineries)
-                    {
-                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
-                    }
-                }
             switch (request.Status)
             {
                 case CategoryStatus.Active:
@@ -143,7 +136,7 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                     foreach (var item in updateCategory.MachineComponents)
                     {
-                        item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+                        item.Status = ComponentStatus.InActive.GetDescriptionFromEnum();
                     }
 
                     break;

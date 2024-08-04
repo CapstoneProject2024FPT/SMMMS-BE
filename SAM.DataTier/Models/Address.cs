@@ -21,6 +21,10 @@ public partial class Address
 
     public Guid? AccountId { get; set; }
 
+    public string? NamePersional { get; set; }
+
+    public string? PhoneNumber { get; set; }
+
     public virtual Account? Account { get; set; }
 
     public virtual City? City { get; set; }

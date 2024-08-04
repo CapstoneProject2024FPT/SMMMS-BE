@@ -41,14 +41,22 @@ namespace SAM.BusinessTier.Services.Implements
             return discount.Id;
         }
 
-        public Task<GetBrandResponse> GetDiscountById(Guid id)
+        public async Task<GetDiscountResponse> GetDiscountById(Guid id)
         {
-            throw new NotImplementedException();
+            var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id))
+                ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
+                    
+            return _mapper.Map<GetDiscountResponse>(discount);
         }
 
-        public Task<ICollection<GetDiscountResponse>> GetDiscountList(DiscountFilter filter)
+        public async Task<ICollection<GetDiscountResponse>> GetDiscountList(DiscountFilter filter)
         {
-            throw new NotImplementedException();
+            var discount = await _unitOfWork.GetRepository<Discount>().GetListAsync(
+                selector: x => _mapper.Map<GetDiscountResponse>(x),
+                filter: filter)
+                ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
+            return discount;
         }
 
         public Task<bool> RemoveDiscountStatus(Guid id)
@@ -57,11 +65,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
         public Task<bool> UpdateDiscount(Guid id, UpdateDiscountRequest updateDiscountRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<GetDiscountResponse> IDiscountService.GetDiscountById(Guid id)
         {
             throw new NotImplementedException();
         }

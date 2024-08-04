@@ -14,6 +14,7 @@ namespace SAM.BusinessTier.Mappers
     {
         public DiscountModule() {
             CreateMap<CreateNewDiscountRequest, Discount>();
+            CreateMap<Discount, GetDiscountResponse>();
         }
     }
 }
