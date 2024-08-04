@@ -84,7 +84,32 @@ namespace SAM.BusinessTier.Services.Implements
             origin.Name = string.IsNullOrEmpty(updateOriginRequest.Name) ? origin.Name : updateOriginRequest.Name;
             origin.Description = string.IsNullOrEmpty(updateOriginRequest.Description) ? origin.Description : updateOriginRequest.Description;
             origin.Status = updateOriginRequest.Status.GetDescriptionFromEnum();
+            switch (updateOriginRequest.Status)
+            {
+                case OriginStatus.Active:
+                    foreach (var item in origin.Machineries)
+                    {
+                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                    }
+                    foreach (var item in origin.MachineComponents)
+                    {
+                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                    }
+                    break;
+                case OriginStatus.Inactive:
+                    foreach (var item in origin.Machineries)
+                    {
+                        item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+                    }
+                    foreach (var item in origin.MachineComponents)
+                    {
+                        item.Status = ComponentStatus.InActive.GetDescriptionFromEnum();
+                    }
 
+                    break;
+                default:
+                    return !true;
+            }
 
             _unitOfWork.GetRepository<Origin>().UpdateAsync(origin);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

@@ -91,8 +91,33 @@ namespace SAM.BusinessTier.Services.Implements
             brand.Name = string.IsNullOrEmpty(updateBrandRequest.Name) ? brand.Name : updateBrandRequest.Name;
             brand.Description = string.IsNullOrEmpty(updateBrandRequest.Description) ? brand.Description : updateBrandRequest.Description;
             brand.Status = updateBrandRequest.Status.GetDescriptionFromEnum();
+            switch (updateBrandRequest.Status)
+            {
+                case BrandStatus.Active:
+                    foreach (var item in brand.Machineries)
+                    {
+                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                    }
+                    foreach (var item in brand.MachineComponents)
+                    {
+                        item.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                    }
+                    break;
+                case BrandStatus.Inactive:
+                    foreach (var item in brand.Machineries)
+                    {
+                        item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+                    }
+                    foreach (var item in brand.MachineComponents)
+                    {
+                        item.Status = ComponentStatus.InActive.GetDescriptionFromEnum();
+                    }
 
-           
+                    break;
+                default:
+                    return !true;
+            }
+
             _unitOfWork.GetRepository<Brand>().UpdateAsync(brand);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
