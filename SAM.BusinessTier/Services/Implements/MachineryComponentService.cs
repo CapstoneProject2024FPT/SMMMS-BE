@@ -197,7 +197,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Quantity = component.Inventories.CountInventoryEachStatus()
                     },
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.CreateDate),
+                    orderBy: x => x.OrderByDescending(x => x.CreateDate),
                     include: x => x.Include(x => x.Inventories)
                                    .Include(x => x.Brand)
                                    .Include(x => x.Origin)
@@ -251,7 +251,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Quantity = component.Inventories.CountInventoryEachStatus()
                     },
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.CreateDate), // Adjust as per your sorting requirements
+                    orderBy: x => x.OrderByDescending(x => x.CreateDate), // Adjust as per your sorting requirements
                     include: x => x.Include(x => x.Inventories)
                                    .Include(x => x.Brand)
                                    .Include(x => x.Origin)
