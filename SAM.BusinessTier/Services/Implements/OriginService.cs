@@ -60,6 +60,15 @@ namespace SAM.BusinessTier.Services.Implements
             Origin origin = await _unitOfWork.GetRepository<Origin>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Origin.NotFoundFailedMessage);
+            foreach (var item in origin.Machineries)
+            {
+                item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+            }
+            origin.Status = CategoryStatus.Inactive.GetDescriptionFromEnum();
+            foreach (var item in origin.MachineComponents)
+            {
+                item.Status = ComponentStatus.InActive.GetDescriptionFromEnum();
+            }
             origin.Status = OriginStatus.Inactive.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Origin>().UpdateAsync(origin);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

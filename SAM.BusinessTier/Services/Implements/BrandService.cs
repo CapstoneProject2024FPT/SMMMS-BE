@@ -68,6 +68,15 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
             brand.Status = BrandStatus.Inactive.GetDescriptionFromEnum();
+            foreach (var item in brand.Machineries)
+            {
+                item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+            }
+            brand.Status = CategoryStatus.Inactive.GetDescriptionFromEnum();
+            foreach (var item in brand.MachineComponents)
+            {
+                item.Status = ComponentStatus.InActive.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<Brand>().UpdateAsync(brand);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;

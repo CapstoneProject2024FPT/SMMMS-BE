@@ -15,7 +15,7 @@ namespace SAM.BusinessTier.Payload.Address
         public Guid Id { get; set; }
 
         public string? Name { get; set; }
-        public string? NamePersional { get; set; }
+        public string? NamePersonal { get; set; }
         public string? PhoneNumber { get; set; }
         public AddressStatus? Status { get; set; }
 

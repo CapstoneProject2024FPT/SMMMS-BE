@@ -46,7 +46,7 @@ namespace SAM.BusinessTier.Services.Implements
             address.Id = Guid.NewGuid();
             address.Status = AddressStatus.Active.GetDescriptionFromEnum();
             address.AccountId = account.Id;
-            address.NamePersional = createNewAddressRequest.NamePersional;
+            address.NamePersonal = createNewAddressRequest.NamePersonal;
             address.PhoneNumber = createNewAddressRequest?.PhoneNumber;
             await _unitOfWork.GetRepository<Address>().InsertAsync(address);
 
@@ -74,8 +74,8 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                NamePersional = address.NamePersional,
-                PhoneNumber = address.PhoneNumber,
+                NamePersonal = address?.NamePersonal,
+                PhoneNumber = address?.PhoneNumber,
                 City = new CityResponse
                     {
                         Id = address.City.Id,
@@ -127,8 +127,8 @@ namespace SAM.BusinessTier.Services.Implements
                 Name = address.Name,
                 Status = string.IsNullOrEmpty(address.Status) ? null : EnumUtil.ParseEnum<AddressStatus>(address.Status),
                 Note = address.Note,
-                NamePersional = address.NamePersional,
-                PhoneNumber = address.PhoneNumber,
+                NamePersonal = address?.NamePersonal,
+                PhoneNumber = address?.PhoneNumber,
                 City = new CityResponse
                 {
                     Id = address.City.Id,
@@ -189,7 +189,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             address.Name = string.IsNullOrEmpty(updateAddressRequest.Name) ? address.Name : updateAddressRequest.Name;
             address.Note = string.IsNullOrEmpty(updateAddressRequest.Note) ? address.Note : updateAddressRequest.Note;
-            address.NamePersional = string.IsNullOrEmpty(updateAddressRequest.NamePersional) ? address.NamePersional : updateAddressRequest.NamePersional;
+            address.NamePersonal = string.IsNullOrEmpty(updateAddressRequest.NamePersonal) ? address.NamePersonal : updateAddressRequest.NamePersonal;
             address.PhoneNumber = string.IsNullOrEmpty(updateAddressRequest.PhoneNumber) ? address.PhoneNumber : updateAddressRequest.PhoneNumber;
             address.Status = updateAddressRequest.Status.GetDescriptionFromEnum();
 
