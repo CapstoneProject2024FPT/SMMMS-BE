@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.Origin;
 using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Services.Interfaces;
@@ -83,7 +84,15 @@ namespace SAM.BusinessTier.Services.Implements
 
             origin.Name = string.IsNullOrEmpty(updateOriginRequest.Name) ? origin.Name : updateOriginRequest.Name;
             origin.Description = string.IsNullOrEmpty(updateOriginRequest.Description) ? origin.Description : updateOriginRequest.Description;
-            origin.Status = updateOriginRequest.Status.GetDescriptionFromEnum();
+            
+            if (!updateOriginRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                origin.Status = updateOriginRequest.Status.GetDescriptionFromEnum();
+            }
             switch (updateOriginRequest.Status)
             {
                 case OriginStatus.Active:

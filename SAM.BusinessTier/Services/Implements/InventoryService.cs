@@ -8,6 +8,7 @@ using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Enums.Other;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.Inventory;
 using SAM.BusinessTier.Payload.Origin;
 using SAM.BusinessTier.Payload.Rank;
@@ -175,9 +176,16 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
 
 
-            inventory.Status = updateInventoryRequest.Status.GetDescriptionFromEnum();
-            inventory.Type = updateInventoryRequest.Type.GetDescriptionFromEnum();
-
+            
+            if (!updateInventoryRequest.Status.HasValue && !updateInventoryRequest.Type.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                inventory.Status = updateInventoryRequest.Status.GetDescriptionFromEnum();
+                inventory.Type = updateInventoryRequest.Type.GetDescriptionFromEnum();
+            }
 
             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

@@ -79,8 +79,16 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
             discount.Name = string.IsNullOrEmpty(updateDiscountRequest.Name) ? discount.Name : updateDiscountRequest.Name;
             discount.Value = updateDiscountRequest.Value.HasValue ? updateDiscountRequest.Value.Value : updateDiscountRequest.Value;
-            discount.Status = updateDiscountRequest.Status.GetDescriptionFromEnum();
-            discount.Type = updateDiscountRequest.Type.GetDescriptionFromEnum();
+            
+            if (!updateDiscountRequest.Status.HasValue && !updateDiscountRequest.Type.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                discount.Status = updateDiscountRequest.Status.GetDescriptionFromEnum();
+                discount.Type = updateDiscountRequest.Type.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<Discount>().UpdateAsync(discount);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;

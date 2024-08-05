@@ -7,6 +7,7 @@ using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Category;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -247,9 +248,17 @@ namespace SAM.BusinessTier.Services.Implements
             news.Description = string.IsNullOrEmpty(updateNewsRequest.Description) ? news.Description : updateNewsRequest.Description;
             news.NewsContent = string.IsNullOrEmpty(updateNewsRequest.NewsContent) ? news.NewsContent : updateNewsRequest.NewsContent;
             news.Cover = string.IsNullOrEmpty(updateNewsRequest.Cover) ? news.Cover : updateNewsRequest.Cover;
-            news.Status = updateNewsRequest.Status.GetDescriptionFromEnum();
-            news.Type = updateNewsRequest.Type.GetDescriptionFromEnum();
+            
 
+            if (!updateNewsRequest.Status.HasValue && !updateNewsRequest.Type.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                news.Status = updateNewsRequest.Status.GetDescriptionFromEnum();
+                news.Type = updateNewsRequest.Type.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<News>().UpdateAsync(news);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;

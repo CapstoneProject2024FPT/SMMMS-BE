@@ -81,9 +81,16 @@ namespace SAM.BusinessTier.Services.Implements
 
             updateCategory.Name = string.IsNullOrEmpty(updateCategoryRequest.Name) ? updateCategory.Name : updateCategoryRequest.Name;
             updateCategory.Description = string.IsNullOrEmpty(updateCategoryRequest.Description) ? updateCategory.Description : updateCategoryRequest.Description;
-            updateCategory.Status = updateCategoryRequest.Status.GetDescriptionFromEnum();
+            
 
-
+            if (!updateCategoryRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                updateCategory.Status = updateCategoryRequest.Status.GetDescriptionFromEnum();
+            }
 
 
             _unitOfWork.GetRepository<NewsCategory>().UpdateAsync(updateCategory);

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Brand;
 using SAM.BusinessTier.Payload.City;
 using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.News;
@@ -107,8 +108,15 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.City.CityExistedMessage);
 
             city.Name = string.IsNullOrEmpty(updateCityRequest.Name) ? city.Name : updateCityRequest.Name;
-            city.Status = updateCityRequest.Status.GetDescriptionFromEnum();
-
+            
+            if (!updateCityRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                city.Status = updateCityRequest.Status.GetDescriptionFromEnum();
+            }
             _unitOfWork.GetRepository<City>().UpdateAsync(city);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;

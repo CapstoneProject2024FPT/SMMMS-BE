@@ -191,7 +191,15 @@ namespace SAM.BusinessTier.Services.Implements
             address.Note = string.IsNullOrEmpty(updateAddressRequest.Note) ? address.Note : updateAddressRequest.Note;
             address.NamePersonal = string.IsNullOrEmpty(updateAddressRequest.NamePersonal) ? address.NamePersonal : updateAddressRequest.NamePersonal;
             address.PhoneNumber = string.IsNullOrEmpty(updateAddressRequest.PhoneNumber) ? address.PhoneNumber : updateAddressRequest.PhoneNumber;
-            address.Status = updateAddressRequest.Status.GetDescriptionFromEnum();
+            if (!updateAddressRequest.Status.HasValue)
+            {
+                throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+            }
+            else
+            {
+                address.Status = updateAddressRequest.Status.GetDescriptionFromEnum();
+            }
+            
 
             _unitOfWork.GetRepository<Address>().UpdateAsync(address);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
