@@ -62,7 +62,11 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyHaveExisted);
             }
-            if(existingWarranty.Status != "Completed") {
+            var existingWarranty1 = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
+                predicate: w => w.InventoryId == request.InventoryId);
+            if (existingWarranty1.Status.GetDescriptionFromEnum() != WarrantyStatus.Completed.GetDescriptionFromEnum() 
+                && existingWarranty1.Type.GetDescriptionFromEnum() == WarrantyType.CustomerRequest.GetDescriptionFromEnum())
+            {
                 throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyCompletedExisted);
             }
 
