@@ -55,13 +55,13 @@ namespace SAM.BusinessTier.Services.Implements
                 throw new BadHttpRequestException("Không thể tạo yêu cầu bảo hành khi đơn hàng chưa được hoàn thành");
             }
 
-            //var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
-            //    predicate: w => w.InventoryId == request.InventoryId);
+            var existingWarranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
+                predicate: w => w.InventoryId == request.InventoryId && w.CreateDate.Value.Date.Day == currentTime.Date.Day);
 
-            //if (existingWarranty != null)
-            //{
-            //    throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
-            //}
+            if (existingWarranty != null)
+            {
+                throw new BadHttpRequestException("Đã có phiếu bảo trì tương tự trong ngày.");
+            }
 
             Warranty newWarranty = new Warranty
             {
