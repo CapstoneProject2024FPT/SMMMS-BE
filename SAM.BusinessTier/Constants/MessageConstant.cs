@@ -116,6 +116,7 @@ public static class MessageConstant
     }
     public static class Inventory
     {
+        public const string AlreadySoldMessage = "Không thể thêm bộ phận máy sản phẩm đã bán ra bên ngoài";
         public const string CreateInventoryFailedMessage = "Tạo mới mã sản phẩm thất bại";
         public const string Parent_NotFoundFailedMessage = "Parent mã sản phẩm ko có trong hệ thống";
         public const string NotFoundFailedMessage = "Mã sản phẩm ko có trong hệ thống";

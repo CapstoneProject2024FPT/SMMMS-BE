@@ -36,6 +36,13 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
+            var soldInventories = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
+                predicate: x => x.MachineryId == id && x.Status == InventoryStatus.Sold.GetDescriptionFromEnum());
+
+            if (soldInventories.Any())
+            {
+                throw new BadHttpRequestException(MessageConstant.Inventory.AlreadySoldMessage);
+            }
             // Retrieve current rank IDs associated with the account
             List<Guid> currentMachineryComponentPartIds = (List<Guid>)await _unitOfWork.GetRepository<MachineryComponentPart>().GetListAsync(
                 selector: x => x.MachineComponentsId,
