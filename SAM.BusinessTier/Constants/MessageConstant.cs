@@ -194,6 +194,9 @@ public static class MessageConstant
     public static class Warranty
     {
         public const string WarrantyNameExisted = "Bảo trì đã tồn tại";
+        public const string WarrantyOrderCompletedExisted = "Không thể tạo yêu cầu bảo hành khi đơn hàng chưa được hoàn thành";
+        public const string WarrantyCompletedExisted = "Phiếu yêu cần trước đó của máy này chưa hoàn thành, hãy đợi hoàn thành rồi mới tiếp tục tạo yêu cầu mới";
+        public const string WarrantyHaveExisted = "Đã có phiếu bảo trì tương tự trong ngày.";
         public const string CreateNewWarrantyFailedMessage = "Tạo mới Bảo trì thất bại";
         public const string UpdateWarrantyFailedMessage = "Cập nhật thông tin Bảo trì thất bại";
         public const string UpdateWarrantySuccessMessage = "Cập nhật thông tin Bảo trì thành công";
