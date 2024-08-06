@@ -14,6 +14,12 @@ public static class ApiEndPointConstant
         public const string AuthenticationEndpoint = ApiEndpoint + "/auth";
         public const string Login = AuthenticationEndpoint + "/login";
     }
+    public static class Notification
+    {
+        public const string NotificationsEndPoint = "/notifications";
+        public const string NotificationEndPoint = NotificationsEndPoint + "/{id}";
+        public const string NotificationReadEndPoint = NotificationEndPoint + "/read";
+    }
     public static class User
     {
         public const string UsersEndPoint = ApiEndpoint + "/users";

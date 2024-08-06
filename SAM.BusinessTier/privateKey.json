@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "selling-maintainance-machinery",
+  "private_key_id": "8da79179a8d5ec822b816f1f3a592d4f46b8a607",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCiXItD168nu9dd\nt9FPicvYAZw4/efepaM8syjeGfxdPXjYSBiiDcxe9RKd3w38rMn/dj+flvrV++wE\nX30AqWoh9hI4N5uF9CzusaX8TDsH/ps9aYe54qMAy25p2B6NdqpWO5wkgLT9DUtN\nn7thq5xJdVqNbzqkaFEza/noOtiy5FmII3COkOJ4/ncgFglp1iJKssqS43t9TaeT\nZmfJ8x2E0q7MkVjhVp+1N3gEdPgt8LFxN7+toX0qEEu2qON5XUhmS00b+5n4XBNv\nGfnVoAWj0PN7E8Hrl8tTuvjZhfgcsQ0j0BdqPlJqjwU81K9VdGayyCj92ZvZ2Bc7\ng5BJsEK1AgMBAAECggEAJ8ZSG6mf8DT1OrFIZprURDOIyPFytzmOttURIu/swg7I\nJvvqhPCqa2zQRbqaG5dc2OdoCLmc84UGub+GyP230WAN8JW21OcPht4gUqF+KKQ3\n9aB/rosV8aDkiKt4OKGkcwGha9PYAtIZ64dBCVlYLSrBpzpjfFlN4zIFg92+rnwc\nJd5I3g+XBlPVa/9Nzj6GfirmsB58GnhisL8SNi/SJIPrvTP2e62KPIq7lcYt3UTf\n0cNqMtoF+v2xQqrYobCtOnReSeY2OycBx+8ewIcvyDRKRW2ban1f4MCXYIN1cIqF\na25eqKQ+whal9CeYCVXZz/9MWzQvESqUQNh1owY9YQKBgQDe1SuDJATaT+CmXLzn\nD3EhkuvRZN5kxDScxziNojwgu/exBwXKd5Kq/CBRdxcPdB1nZW63LN4VvH19s62h\npC9FYM+RT9C6jSMiSa0f/IqC0+AKFwUlfqeHdwBMU76x+b3elSwBW1bCxVnnY21U\nDtKtEwmaNsha1fo8sEEWRr7RmQKBgQC6hy0TsfE3+0a8HeOrTC6eMoyFRhw81S95\neJUQ6CQMGkEuEVJJQ7xeDjz8i2S1Hr8iE8UkqG5vTgHXz+xcDdP8j8AgaEt2bg6P\ni/A6dypk7Lym1xJYPgwNO2NnYe+uCQ45vEue7nk64Bo/j30yys2erdaQx1iGTqvP\nnWDDyDwjfQKBgQCzO692GkC1AM7nwWxIRklvAeggUwv27UKMYEoC0l2eztJaWBW2\nVxtn4Mh1/l5UFceY5SN6vuIbhbNCqoWcoJ1NJqOOdC6l/uQlrjFMqysWNCnes8l1\n8Tv7YCKjQjD+oqywHjh5FujgXTEFRxonJI0cnVV571qUhcxziCmyK1FM8QKBgQCe\nsJo9A0pBYlnPeW5UMcAHfuHmELu9VXHKWjgX5iek1EFXvAzRn/sF2f8wrDbFkJ7z\nkvZKNbGeqDMRNCfWOT18xZ+i8pgg7YkdvuRmGTPMIUxudNN6l28RYtEzBzMuUS31\nGKkNUb15xWcPZDgTmk5NDYBaM/6wZQXu3+mPJy9i0QKBgQDDWwn/adgnlQgOMzV7\nhJB0/xwo1AvBAgbKKeLxU5/x/o18jysGYxtp9rWWwEZjxNJRn/hRhhfwMkJCeGH+\nIQsLiS6suFI53h4e2d76+O9CDgcfvw7sarXiQwkjpcpiNWMbdVGryi4sJV0Cp5Td\nNePYBAHCFz4GF3W2PpoDJCLanA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-q3pag@selling-maintainance-machinery.iam.gserviceaccount.com",
+  "client_id": "106648212418777095588",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-q3pag%40selling-maintainance-machinery.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

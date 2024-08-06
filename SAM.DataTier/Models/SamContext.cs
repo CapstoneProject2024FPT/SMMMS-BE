@@ -29,6 +29,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<City> Cities { get; set; }
 
+    public virtual DbSet<Device> Devices { get; set; }
+
     public virtual DbSet<Discount> Discounts { get; set; }
 
     public virtual DbSet<DiscountCategory> DiscountCategories { get; set; }
@@ -58,6 +60,8 @@ public partial class SamContext : DbContext
     public virtual DbSet<NewsImage> NewsImages { get; set; }
 
     public virtual DbSet<Note> Notes { get; set; }
+
+    public virtual DbSet<Notification> Notifications { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -97,6 +101,7 @@ public partial class SamContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.FcmToken).HasMaxLength(4000);
             entity.Property(e => e.FullName).HasMaxLength(255);
             entity.Property(e => e.Gender).HasMaxLength(50);
             entity.Property(e => e.Image)
@@ -224,6 +229,25 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Device>(entity =>
+        {
+            entity.ToTable("Device");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.DeviceType)
+                .HasMaxLength(550)
+                .IsUnicode(false);
+            entity.Property(e => e.Fcmtoken)
+                .HasMaxLength(500)
+                .IsUnicode(false)
+                .HasColumnName("FCMToken");
+            entity.Property(e => e.LastUpdated).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Devices)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Device_Account");
         });
 
         modelBuilder.Entity<Discount>(entity =>
@@ -521,6 +545,21 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Order).WithMany(p => p.Notes)
                 .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK_Note_Order");
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.ToTable("Notification");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Message).HasMaxLength(4000);
+            entity.Property(e => e.NotificationType).HasMaxLength(50);
+            entity.Property(e => e.Title).HasMaxLength(4000);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Notification_Account");
         });
 
         modelBuilder.Entity<Order>(entity =>
