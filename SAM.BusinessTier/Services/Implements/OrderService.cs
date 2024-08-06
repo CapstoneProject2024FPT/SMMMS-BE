@@ -454,7 +454,14 @@ namespace SAM.BusinessTier.Services.Implements
                             for (int i = 1; i <= numberOfDetails; i++)
                             {
                                 DateTime maintenanceDate = currentTime.AddMonths(i * 6);
-
+                                if (maintenanceDate.DayOfWeek == DayOfWeek.Saturday)
+                                {
+                                    maintenanceDate = maintenanceDate.AddDays(2); // Move to Monday
+                                }
+                                else if (maintenanceDate.DayOfWeek == DayOfWeek.Sunday)
+                                {
+                                    maintenanceDate = maintenanceDate.AddDays(1); // Move to Monday
+                                }
                                 WarrantyDetail newWarrantyDetail = new WarrantyDetail
                                 {
                                     Id = Guid.NewGuid(),

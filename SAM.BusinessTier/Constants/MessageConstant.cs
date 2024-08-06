@@ -14,6 +14,15 @@ public static class MessageConstant
     {
         public const string ExsitingValue = "Cần nhập giá trị cho các loại trạng thái";
     }
+    public static class Notification
+    {
+        public const string UpdateNotificationSuccessMessage = "Update notification successfully.";
+        public const string UpdateNotificationFailedMessage = "Update notification failed.";
+        public const string MarkNotificationAsReadSuccessMessage = "Mark notification as read successfully.";
+        public const string MarkNotificationAsReadFailedMessage = "Mark notification as read failed.";
+        public const string RemoveNotificationSuccessMessage = "Remove notification successfully.";
+        public const string RemoveNotificationFailedMessage = "Remove notification failed.";
+    }
     public static class Account
     {
         public const string AccountExisted = "Tài khoản đã tồn tại";

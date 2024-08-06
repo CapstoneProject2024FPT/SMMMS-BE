@@ -9,6 +9,7 @@ using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Address;
 using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.News;
+using SAM.BusinessTier.Payload.Notification;
 using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Rank;
 using SAM.BusinessTier.Payload.Task;
@@ -30,8 +31,10 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class TaskService : BaseService<TaskService>, ITaskService
     {
-        public TaskService(IUnitOfWork<SamContext> unitOfWork, ILogger<TaskService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        private readonly INotificationService _notificationService;
+        public TaskService(IUnitOfWork<SamContext> unitOfWork, ILogger<TaskService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor, INotificationService notificationService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
+            _notificationService = notificationService;
         }
 
         public async Task<Guid> CreateNewTask(CreateNewTaskRequest request)
@@ -115,6 +118,22 @@ namespace SAM.BusinessTier.Services.Implements
 
             await _unitOfWork.GetRepository<TaskManager>().InsertAsync(newTask);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            //if (isSuccessful)
+            //{
+            //    // Create notification payload
+            //    var notificationPayload = new NotificationRequest
+            //    {
+            //        Title = "Bạn có nhiệm vụ mới",
+            //        Body = $"Bạn có thông nhiệm vụ mới",
+            //        FCMToken = account.FcmToken // Assume this is part of the request
+            //    };
+
+            //    // Send the notification
+            //     await _notificationService.SendPushNotificationAsync(
+            //        notificationPayload.FCMToken,
+            //        notificationPayload.Title,
+            //        notificationPayload.Body);
+            //}
 
             if (!isSuccessful)
             {
