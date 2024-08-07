@@ -30,6 +30,7 @@ namespace SAM.BusinessTier.Payload.User
         //public int? Rank { get; set; }
 
         public int? YearsOfExperience { get; set; }
+        //public string? FcmToken { get; set; }
 
 
         public UpdateUserInforRequest()

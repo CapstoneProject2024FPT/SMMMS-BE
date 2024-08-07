@@ -70,7 +70,7 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = Guid.NewGuid(),
                             SerialNumber = TimeUtils.GetTimestamp(DateTime.Now) + i,
-                            Status = InventoryStatus.Available.GetDescriptionFromEnum(),
+                            Status = InventoryStatus.Sold.GetDescriptionFromEnum(),
                             Type = InventoryType.Material.GetDescriptionFromEnum(),
                             CreateDate = DateTime.Now,
                             Condition = InventoryCondition.CurrentlyinUse.GetDescriptionFromEnum(),
