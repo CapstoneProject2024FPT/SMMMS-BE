@@ -347,8 +347,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 var newInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                     predicate: x => x.Id.Equals(inventoryChange.NewInventoryId),
-                    include: x => x.Include(i => i.MachineComponents)
-                                  .Include(i => i.Machinery))
+                    include: x => x.Include(i => i.MachineComponents))
                     ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
                 if (newInventory.MachineComponents == null)
                     throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
@@ -357,8 +356,8 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     Id = Guid.NewGuid(),
                     OrderId = newOrder.Id,
-                    MachineryId = newInventory.MachineryId,
-                    InventoryId = inventoryChange.NewInventoryId,
+                    MachineryId = newInventory.MachineComponentsId,
+                    InventoryId = newInventory.Id,
                     Quantity = 1,
                     SellingPrice = newInventory.MachineComponents.SellingPrice,
                     TotalAmount = newInventory.MachineComponents.SellingPrice,
