@@ -23,7 +23,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
         public DateTime? NextMaintenanceDate { get; set; }
         public Guid? AccountId { get; set; }
         public List<InventoryUpdate>? InventoryUpdates { get; set; } = new List<InventoryUpdate>();
-        public DateTime? Image { get; set; }
+        public string? Image { get; set; }
     }
 
 }

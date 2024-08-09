@@ -265,7 +265,7 @@ namespace SAM.BusinessTier.Services.Implements
                             NewInventoryId = inventoryUpdate.NewInventoryId.Value,
                             OldInventoryId = inventoryUpdate.OldInventoryId.Value,
                             CreateDate = currentTime,
-                            Image = updateDetailRequest.Image.GetDescriptionFromEnum(),
+                            Image = updateDetailRequest.Image,
                         };
                         await _unitOfWork.GetRepository<InventoryChange>().InsertAsync(inventoryChange);
                     }
