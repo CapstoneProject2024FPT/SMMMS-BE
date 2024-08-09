@@ -65,6 +65,7 @@ public static class MessageConstant
     }
     public static class Transaction
     {
+        public const string CreateTransactionSuccessMessage = "Giao dịch thành công";
         public const string CreateTransactionFailedMessage = "Tạo mới giao dịch thất bại";
         public const string Parent_NotFoundFailedMessage = "Parent giao dịch ko có trong hệ thống";
         public const string NotFoundFailedMessage = "Giao dịch ko có trong hệ thống";
