@@ -17,6 +17,8 @@ public partial class Order
 
     public string? Status { get; set; }
 
+    public string? Type { get; set; }
+
     public double? FinalAmount { get; set; }
 
     public double? TotalAmount { get; set; }

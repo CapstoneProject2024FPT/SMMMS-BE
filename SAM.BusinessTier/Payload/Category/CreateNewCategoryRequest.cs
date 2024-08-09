@@ -12,7 +12,7 @@ namespace SAM.BusinessTier.Payload.Category
         public string? Description { get; set; }
 
         public string? Kind { get; set; }
-        public Guid? MasterCategoryId { get; set; } = null;
+        public Guid? MasterCategoryId { get; set; }
 
     }
 }

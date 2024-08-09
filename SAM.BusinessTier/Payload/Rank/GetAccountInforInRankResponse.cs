@@ -25,6 +25,6 @@ namespace SAM.BusinessTier.Payload.Rank
 
         public string? Email { get; set; }
 
-        public double? Amount { get; set; }
+        public double? Point { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace SAM.BusinessTier.Payload.Order
         public string? Note { get; set; }
         public string? Description { get; set; }
         public OrderStatus? Status { get; set; }
-
+        public OrderType? Type { get; set; }
         public double? FinalAmount { get; set; }
 
         public double? TotalAmount { get; set; }

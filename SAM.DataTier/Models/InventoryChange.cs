@@ -13,5 +13,9 @@ public partial class InventoryChange
 
     public Guid? OldInventoryId { get; set; }
 
+    public string? Image { get; set; }
+
+    public DateTime? CreateDate { get; set; }
+
     public virtual WarrantyDetail? WarrantyDetail { get; set; }
 }

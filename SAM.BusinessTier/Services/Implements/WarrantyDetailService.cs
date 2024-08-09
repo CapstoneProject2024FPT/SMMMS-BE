@@ -263,7 +263,9 @@ namespace SAM.BusinessTier.Services.Implements
                             Id = Guid.NewGuid(),
                             WarrantyDetailId = warrantyDetail.Id,
                             NewInventoryId = inventoryUpdate.NewInventoryId.Value,
-                            OldInventoryId = inventoryUpdate.OldInventoryId.Value
+                            OldInventoryId = inventoryUpdate.OldInventoryId.Value,
+                            CreateDate = currentTime,
+                            Image = updateDetailRequest.Image.GetDescriptionFromEnum(),
                         };
                         await _unitOfWork.GetRepository<InventoryChange>().InsertAsync(inventoryChange);
                     }
@@ -308,6 +310,75 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
         }
+        public async Task<Guid> CreateOrderForReplacedComponents(Guid warrantyDetailId)
+        {
+            DateTime currentTime = TimeUtils.GetCurrentSEATime();
+            WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
+                predicate: wd => wd.Id == warrantyDetailId,
+                include: wd => wd.Include(wd => wd.InventoryChanges)
+                                 .Include(wd => wd.Warranty.Inventory)
+                                 .ThenInclude(inv => inv.Machinery))
+                ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
+
+            if (warrantyDetail == null)
+                throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
+
+
+            Order newOrder = new Order
+            {
+                Id = Guid.NewGuid(),
+                InvoiceCode = TimeUtils.GetTimestamp(currentTime),
+                CreateDate = currentTime,
+                CompletedDate = null,
+                TotalAmount = 0,
+                Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
+                Type = OrderType.Warranty.GetDescriptionFromEnum(),
+                AccountId = warrantyDetail.AccountId,
+                AddressId = warrantyDetail.AddressId,
+                Description = "Thanh toán cho bộ phận sửa chữa",
+            };
+
+            double totalAmount = 0;
+
+            foreach (var inventoryChange in warrantyDetail.InventoryChanges)
+            {
+                if (inventoryChange.NewInventoryId == null)
+                    throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
+
+                var newInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(inventoryChange.NewInventoryId),
+                    include: x => x.Include(i => i.MachineComponents)
+                                  .Include(i => i.Machinery))
+                    ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
+                if (newInventory.MachineComponents == null)
+                    throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
+
+                OrderDetail orderDetail = new OrderDetail
+                {
+                    Id = Guid.NewGuid(),
+                    OrderId = newOrder.Id,
+                    MachineryId = newInventory.MachineryId,
+                    InventoryId = inventoryChange.NewInventoryId,
+                    Quantity = 1,
+                    SellingPrice = newInventory.MachineComponents.SellingPrice,
+                    TotalAmount = newInventory.MachineComponents.SellingPrice,
+                    CreateDate = DateTime.UtcNow
+                };
+
+                var total = newOrder.TotalAmount += orderDetail.TotalAmount ?? 0;
+                newOrder.FinalAmount = total;
+
+                await _unitOfWork.GetRepository<OrderDetail>().InsertAsync(orderDetail);
+            }
+
+            await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
+
+
+            await _unitOfWork.CommitAsync();
+
+            return newOrder.Id;
+        }
+
 
 
     }
