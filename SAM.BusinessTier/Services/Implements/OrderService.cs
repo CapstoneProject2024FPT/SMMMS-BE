@@ -322,9 +322,13 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(orderId))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
-
+            if(updateOrder.Status == OrderStatus.Completed.GetDescriptionFromEnum())
+            {
+                throw new BadHttpRequestException("Không thể cập nhật đơn hàng khi đã completed");
+            }
             switch (request.Status)
             {
+
                 case OrderStatus.Completed:
                     updateOrder.Status = OrderStatus.Completed.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
