@@ -54,6 +54,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TotalAmount = 0,
                 Description = request.Description,
                 Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
+                Type = OrderType.Order.GetDescriptionFromEnum(),
                 AccountId = account.Id,
                 AddressId = request.AddressId
             };
@@ -146,6 +147,7 @@ namespace SAM.BusinessTier.Services.Implements
                 FinalAmount = order.FinalAmount,
                 Description = order.Description,
                 Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
+                Type = EnumUtil.ParseEnum<OrderType>(order.Type),
                 NoteStatus = order.Notes.CountNoteEachStatus(),
                 Note = order.Notes?.Select(note => new NoteResponse
                 {
@@ -228,6 +230,7 @@ namespace SAM.BusinessTier.Services.Implements
                     Description = x.Description,
                     Status = EnumUtil.ParseEnum<OrderStatus>(x.Status),
                     NoteStatus = x.Notes.CountNoteEachStatus(),
+                    Type = EnumUtil.ParseEnum<OrderType>(x.Type),
                     Note = x.Notes.Select(note => new NoteResponse
                     {
                         Id = note.Id,

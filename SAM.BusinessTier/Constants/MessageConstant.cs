@@ -131,9 +131,12 @@ public static class MessageConstant
         public const string NotFoundFailedMessage = "Mã sản phẩm ko có trong hệ thống";
         public const string UpdateInventorySuccessMessage = "Mã sản phẩm được cập nhật thành công";
         public const string UpdateInventoryFailedMessage = "Mã sản phẩm cập nhật thất bại";
+        public const string DeleteInventorySuccessMessage = "Mã sản phẩm được xóa thành công";
+        public const string DeleteInventoryFailedMessage = "Mã sản phẩm xóa thất bại";
         public const string InventoryExistedMessage = "Mã sản phẩm đã tồn tại";
         public const string InventoryEmptyMessage = "Mã sản phẩm không hợp lệ";
         public const string NotAvaliable = "Không còn Machinery nào sẵn sàng để bán";
+        
     }
     public static class Machinery
     {

@@ -82,7 +82,8 @@ namespace SAM.BusinessTier.Services.Implements
         {
             ICollection<GetRankResponse> respone = await _unitOfWork.GetRepository<Rank>().GetListAsync(
                selector: x => _mapper.Map<GetRankResponse>(x),
-               filter: filter);
+               filter: filter,
+               orderBy: x => x.OrderBy(x => x.Range));
             return respone;
         }
 
@@ -95,7 +96,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException(MessageConstant.Brand.NotFoundFailedMessage);
+                ?? throw new BadHttpRequestException(MessageConstant.Rank.RankNotFoundMessage);
 
             rank.Name = string.IsNullOrEmpty(updateRankRequest.Name) ? rank.Name : updateRankRequest.Name;
             rank.Range = updateRankRequest.Range.HasValue ? updateRankRequest.Range.Value : rank.Range;

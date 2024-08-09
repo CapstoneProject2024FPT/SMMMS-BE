@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Http.Features;
 using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Address;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace SAM.BusinessTier.Payload.Order
         public List<NoteResponse>? Note { get; set; } = new List<NoteResponse>();
         public string? Description { get; set; }
         public OrderStatus? Status { get; set; }
+        public OrderType? Type { get; set; }
         public OrderUserResponse? UserInfo { get; set; }
 
         public GetAddressResponse? Address { get; set; }

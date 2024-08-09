@@ -11,6 +11,8 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
     {
         public Guid? NewInventoryId { get; set; }
         public Guid? OldInventoryId { get; set; }
+
+        
     }
 
     public class UpdateWarrantyDetailRequest
@@ -21,6 +23,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
         public DateTime? NextMaintenanceDate { get; set; }
         public Guid? AccountId { get; set; }
         public List<InventoryUpdate>? InventoryUpdates { get; set; } = new List<InventoryUpdate>();
+        public DateTime? Image { get; set; }
     }
 
 }

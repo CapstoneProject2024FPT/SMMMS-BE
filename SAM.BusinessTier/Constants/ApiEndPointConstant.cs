@@ -39,6 +39,7 @@ public static class ApiEndPointConstant
         public const string CategoriesEndPoint = ApiEndpoint + "/categories";
         public const string CategoryEndPoint = CategoriesEndPoint + "/{id}";
         public const string CategoryAddDiscountEndPoint = CategoryEndPoint + "/discount";
+        public const string CategoriesNopagingNateEndPoint = CategoriesEndPoint + "/noPagingNate";
     }
     public static class NewsCategory
     {
@@ -94,6 +95,11 @@ public static class ApiEndPointConstant
         public const string InventoryEndPoint = InventoriesEndPoint + "/{id}";
         public const string MachineriesInventoryDetailEndPoint = InventoryEndPoint + "/machinery";
     }
+    public static class InventoryChange
+    {
+        public const string InventoryChangesEndPoint = ApiEndpoint + "/inventoryChange";
+        public const string InventoryChangeEndPoint = InventoryChangesEndPoint + "/{id}";
+    }
     public static class Product
     {
         public const string MachineriesEndPoint = ApiEndpoint + "/machinery";
@@ -137,6 +143,7 @@ public static class ApiEndPointConstant
         public const string WarrantyDetailsEndPoint = ApiEndpoint + "/warrantyDetail";
         public const string WarrantyDetailsEndPointNoPaginate = WarrantyDetailsEndPoint + "/noPaginate";
         public const string WarrantydetailEndPoint = WarrantyDetailsEndPoint + "/{id}";
+        public const string WarrantydetailCreateOrderWarrantyChangeEndPoint = WarrantydetailEndPoint + "/order";
 
     }
     public static class News

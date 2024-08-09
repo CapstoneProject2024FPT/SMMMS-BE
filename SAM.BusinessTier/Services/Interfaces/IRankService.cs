@@ -1,7 +1,4 @@
 ﻿using SAM.BusinessTier.Payload;
-using SAM.BusinessTier.Payload.Brand;
-using SAM.BusinessTier.Payload.Machinery;
-using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.Rank;
 using SAM.DataTier.Paginate;
 using System;
