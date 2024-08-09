@@ -53,16 +53,14 @@ namespace SAM.BusinessTier.Services.Implements
                 throw new BadHttpRequestException("Không tìm thấy số máy cũ trong hệ thống");
             }
 
-            // Update the status and condition of the new Inventory to its initial state
             newInventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
             newInventory.Condition = InventoryCondition.New.GetDescriptionFromEnum();
             newInventory.MasterInventoryId = null;
 
-            // Update the status and condition of the old Inventory
             oldInventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
-            oldInventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum(); // Set as repaired
+            oldInventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum(); 
 
-            // Mark entities as updated
+
             _unitOfWork.GetRepository<Inventory>().UpdateAsync(newInventory);
             _unitOfWork.GetRepository<Inventory>().UpdateAsync(oldInventory);
 

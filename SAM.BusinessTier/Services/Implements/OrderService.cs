@@ -422,8 +422,12 @@ namespace SAM.BusinessTier.Services.Implements
                     break;
 
                 case OrderStatus.Paid:
+                    if (updateOrder.Type == OrderType.Warranty.GetDescriptionFromEnum()) {
+                        throw new BadHttpRequestException(MessageConstant.Transaction.CreateTransactionSuccessMessage);
+                    }
                     var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
+                    
                     foreach (var detail in orderDetailsPaid)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
