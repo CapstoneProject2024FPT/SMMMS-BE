@@ -7,6 +7,7 @@ using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Enums.Other;
 using SAM.BusinessTier.Payload.Brand;
+using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Task;
 using SAM.BusinessTier.Payload.Wards;
@@ -36,7 +37,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
         public async Task<ICollection<GetWarrantyDetailResponse>> GetWarrantyDetailList(WarrantyDetailFilter filter)
         {
-            // Lấy danh sách WarrantyDetail theo bộ lọc
             var warrantyDetails = await _unitOfWork.GetRepository<WarrantyDetail>()
                 .GetListAsync(
                     selector: detail => new GetWarrantyDetailResponse
@@ -57,59 +57,29 @@ namespace SAM.BusinessTier.Services.Implements
                             FullName = detail.Account.FullName,
                             Role = EnumUtil.ParseEnum<RoleEnum>(detail.Account.Role)
                         } : null,
-                        InventoryChanges = new List<InventoryChangeResponse>() 
+                        ComponentChange = detail.ComponentChanges.Select(part => new ComponentChangeResponse
+                        {
+                            Image = part.Image,
+                            CreateDate = part.CreateDate,
+                            Component = new ComponentResponse
+                            {
+                                Id = part.MachineComponent.Id,
+                                Name = part.MachineComponent.Name,
+                                Description = part.MachineComponent.Description,
+                                Status = EnumUtil.ParseEnum<ComponentStatus>(part.MachineComponent.Status),
+                                StockPrice = part.MachineComponent.StockPrice,
+                                SellingPrice = part.MachineComponent.SellingPrice
+                            }
+                        }).ToList(),
                     },
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.StartDate),
                     include: x => x.Include(x => x.Account)
+                                   .Include(x => x.ComponentChanges)
                 ) ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
 
             var warrantyDetailIds = warrantyDetails.Select(wd => wd.Id).ToList();
-
-
-            var inventoryChanges = await _unitOfWork.GetRepository<InventoryChange>()
-                .GetListAsync(
-                    selector: change => new InventoryChangeResponse
-                    {
-                        OldInventory = new InventoryInWarrantyDetailResponse
-                        {
-                            Id = change.OldInventoryId,
-                        },
-                        NewInventory = new InventoryInWarrantyDetailResponse
-                        {
-                            Id = change.NewInventoryId,
-                        },
-                        WarrantyDetailId = change.WarrantyDetail.Id 
-                    },
-                    predicate: change => warrantyDetailIds.Contains(change.WarrantyDetailId)
-                );
-
-            var inventoryIds = inventoryChanges.SelectMany(ic => new[] { ic.OldInventory.Id, ic.NewInventory.Id }).Distinct().ToList();
-            var inventories = await _unitOfWork.GetRepository<Inventory>()
-                .GetListAsync(
-                    selector: inventory => new InventoryInWarrantyDetailResponse
-                    {
-                        Id = inventory.Id,
-                        SerialNumber = inventory.SerialNumber,
-                        Type = EnumUtil.ParseEnum<InventoryType>(inventory.Type)
-                    },
-                    predicate: inventory => inventoryIds.Contains(inventory.Id)
-                );
-
-
-            foreach (var change in inventoryChanges)
-            {
-                change.OldInventory = inventories.SingleOrDefault(inv => inv.Id == change.OldInventory.Id);
-                change.NewInventory = inventories.SingleOrDefault(inv => inv.Id == change.NewInventory.Id);
-            }
-
-            foreach (var warrantyDetail in warrantyDetails)
-            {
-                warrantyDetail.InventoryChanges = inventoryChanges
-                    .Where(ic => ic.WarrantyDetailId == warrantyDetail.Id) 
-                    .ToList();
-            }
 
             return warrantyDetails;
         }
@@ -120,7 +90,6 @@ namespace SAM.BusinessTier.Services.Implements
         {
             if (id == Guid.Empty)
                 throw new BadHttpRequestException("Invalid warranty detail ID.");
-
 
             var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>()
                 .SingleOrDefaultAsync(
@@ -142,12 +111,26 @@ namespace SAM.BusinessTier.Services.Implements
                             FullName = detail.Account.FullName,
                             Role = EnumUtil.ParseEnum<RoleEnum>(detail.Account.Role)
                         } : null,
-                        InventoryChanges = new List<InventoryChangeResponse>()
+                        ComponentChange = detail.ComponentChanges.Select(part => new ComponentChangeResponse
+                        {
+                            Image = part.Image,
+                            CreateDate = part.CreateDate,
+                            Component = new ComponentResponse
+                            {
+                                Id = part.MachineComponent.Id,
+                                Name = part.MachineComponent.Name,
+                                Description = part.MachineComponent.Description,
+                                Status = EnumUtil.ParseEnum<ComponentStatus>(part.MachineComponent.Status),
+                                StockPrice = part.MachineComponent.StockPrice,
+                                SellingPrice = part.MachineComponent.SellingPrice
+                            }
+                        }).ToList(),
                     },
                     predicate: detail => detail.Id == id,
-                    include: x => x.Include(x => x.Account)
-                                  .Include(x => x.Warranty.Inventory) 
-                                  .ThenInclude(i => i.MachineComponents) 
+                    include: x => x.Include(detail => detail.Account)
+                                   .Include(detail => detail.Warranty.Inventory)
+                                   .Include(detail => detail.ComponentChanges)
+                                       .ThenInclude(part => part.MachineComponent)
                 );
 
             if (warrantyDetail == null)
@@ -155,46 +138,9 @@ namespace SAM.BusinessTier.Services.Implements
                 throw new BadHttpRequestException($"Warranty detail with ID {id} not found.");
             }
 
-            var inventoryChanges = await _unitOfWork.GetRepository<InventoryChange>()
-                .GetListAsync(
-                    selector: change => new InventoryChangeResponse
-                    {
-                        WarrantyDetailId = change.WarrantyDetail.Id,
-                        OldInventory = new InventoryInWarrantyDetailResponse
-                        {
-                            Id = change.OldInventoryId,
-                        },
-                        NewInventory = new InventoryInWarrantyDetailResponse
-                        {
-                            Id = change.NewInventoryId,
-                        }
-                    },
-                    predicate: change => change.WarrantyDetailId == id
-                );
-
-            var inventoryIds = inventoryChanges.SelectMany(ic => new[] { ic.OldInventory.Id, ic.NewInventory.Id }).Distinct().ToList();
-            var inventories = await _unitOfWork.GetRepository<Inventory>()
-                .GetListAsync(
-                    selector: inventory => new InventoryInWarrantyDetailResponse
-                    {
-                        Id = inventory.Id,
-                        SerialNumber = inventory.SerialNumber,
-                        Type = EnumUtil.ParseEnum<InventoryType>(inventory.Type),
-                        ComponentName = inventory.MachineComponents != null ? inventory.MachineComponents.Name : null
-                    },
-                    predicate: inventory => inventoryIds.Contains(inventory.Id)
-                );
-
-            foreach (var change in inventoryChanges)
-            {
-                change.OldInventory = inventories.SingleOrDefault(inv => inv.Id == change.OldInventory.Id);
-                change.NewInventory = inventories.SingleOrDefault(inv => inv.Id == change.NewInventory.Id);
-            }
-
-            warrantyDetail.InventoryChanges = inventoryChanges.ToList();
-
             return warrantyDetail;
         }
+
 
 
 
@@ -210,15 +156,15 @@ namespace SAM.BusinessTier.Services.Implements
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
-
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
-            
+            // Update warranty detail properties
             warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
             warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
             warrantyDetail.NextMaintenanceDate = updateDetailRequest.NextMaintenanceDate.HasValue ? updateDetailRequest.NextMaintenanceDate.Value : warrantyDetail.NextMaintenanceDate;
+
             if (!updateDetailRequest.Status.HasValue)
             {
                 throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
@@ -227,6 +173,8 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
             }
+
+            // Update Account if provided
             if (updateDetailRequest.AccountId.HasValue)
             {
                 Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
@@ -235,43 +183,29 @@ namespace SAM.BusinessTier.Services.Implements
 
                 warrantyDetail.Account = account;
             }
-            if (updateDetailRequest.InventoryUpdates != null && updateDetailRequest.InventoryUpdates.Any())
+
+            // Update or add component changes
+            if (updateDetailRequest.ComponentId != null && updateDetailRequest.ComponentId.Count > 0)
             {
-                foreach (var inventoryUpdate in updateDetailRequest.InventoryUpdates)
+                foreach (var componentId in updateDetailRequest.ComponentId)
                 {
-                    if (inventoryUpdate.NewInventoryId.HasValue && inventoryUpdate.OldInventoryId.HasValue)
+                    var component = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
+                        predicate: x => x.Id.Equals(componentId))
+                    ?? throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
+
+                    var componentChange = new ComponentChange
                     {
-                        var oldInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                            predicate: x => x.Id.Equals(inventoryUpdate.OldInventoryId.Value))
-                        ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-
-                        var newInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                            predicate: x => x.Id.Equals(inventoryUpdate.NewInventoryId.Value))
-                        ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-
-                        newInventory.MasterInventoryId = oldInventory.MasterInventoryId; 
-                        newInventory.Condition = InventoryCondition.CurrentlyinUse.GetDescriptionFromEnum();
-                        newInventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
-                        _unitOfWork.GetRepository<Inventory>().UpdateAsync(newInventory);
-
-                        oldInventory.Condition = InventoryCondition.Old.GetDescriptionFromEnum();
-                        oldInventory.IsRepaired = InventoryIsRepaired.IsRepaired.GetDescriptionFromEnum();
-                        _unitOfWork.GetRepository<Inventory>().UpdateAsync(oldInventory);
-
-                        var inventoryChange = new InventoryChange
-                        {
-                            Id = Guid.NewGuid(),
-                            WarrantyDetailId = warrantyDetail.Id,
-                            NewInventoryId = inventoryUpdate.NewInventoryId.Value,
-                            OldInventoryId = inventoryUpdate.OldInventoryId.Value,
-                            CreateDate = currentTime,
-                            Image = updateDetailRequest.Image,
-                        };
-                        await _unitOfWork.GetRepository<InventoryChange>().InsertAsync(inventoryChange);
-                    }
+                        Id = Guid.NewGuid(),
+                        WarrantyDetailId = warrantyDetail.Id,
+                        MachineComponentId = component.Id,
+                        CreateDate = currentTime,
+                        Image = updateDetailRequest.Image,
+                    };
+                    await _unitOfWork.GetRepository<ComponentChange>().InsertAsync(componentChange);
                 }
             }
 
+            // Handle status "Completed" scenario
             if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Completed")
             {
                 warrantyDetail.CompletionDate = currentTime;
@@ -286,7 +220,9 @@ namespace SAM.BusinessTier.Services.Implements
                 }
 
                 var nextWarrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
-                    predicate: wd => wd.WarrantyId == warrantyDetail.WarrantyId && wd.StartDate > warrantyDetail.StartDate && wd.Status != WarrantyDetailStatus.Completed.GetDescriptionFromEnum(),
+                    predicate: wd => wd.WarrantyId == warrantyDetail.WarrantyId
+                                     && wd.StartDate > warrantyDetail.StartDate
+                                     && wd.Status != WarrantyDetailStatus.Completed.GetDescriptionFromEnum(),
                     orderBy: q => q.OrderBy(wd => wd.StartDate));
 
                 Warranty warranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
@@ -310,19 +246,21 @@ namespace SAM.BusinessTier.Services.Implements
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
         }
+
         public async Task<Guid> CreateOrderForReplacedComponents(Guid warrantyDetailId)
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
+
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                 predicate: wd => wd.Id == warrantyDetailId,
-                include: wd => wd.Include(wd => wd.InventoryChanges)
-                                 .Include(wd => wd.Warranty.Inventory)
-                                 .ThenInclude(inv => inv.Machinery))
+                include: wd => wd.Include(wd => wd.ComponentChanges)
+                                 .ThenInclude(cc => cc.MachineComponent))
                 ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
-            if (warrantyDetail == null)
-                throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
-
+            if (warrantyDetail.ComponentChanges == null || !warrantyDetail.ComponentChanges.Any())
+            {
+                throw new BadHttpRequestException("Không có bộ phận trong hệ thống để tạo hóa đơn");
+            }
 
             Order newOrder = new Order
             {
@@ -340,43 +278,38 @@ namespace SAM.BusinessTier.Services.Implements
 
             double totalAmount = 0;
 
-            foreach (var inventoryChange in warrantyDetail.InventoryChanges)
+            foreach (var componentChange in warrantyDetail.ComponentChanges)
             {
-                if (inventoryChange.NewInventoryId == null)
-                    throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-
-                var newInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                    predicate: x => x.Id.Equals(inventoryChange.NewInventoryId),
-                    include: x => x.Include(i => i.MachineComponents))
-                    ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-                if (newInventory.MachineComponents == null)
+                if (componentChange.MachineComponent == null)
+                {
                     throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
+                }
 
                 OrderDetail orderDetail = new OrderDetail
                 {
                     Id = Guid.NewGuid(),
                     OrderId = newOrder.Id,
-                    MachineryId = newInventory.MachineComponentsId,
-                    InventoryId = newInventory.Id,
+                    MachineryId = componentChange.MachineComponent.Id,
                     Quantity = 1,
-                    SellingPrice = newInventory.MachineComponents.SellingPrice,
-                    TotalAmount = newInventory.MachineComponents.SellingPrice,
+                    SellingPrice = componentChange.MachineComponent.SellingPrice,
+                    TotalAmount = componentChange.MachineComponent.SellingPrice,
                     CreateDate = DateTime.UtcNow
                 };
 
-                var total = newOrder.TotalAmount += orderDetail.TotalAmount ?? 0;
-                newOrder.FinalAmount = total;
-
+                totalAmount += orderDetail.TotalAmount ?? 0;
                 await _unitOfWork.GetRepository<OrderDetail>().InsertAsync(orderDetail);
             }
 
+            newOrder.FinalAmount = totalAmount;
+            newOrder.TotalAmount = totalAmount;
+
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
-
-
             await _unitOfWork.CommitAsync();
 
             return newOrder.Id;
         }
+
+
 
 
 

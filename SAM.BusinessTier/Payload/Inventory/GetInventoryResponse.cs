@@ -16,9 +16,6 @@ namespace SAM.BusinessTier.Payload.Inventory
         public string? SerialNumber { get; set; }
 
         public InventoryStatus? Status { get; set; }
-
-        public InventoryType? Type { get; set; }
-
         public InventoryCondition? Condition { get; set; }
 
         public InventoryIsRepaired? IsRepaired { get; set; }
@@ -30,11 +27,6 @@ namespace SAM.BusinessTier.Payload.Inventory
 
         public Guid? MachineryId { get; set; }
         public string MachineryName { get; set; }
-
-        public Guid? MachineComponentsId { get; set; }
-
-        public string? ComponentName { get; set; }
-
         public Guid? MasterInventoryId { get; set; }
     }
 }

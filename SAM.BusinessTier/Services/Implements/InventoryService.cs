@@ -34,10 +34,6 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var inventoryIds = new List<Guid>();
 
-            if (createNewInventoryRequest.MachineryId.HasValue && createNewInventoryRequest.MachineComponentsId.HasValue)
-            {
-                throw new ArgumentException("Chỉ có thể tạo mã cho 1 máy cơ khí hoặc 1 bộ phận");
-            }
 
             if (createNewInventoryRequest.MachineryId.HasValue)
             {
@@ -56,55 +52,16 @@ namespace SAM.BusinessTier.Services.Implements
                     inventory.Id = Guid.NewGuid();
                     inventory.SerialNumber = TimeUtils.GetTimestamp(DateTime.Now) + i;
                     inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-                    inventory.Type = InventoryType.Machinery.GetDescriptionFromEnum();
                     inventory.CreateDate = DateTime.Now;
                     inventory.Condition = InventoryCondition.New.GetDescriptionFromEnum();
                     inventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum();
                     await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
                     inventoryIds.Add(inventory.Id);
-
-                    // Tạo Inventory cho các component của Machinery
-                    foreach (var componentPart in machinery.MachineryComponentParts)
-                    {
-                        var componentInventory = new Inventory
-                        {
-                            Id = Guid.NewGuid(),
-                            SerialNumber = TimeUtils.GetTimestamp(DateTime.Now) + i,
-                            Status = InventoryStatus.Sold.GetDescriptionFromEnum(),
-                            Type = InventoryType.Material.GetDescriptionFromEnum(),
-                            CreateDate = DateTime.Now,
-                            Condition = InventoryCondition.CurrentlyinUse.GetDescriptionFromEnum(),
-                            IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum(),
-                            MasterInventoryId = inventory.Id,
-                            MachineComponentsId = componentPart.MachineComponentsId
-                        };
-                        await _unitOfWork.GetRepository<Inventory>().InsertAsync(componentInventory);
-                        inventoryIds.Add(componentInventory.Id);
-                    }
                 }
             }
-            else if (createNewInventoryRequest.MachineComponentsId.HasValue)
+            else
             {
-                var component = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
-                    predicate: x => x.Id == createNewInventoryRequest.MachineComponentsId.Value);
-                if (component == null)
-                {
-                    throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
-                }
-
-                for (int i = 0; i < quantity; i++)
-                {
-                    var inventory = _mapper.Map<Inventory>(createNewInventoryRequest);
-                    inventory.Id = Guid.NewGuid();
-                    inventory.SerialNumber = TimeUtils.GetTimestamp(DateTime.Now) + i;
-                    inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-                    inventory.Type = InventoryType.Material.GetDescriptionFromEnum();
-                    inventory.CreateDate = TimeUtils.GetCurrentSEATime();
-                    inventory.Condition = InventoryCondition.New.GetDescriptionFromEnum();
-                    inventory.IsRepaired = InventoryIsRepaired.New.GetDescriptionFromEnum();
-                    await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
-                    inventoryIds.Add(inventory.Id);
-                }
+                throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
             }
 
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
@@ -125,12 +82,10 @@ namespace SAM.BusinessTier.Services.Implements
 
             Inventory inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id),
-                include: x => x.Include(i => i.MachineComponents)
-                               .Include(x => x.Machinery))
+                include: x => x.Include(x => x.Machinery))
                 ?? throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
 
             var inventoryResponse = _mapper.Map<GetInventoryResponse>(inventory);
-            inventoryResponse.ComponentName = inventory.MachineComponents?.Name;
             inventoryResponse.MachineryName = inventory.Machinery?.Name;
             return inventoryResponse;
         }
@@ -140,13 +95,11 @@ namespace SAM.BusinessTier.Services.Implements
             var inventoryList = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
                 selector: x => x,
                 orderBy: x => x.OrderByDescending(x => x.CreateDate),
-                include: x => x.Include(i => i.MachineComponents)
-                               .Include(i => i.Machinery),
+                include: x => x.Include(i => i.Machinery),
                 filter: filter);
 
             var inventoryResponseList = inventoryList.Select(inventory => {
                 var inventoryResponse = _mapper.Map<GetInventoryResponse>(inventory);
-                inventoryResponse.ComponentName = inventory.MachineComponents?.Name;
                 inventoryResponse.MachineryName = inventory.Machinery?.Name;
                 return inventoryResponse;
             }).ToList();
@@ -177,14 +130,13 @@ namespace SAM.BusinessTier.Services.Implements
 
 
             
-            if (!updateInventoryRequest.Status.HasValue && !updateInventoryRequest.Type.HasValue)
+            if (!updateInventoryRequest.Status.HasValue)
             {
                 throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
             }
             else
             {
                 inventory.Status = updateInventoryRequest.Status.GetDescriptionFromEnum();
-                inventory.Type = updateInventoryRequest.Type.GetDescriptionFromEnum();
             }
 
             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);

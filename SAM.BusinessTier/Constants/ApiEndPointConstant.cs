@@ -95,10 +95,10 @@ public static class ApiEndPointConstant
         public const string InventoryEndPoint = InventoriesEndPoint + "/{id}";
         public const string MachineriesInventoryDetailEndPoint = InventoryEndPoint + "/machinery";
     }
-    public static class InventoryChange
+    public static class ComponentChange
     {
-        public const string InventoryChangesEndPoint = ApiEndpoint + "/inventoryChange";
-        public const string InventoryChangeEndPoint = InventoryChangesEndPoint + "/{id}";
+        public const string ComponentChangesEndPoint = ApiEndpoint + "/componentChange";
+        public const string ComponentChangeEndPoint = ComponentChangesEndPoint + "/{id}";
     }
     public static class Product
     {

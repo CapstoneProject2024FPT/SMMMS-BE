@@ -29,6 +29,8 @@ public partial class SamContext : DbContext
 
     public virtual DbSet<City> Cities { get; set; }
 
+    public virtual DbSet<ComponentChange> ComponentChanges { get; set; }
+
     public virtual DbSet<Device> Devices { get; set; }
 
     public virtual DbSet<Discount> Discounts { get; set; }
@@ -44,8 +46,6 @@ public partial class SamContext : DbContext
     public virtual DbSet<ImagesAll> ImagesAlls { get; set; }
 
     public virtual DbSet<Inventory> Inventories { get; set; }
-
-    public virtual DbSet<InventoryChange> InventoryChanges { get; set; }
 
     public virtual DbSet<MachineComponent> MachineComponents { get; set; }
 
@@ -87,7 +87,7 @@ public partial class SamContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=14.225.204.144;Database=SAM;Uid=vinhuser;Pwd=12345;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=(local);Database=SAM;Uid=sa;Pwd=12345;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -231,6 +231,25 @@ public partial class SamContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<ComponentChange>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_InventoryChange");
+
+            entity.ToTable("ComponentChange");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Image).HasMaxLength(250);
+
+            entity.HasOne(d => d.MachineComponent).WithMany(p => p.ComponentChanges)
+                .HasForeignKey(d => d.MachineComponentId)
+                .HasConstraintName("FK_ComponentChange_MachineComponents");
+
+            entity.HasOne(d => d.WarrantyDetail).WithMany(p => p.ComponentChanges)
+                .HasForeignKey(d => d.WarrantyDetailId)
+                .HasConstraintName("FK_InventoryChange_WarrantyDetail");
+        });
+
         modelBuilder.Entity<Device>(entity =>
         {
             entity.ToTable("Device");
@@ -372,34 +391,10 @@ public partial class SamContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Type)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-
-            entity.HasOne(d => d.MachineComponents).WithMany(p => p.Inventories)
-                .HasForeignKey(d => d.MachineComponentsId)
-                .HasConstraintName("FK_Inventory_MachineComponents");
 
             entity.HasOne(d => d.Machinery).WithMany(p => p.Inventories)
                 .HasForeignKey(d => d.MachineryId)
-                .HasConstraintName("FK_Inventory_Machinery");
-
-            entity.HasOne(d => d.MasterInventory).WithMany(p => p.InverseMasterInventory)
-                .HasForeignKey(d => d.MasterInventoryId)
-                .HasConstraintName("FK_Inventory_Inventory");
-        });
-
-        modelBuilder.Entity<InventoryChange>(entity =>
-        {
-            entity.ToTable("InventoryChange");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Image).HasMaxLength(250);
-
-            entity.HasOne(d => d.WarrantyDetail).WithMany(p => p.InventoryChanges)
-                .HasForeignKey(d => d.WarrantyDetailId)
-                .HasConstraintName("FK_InventoryChange_WarrantyDetail");
+                .HasConstraintName("FK_Inventory_Machinery1");
         });
 
         modelBuilder.Entity<MachineComponent>(entity =>
@@ -452,7 +447,7 @@ public partial class SamContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK_Machinery_Category");
+                .HasConstraintName("FK_Machinery_Category1");
 
             entity.HasOne(d => d.Origin).WithMany(p => p.Machineries)
                 .HasForeignKey(d => d.OriginId)
@@ -603,6 +598,10 @@ public partial class SamContext : DbContext
             entity.HasOne(d => d.Inventory).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.InventoryId)
                 .HasConstraintName("FK_OrderDetail_Inventory");
+
+            entity.HasOne(d => d.MachineComponent).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.MachineComponentId)
+                .HasConstraintName("FK_OrderDetail_MachineComponents");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)

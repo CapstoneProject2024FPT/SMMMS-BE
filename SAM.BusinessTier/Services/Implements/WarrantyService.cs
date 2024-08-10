@@ -131,7 +131,6 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = warranty.Inventory.Id,
                             SerialNumber = warranty.Inventory.SerialNumber,
-                            Type = EnumUtil.ParseEnum<InventoryType>(warranty.Inventory.Type),
                             Machinery = new GetMachinerySpecificationsRespone
                             {
                                 Id = warranty.Inventory.Machinery.Id,
@@ -269,7 +268,6 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             Id = warranty.Inventory.Id,
                             SerialNumber = warranty.Inventory.SerialNumber,
-                            Type = EnumUtil.ParseEnum<InventoryType>(warranty.Inventory.Type),
                             Machinery = new GetMachinerySpecificationsRespone
                             {
                                 Id = warranty.Inventory.Machinery.Id,

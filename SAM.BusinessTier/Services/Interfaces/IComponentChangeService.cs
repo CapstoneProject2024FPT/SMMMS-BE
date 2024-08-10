@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Services.Interfaces
 {
-    public interface IInventoryChangeService
+    public interface IComponentChangeService
     {
-        Task<bool> DeleteInventoryChange(Guid newInventoryId);
+        Task<bool> DeleteComponentChange(Guid warrantyDetailId);
 
     }
 }

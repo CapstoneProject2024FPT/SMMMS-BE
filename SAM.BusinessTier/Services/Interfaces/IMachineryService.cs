@@ -21,7 +21,7 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> RemoveMachineryStatus(Guid id);
         Task<GetMachinerySpecificationsRespone> GetMachinerySpecificationsDetail(Guid id);
 
-        Task<GetMachineryAndComponentsFollowInventoryIdResponse> GetMachineryAndComponentsByInventoryId(Guid id);
+        //Task<GetMachineryAndComponentsFollowInventoryIdResponse> GetMachineryAndComponentsByInventoryId(Guid id);
 
         Task<bool> AddComponentToMachinery(Guid id, List<Guid> request);
     }

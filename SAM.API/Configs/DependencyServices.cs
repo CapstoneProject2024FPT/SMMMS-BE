@@ -59,7 +59,7 @@ namespace SAM.API.Configs
             services.AddScoped<IFavoriteService, FavoriteService>();
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IInventoryChangeService, InventoryChangeService>();
+            services.AddScoped<IComponentChangeService, ComponentChangeService>();
 
             return services;
         }
