@@ -8,18 +8,18 @@ using SAM.BusinessTier.Services.Interfaces;
 namespace SAM.API.Controllers
 {
     [ApiController]
-    public class InventoryChangeController : BaseController<InventoryChangeController>
+    public class ComponentChangeController : BaseController<ComponentChangeController>
     {
-        readonly IInventoryChangeService _inventoryChangeService;
+        readonly IComponentChangeService _inventoryChangeService;
 
-        public InventoryChangeController(ILogger<InventoryChangeController> logger, IInventoryChangeService inventoryChangeService) : base(logger)
+        public ComponentChangeController(ILogger<ComponentChangeController> logger, IComponentChangeService inventoryChangeService) : base(logger)
         {
             _inventoryChangeService = inventoryChangeService;
         }
-        [HttpDelete(ApiEndPointConstant.InventoryChange.InventoryChangeEndPoint)]
+        [HttpDelete(ApiEndPointConstant.ComponentChange.ComponentChangeEndPoint)]
         public async Task<IActionResult> DeleteInventoryChange(Guid id)
         {
-            var isSuccessful = await _inventoryChangeService.DeleteInventoryChange(id);
+            var isSuccessful = await _inventoryChangeService.DeleteComponentChange(id);
             if (!isSuccessful) return Ok(MessageConstant.Inventory.DeleteInventoryFailedMessage);
             return Ok(MessageConstant.Inventory.DeleteInventorySuccessMessage);
         }

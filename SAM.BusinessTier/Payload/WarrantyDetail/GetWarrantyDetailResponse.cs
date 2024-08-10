@@ -1,5 +1,6 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
+using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Payload.Order;
 using System;
 using System.Collections.Generic;
@@ -31,22 +32,17 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
         public Guid? WarrantyId { get; set; }
 
         public OrderUserResponse? Staff { get; set; }
-        public List<InventoryChangeResponse>? InventoryChanges { get; set; }
-
-
+        public List<ComponentChangeResponse>? ComponentChange { get; set; } = new List<ComponentChangeResponse>();
     }
-    public class InventoryChangeResponse
+    public class ComponentChangeResponse
     {
-        public Guid? WarrantyDetailId {  get; set; }
-        public InventoryInWarrantyDetailResponse? OldInventory { get; set; }
-        public InventoryInWarrantyDetailResponse? NewInventory { get; set; }
+        public string? Image {  get; set; }
+        public DateTime? CreateDate { get; set;}
+        public ComponentResponse? Component { get; set; }
+        
+
     }
 
-    public class InventoryInWarrantyDetailResponse
-    {
-        public Guid? Id { get; set; }
-        public string? SerialNumber { get; set; }
-        public InventoryType? Type { get; set; }
-        public string? ComponentName { get; set; }
-    }
+
+
 }

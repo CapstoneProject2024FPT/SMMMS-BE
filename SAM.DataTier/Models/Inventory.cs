@@ -11,8 +11,6 @@ public partial class Inventory
 
     public string? Status { get; set; }
 
-    public string? Type { get; set; }
-
     public string? Condition { get; set; }
 
     public string? IsRepaired { get; set; }
@@ -23,17 +21,7 @@ public partial class Inventory
 
     public Guid? MachineryId { get; set; }
 
-    public Guid? MachineComponentsId { get; set; }
-
-    public Guid? MasterInventoryId { get; set; }
-
-    public virtual ICollection<Inventory> InverseMasterInventory { get; set; } = new List<Inventory>();
-
-    public virtual MachineComponent? MachineComponents { get; set; }
-
     public virtual Machinery? Machinery { get; set; }
-
-    public virtual Inventory? MasterInventory { get; set; }
 
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 

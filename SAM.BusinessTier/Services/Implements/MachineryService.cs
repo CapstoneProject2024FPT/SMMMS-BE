@@ -409,101 +409,101 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
-        public async Task<GetMachineryAndComponentsFollowInventoryIdResponse> GetMachineryAndComponentsByInventoryId(Guid id)
-        {
-            // Lấy thông tin Machinery từ Inventory
-            var inventory = await _unitOfWork.GetRepository<Inventory>()
-                .SingleOrDefaultAsync(
-                    predicate: x => x.Id == id,
-                    include: x => x.Include(i => i.Machinery)
-                                   .Include(i => i.Machinery.Brand)
-                                   .Include(i => i.Machinery.Origin)
-                                   .Include(i => i.Machinery.Category)
-                                   .Include(i => i.Machinery.ImagesAlls)
-                                   .Include(i => i.Machinery.Specifications))
-                ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
+        //public async Task<GetMachineryAndComponentsFollowInventoryIdResponse> GetMachineryAndComponentsByInventoryId(Guid id)
+        //{
+        //    // Lấy thông tin Machinery từ Inventory
+        //    var inventory = await _unitOfWork.GetRepository<Inventory>()
+        //        .SingleOrDefaultAsync(
+        //            predicate: x => x.Id == id,
+        //            include: x => x.Include(i => i.Machinery)
+        //                           .Include(i => i.Machinery.Brand)
+        //                           .Include(i => i.Machinery.Origin)
+        //                           .Include(i => i.Machinery.Category)
+        //                           .Include(i => i.Machinery.ImagesAlls)
+        //                           .Include(i => i.Machinery.Specifications))
+        //        ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
-            var machinery = inventory.Machinery;
-            if (machinery == null)
-            {
-                throw new BadHttpRequestException("Không tìm thấy máy cơ khí cho số định dành này");
-            }
+        //    var machinery = inventory.Machinery;
+        //    if (machinery == null)
+        //    {
+        //        throw new BadHttpRequestException("Không tìm thấy máy cơ khí cho số định dành này");
+        //    }
 
-            var machineryResponse = new GetMachinerySpecificationsRespone
-            {
-                Id = machinery.Id,
-                Name = machinery.Name,
-                Brand = new BrandResponse
-                {
-                    Id = machinery.BrandId,
-                    Name = machinery.Brand.Name,
-                    Description = machinery.Brand.Description,
-                },
-                Model = machinery.Model,
-                Description = machinery.Description,
-                StockPrice = machinery.StockPrice,
-                SellingPrice = machinery.SellingPrice,
-                Priority = machinery.Priority,
-                TimeWarranty = machinery.TimeWarranty,
-                MonthWarrantyNumber = machinery.MonthWarrantyNumber,
-                Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
-                CreateDate = machinery.CreateDate,
-                Origin = new OriginResponse
-                {
-                    Id = machinery.OriginId,
-                    Name = machinery.Origin.Name,
-                    Description = machinery.Origin.Description,
-                },
-                Category = new CategoryResponse
-                {
-                    Id = machinery.CategoryId,
-                    Name = machinery.Category.Name,
-                    Type = EnumUtil.ParseEnum<CategoryType>(machinery.Category.Type),
-                },
-                Image = machinery.ImagesAlls.Select(image => new MachineryImagesResponse
-                {
-                    Id = image.Id,
-                    ImageURL = image.ImageUrl,
-                    CreateDate = image.CreateDate
-                }).ToList(),
-                Specifications = machinery.Specifications.Select(spec => new SpecificationsResponse
-                {
-                    SpecificationId = spec.Id,
-                    MachineryId = spec.MachineryId,
-                    Name = spec.Name,
-                    Value = spec.Value
-                }).ToList()
-            };
+        //    var machineryResponse = new GetMachinerySpecificationsRespone
+        //    {
+        //        Id = machinery.Id,
+        //        Name = machinery.Name,
+        //        Brand = new BrandResponse
+        //        {
+        //            Id = machinery.BrandId,
+        //            Name = machinery.Brand.Name,
+        //            Description = machinery.Brand.Description,
+        //        },
+        //        Model = machinery.Model,
+        //        Description = machinery.Description,
+        //        StockPrice = machinery.StockPrice,
+        //        SellingPrice = machinery.SellingPrice,
+        //        Priority = machinery.Priority,
+        //        TimeWarranty = machinery.TimeWarranty,
+        //        MonthWarrantyNumber = machinery.MonthWarrantyNumber,
+        //        Status = EnumUtil.ParseEnum<MachineryStatus>(machinery.Status),
+        //        CreateDate = machinery.CreateDate,
+        //        Origin = new OriginResponse
+        //        {
+        //            Id = machinery.OriginId,
+        //            Name = machinery.Origin.Name,
+        //            Description = machinery.Origin.Description,
+        //        },
+        //        Category = new CategoryResponse
+        //        {
+        //            Id = machinery.CategoryId,
+        //            Name = machinery.Category.Name,
+        //            Type = EnumUtil.ParseEnum<CategoryType>(machinery.Category.Type),
+        //        },
+        //        Image = machinery.ImagesAlls.Select(image => new MachineryImagesResponse
+        //        {
+        //            Id = image.Id,
+        //            ImageURL = image.ImageUrl,
+        //            CreateDate = image.CreateDate
+        //        }).ToList(),
+        //        Specifications = machinery.Specifications.Select(spec => new SpecificationsResponse
+        //        {
+        //            SpecificationId = spec.Id,
+        //            MachineryId = spec.MachineryId,
+        //            Name = spec.Name,
+        //            Value = spec.Value
+        //        }).ToList()
+        //    };
 
-            // Lấy danh sách component inventories dựa trên MasterInventoryId
-            var componentInventories = await _unitOfWork.GetRepository<Inventory>()
-                .GetListAsync(
-                    predicate: x => x.MasterInventoryId == id,
-                    include: x => x.Include(i => i.MachineComponents))
-                ?? throw new BadHttpRequestException("Không tìm thấy sản phẩm theo mã sản phẩm");
+        //    // Lấy danh sách component inventories dựa trên MasterInventoryId
+        //    var componentInventories = await _unitOfWork.GetRepository<Inventory>()
+        //        .GetListAsync(
+        //            predicate: x => x.MasterInventoryId == id,
+        //            include: x => x.Include(i => i.MachineComponents))
+        //        ?? throw new BadHttpRequestException("Không tìm thấy sản phẩm theo mã sản phẩm");
 
-            var componentResponses = componentInventories.Select(component => new GetInventoryResponse
-            {
-                Id = component.Id,
-                SerialNumber = component.SerialNumber,
-                Status = component.Status,
-                Type = component.Type,
-                Condition = component.Condition,
-                IsRepaired = component.IsRepaired,
-                CreateDate = component.CreateDate,
-                SoldDate = component.SoldDate,
-                MachineComponentsId = component.MachineComponentsId,
-                MasterInventoryId = component.MasterInventoryId
-            }).ToList();
+        //    var componentResponses = componentInventories.Select(component => new GetInventoryResponse
+        //    {
+        //        Id = component.Id,
+        //        SerialNumber = component.SerialNumber,
+        //        Status = component.Status,
+        //        Type = component.Type,
+        //        Condition = component.Condition,
+        //        IsRepaired = component.IsRepaired,
+        //        CreateDate = component.CreateDate,
+        //        SoldDate = component.SoldDate,
+        //        MachineComponentsId = component.MachineComponentsId,
+        //        MasterInventoryId = component.MasterInventoryId
+        //    }).ToList();
 
-            var response = new GetMachineryAndComponentsFollowInventoryIdResponse
-            {
-                Machinery = machineryResponse,
-                Components = componentResponses
-            };
+        //    var response = new GetMachineryAndComponentsFollowInventoryIdResponse
+        //    {
+        //        Machinery = machineryResponse,
+        //        Components = componentResponses
+        //    };
 
-            return response;
-        }
+        //    return response;
+        //}
 
 
         public async Task<bool> RemoveMachineryStatus(Guid id)

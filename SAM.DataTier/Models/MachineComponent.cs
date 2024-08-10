@@ -11,7 +11,7 @@ public partial class MachineComponent
 
     public string? Description { get; set; }
 
-    public DateTime? CreateDate { get; set; }
+    public int? Quantity { get; set; }
 
     public string? Status { get; set; }
 
@@ -20,6 +20,8 @@ public partial class MachineComponent
     public double? SellingPrice { get; set; }
 
     public int? TimeWarranty { get; set; }
+
+    public DateTime? CreateDate { get; set; }
 
     public Guid? CategoryId { get; set; }
 
@@ -31,11 +33,13 @@ public partial class MachineComponent
 
     public virtual Category? Category { get; set; }
 
+    public virtual ICollection<ComponentChange> ComponentChanges { get; set; } = new List<ComponentChange>();
+
     public virtual ICollection<ImageComponent> ImageComponents { get; set; } = new List<ImageComponent>();
 
-    public virtual ICollection<Inventory> Inventories { get; set; } = new List<Inventory>();
-
     public virtual ICollection<MachineryComponentPart> MachineryComponentParts { get; set; } = new List<MachineryComponentPart>();
+
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
     public virtual Origin? Origin { get; set; }
 }

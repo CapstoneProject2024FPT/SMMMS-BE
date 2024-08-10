@@ -44,6 +44,8 @@ namespace SAM.BusinessTier.Payload.Order
         public Guid? InventoryId { get; set; }
         public Guid? ProductId { get; set; }
         public string? ProductName { get; set; }
+        public Guid? MachineComponentId { get; set; }
+        public string? MachineComponentName { get; set; }
         public int? Quantity { get; set; }
         public double? SellingPrice { get; set; }
         public double? TotalAmount { get; set; }

@@ -7,13 +7,6 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.WarrantyDetail
 {
-    public class InventoryUpdate
-    {
-        public Guid? NewInventoryId { get; set; }
-        public Guid? OldInventoryId { get; set; }
-
-        
-    }
 
     public class UpdateWarrantyDetailRequest
     {
@@ -22,7 +15,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
         public string? Comments { get; set; }
         public DateTime? NextMaintenanceDate { get; set; }
         public Guid? AccountId { get; set; }
-        public List<InventoryUpdate>? InventoryUpdates { get; set; } = new List<InventoryUpdate>();
+        public List<Guid>? ComponentId { get; set; } = new List<Guid>();
         public string? Image { get; set; }
     }
 

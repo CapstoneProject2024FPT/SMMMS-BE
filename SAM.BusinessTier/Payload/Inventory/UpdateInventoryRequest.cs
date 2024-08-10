@@ -14,8 +14,6 @@ namespace SAM.BusinessTier.Payload.Inventory
 
         public InventoryStatus? Status { get; set; }
 
-        public InventoryType? Type { get; set; }
-
         public InventoryCondition? Condition { get; set; }
 
         public InventoryIsRepaired? IsRepaired { get; set; }

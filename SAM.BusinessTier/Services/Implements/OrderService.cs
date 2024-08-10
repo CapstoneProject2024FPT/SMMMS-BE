@@ -155,7 +155,7 @@ namespace SAM.BusinessTier.Services.Implements
                     Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
                     Description = note.Description,
                     CreateDate = note.CreateDate.Value,
-                    
+
                 }).ToList(),
                 UserInfo = order.Account == null ? null : new OrderUserResponse
                 {
@@ -196,12 +196,12 @@ namespace SAM.BusinessTier.Services.Implements
                         Role = EnumUtil.ParseEnum<RoleEnum>(order.Address.Account.Role),
                     }
                 },
-                ProductList = order.OrderDetails?.Select(detail => new OrderDetailResponse
+                ProductList = order.OrderDetails.Select(detail => new OrderDetailResponse
                 {
                     OrderDetailId = detail.Id,
                     InventoryId = detail.InventoryId,
-                    ProductId = detail.MachineryId,
-                    ProductName = detail.Inventory.Machinery?.Name,
+                    ProductId = detail.MachineryId.HasValue ? detail.MachineryId : detail.MachineComponentId,
+                    ProductName = detail.MachineryId.HasValue ? detail.Inventory.Machinery.Name : detail.MachineComponent.Name,
                     Quantity = detail.Quantity,
                     SellingPrice = detail.SellingPrice,
                     TotalAmount = detail.TotalAmount,
@@ -281,13 +281,14 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         OrderDetailId = detail.Id,
                         InventoryId = detail.InventoryId,
-                        ProductId = detail.MachineryId,
-                        ProductName = detail.Inventory.Machinery.Name,
+                        ProductId = detail.MachineryId.HasValue ? detail.MachineryId : detail.MachineComponentId,
+                        ProductName = detail.MachineryId.HasValue ? detail.Inventory.Machinery.Name : detail.MachineComponent.Name,
                         Quantity = detail.Quantity,
                         SellingPrice = detail.SellingPrice,
                         TotalAmount = detail.TotalAmount,
                         CreateDate = detail.CreateDate,
                     }).ToList() ?? new List<OrderDetailResponse>()
+
                 },
                 filter: filter,
                 orderBy: x => x.OrderByDescending(x => x.CreateDate),
@@ -322,7 +323,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(orderId))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
-            if(updateOrder.Status == OrderStatus.Completed.GetDescriptionFromEnum())
+            if (updateOrder.Status == OrderStatus.Completed.GetDescriptionFromEnum())
             {
                 throw new BadHttpRequestException("Không thể cập nhật đơn hàng khi đã completed");
             }
@@ -353,8 +354,8 @@ namespace SAM.BusinessTier.Services.Implements
 
                     // Lấy danh sách các rank
                     var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync(
-                        predicate : x => points >= x.Range,
-                        orderBy : x => x.OrderByDescending(x => x.Range)
+                        predicate: x => points >= x.Range,
+                        orderBy: x => x.OrderByDescending(x => x.Range)
                         );
 
                     var rankCheck = ranks.FirstOrDefault();
@@ -388,7 +389,7 @@ namespace SAM.BusinessTier.Services.Implements
                         await _unitOfWork.GetRepository<Note>().InsertAsync(note);
                     }
                     break;
-                    
+
                 case OrderStatus.Delivery:
                     updateOrder.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
                     break;
@@ -396,7 +397,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                     var taskManagers = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
                         predicate: t => t.OrderId == orderId,
-                        orderBy: x => x.OrderByDescending(t => t.CreateDate)); 
+                        orderBy: x => x.OrderByDescending(t => t.CreateDate));
 
                     var taskManager1 = taskManagers.FirstOrDefault();
                     if (taskManager1 != null)
@@ -422,12 +423,40 @@ namespace SAM.BusinessTier.Services.Implements
                     break;
 
                 case OrderStatus.Paid:
-                    if (updateOrder.Type == OrderType.Warranty.GetDescriptionFromEnum()) {
-                        throw new BadHttpRequestException(MessageConstant.Transaction.CreateTransactionSuccessMessage);
-                    }
                     var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
+                    if (updateOrder.Type == OrderType.Warranty.GetDescriptionFromEnum())
+                    {
+
+                        foreach (var detail in orderDetailsPaid)
+                        {
+                            // Directly fetch the MachineComponent associated with the OrderDetail
+                            var machineComponent = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
+                                predicate: mc => mc.Id == detail.MachineryId);
+
+                            if (machineComponent == null)
+                            {
+                                throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
+                            }
+
+                            // Deduct the quantity based on the order detail quantity
+                            machineComponent.Quantity -= detail.Quantity;
+
+                            if (machineComponent.Quantity < 0)
+                            {
+                                throw new BadHttpRequestException("Số lượng của bộ phận không đủ để trừ.");
+                            }
+
+                             _unitOfWork.GetRepository<MachineComponent>().UpdateAsync(machineComponent);
+                        }
+
+                        updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
+                        await _unitOfWork.CommitAsync();
+
+                        // You can return or log something here if needed
+                    }
                     
+
                     foreach (var detail in orderDetailsPaid)
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
@@ -488,31 +517,7 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         }
                     }
-                    foreach (var detail in orderDetailsPaid)
-                    {
-                        var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                            predicate: x => x.Id == detail.InventoryId,
-                            include: i => i.Include(i => i.Machinery).ThenInclude(m => m.MachineryComponentParts).ThenInclude(cp => cp.MachineComponents));
 
-                        if (inventory != null)
-                        {
-                            inventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
-                            _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
-
-                            // Update status for components of Machinery
-                            foreach (var componentPart in inventory.Machinery.MachineryComponentParts)
-                            {
-                                var componentInventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                                    predicate: x => x.MachineComponentsId == componentPart.MachineComponentsId && x.MasterInventoryId == inventory.Id);
-
-                                if (componentInventory != null)
-                                {
-                                    componentInventory.Status = InventoryStatus.Sold.GetDescriptionFromEnum();
-                                    _unitOfWork.GetRepository<Inventory>().UpdateAsync(componentInventory);
-                                }
-                            }
-                        }
-                    }
                     updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Canceled:
@@ -534,7 +539,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = Guid.NewGuid(),
                         Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
                         CreateDate = currentTime,
-                        Description = request.Note, 
+                        Description = request.Note,
                         OrderId = updateOrder.Id
 
                     };

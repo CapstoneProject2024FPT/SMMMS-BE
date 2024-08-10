@@ -69,6 +69,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Id = Guid.NewGuid(),
                 Name = createMachineryComponentRequest.Name,
                 Description = createMachineryComponentRequest.Description,
+                Quantity = createMachineryComponentRequest.Quantity,
                 Status = ComponentStatus.Active.GetDescriptionFromEnum(),
                 StockPrice = createMachineryComponentRequest.StockPrice,
                 SellingPrice = createMachineryComponentRequest.SellingPrice,
@@ -109,6 +110,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = component.Id,
                         Name = component.Name,
                         Description = component.Description,
+                        Quantity = component.Quantity,
                         CreateDate = component.CreateDate,
                         Status = component.Status != null ? EnumUtil.ParseEnum<ComponentStatus>(component.Status) : null,
                         StockPrice = component.StockPrice,
@@ -138,14 +140,13 @@ namespace SAM.BusinessTier.Services.Implements
                             ImageURL = image.ImageUrl,
                             CreateDate = image.CreateDate
                         }).ToList(),
-                        Quantity = component.Inventories.CountInventoryEachStatus()
                     },
                     predicate: x => x.Id == id,
-                    include: x => x.Include(x => x.Inventories)
-                                   .Include(x => x.Brand)
+                    include: x => x.Include(x => x.Brand)
                                    .Include(x => x.Origin)
                                    .Include(x => x.Category)
                                    .Include(x => x.ImageComponents));
+
 
             if (component == null)
             {
@@ -166,6 +167,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = component.Id,
                         Name = component.Name,
                         Description = component.Description,
+                        Quantity = component.Quantity,
                         CreateDate = component.CreateDate,
                         Status = component.Status != null ? EnumUtil.ParseEnum<ComponentStatus>(component.Status) : null,
                         StockPrice = component.StockPrice,
@@ -195,12 +197,10 @@ namespace SAM.BusinessTier.Services.Implements
                             ImageURL = image.ImageUrl,
                             CreateDate = image.CreateDate
                         }).ToList(),
-                        Quantity = component.Inventories.CountInventoryEachStatus()
                     },
                     filter: filter,
                     orderBy: x => x.OrderByDescending(x => x.CreateDate),
-                    include: x => x.Include(x => x.Inventories)
-                                   .Include(x => x.Brand)
+                    include: x => x.Include(x => x.Brand)
                                    .Include(x => x.Origin)
                                    .Include(x => x.Category)
                                    .Include(x => x.ImageComponents),
@@ -249,15 +249,14 @@ namespace SAM.BusinessTier.Services.Implements
                             ImageURL = image.ImageUrl,
                             CreateDate = image.CreateDate
                         }).ToList(),
-                        Quantity = component.Inventories.CountInventoryEachStatus()
                     },
                     filter: filter,
                     orderBy: x => x.OrderByDescending(x => x.CreateDate), // Adjust as per your sorting requirements
-                    include: x => x.Include(x => x.Inventories)
-                                   .Include(x => x.Brand)
+                    include: x => x.Include(x => x.Brand)
                                    .Include(x => x.Origin)
                                    .Include(x => x.Category)
                                    .Include(x => x.ImageComponents))
+
                 ?? throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
 
             return componentList;
@@ -271,14 +270,13 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
 
-            // Remove status logic, assuming status is nullable
-            component.Status = null; // Or set to a default status as needed
+            component.Status = ComponentStatus.InActive.GetDescriptionFromEnum();
 
             _unitOfWork.GetRepository<MachineComponent>().UpdateAsync(component);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
         }
-
+        
 
         public async Task<bool> UpdateMachineryComponent(Guid id, UpdateMachineryComponentRequest updateComponentRequest)
         {
@@ -306,10 +304,11 @@ namespace SAM.BusinessTier.Services.Implements
 
             component.Name = string.IsNullOrEmpty(updateComponentRequest.Name) ? component.Name : updateComponentRequest.Name;
             component.Description = string.IsNullOrEmpty(updateComponentRequest.Description) ? component.Description : updateComponentRequest.Description;
+            component.Quantity = updateComponentRequest.Quantity.HasValue ? updateComponentRequest.Quantity.Value : component.Quantity;
             component.SellingPrice = updateComponentRequest.SellingPrice.HasValue ? updateComponentRequest.SellingPrice.Value : component.SellingPrice;
             component.StockPrice = updateComponentRequest.StockPrice.HasValue ? updateComponentRequest.StockPrice.Value : component.StockPrice;
             component.TimeWarranty = updateComponentRequest.TimeWarranty.HasValue ? updateComponentRequest.TimeWarranty.Value : component.TimeWarranty;
-            
+
             if (!updateComponentRequest.Status.HasValue)
             {
                 throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);

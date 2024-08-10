@@ -31,7 +31,7 @@ public partial class WarrantyDetail
 
     public virtual Account? Account { get; set; }
 
-    public virtual ICollection<InventoryChange> InventoryChanges { get; set; } = new List<InventoryChange>();
+    public virtual ICollection<ComponentChange> ComponentChanges { get; set; } = new List<ComponentChange>();
 
     public virtual ICollection<TaskManager> TaskManagers { get; set; } = new List<TaskManager>();
 
