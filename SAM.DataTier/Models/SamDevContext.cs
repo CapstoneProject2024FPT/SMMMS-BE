@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SAM.DataTier.Models;
 
-public partial class SamContext : DbContext
+public partial class SamDevContext : DbContext
 {
-    public SamContext()
+    public SamDevContext()
     {
     }
 
-    public SamContext(DbContextOptions<SamContext> options)
+    public SamDevContext(DbContextOptions<SamDevContext> options)
         : base(options)
     {
     }
