@@ -247,12 +247,12 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccess;
         }
 
-        public async Task<Guid> CreateOrderForReplacedComponents(Guid id, CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
+        public async Task<Guid> CreateOrderForReplacedComponents(CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
-                predicate: wd => wd.Id == id,
+                predicate: wd => wd.Id == createNewOrderForWarrantyComponent.WarrantyId,
                 include: wd => wd.Include(wd => wd.ComponentChanges)
                                  .ThenInclude(cc => cc.MachineComponent))
                 ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
