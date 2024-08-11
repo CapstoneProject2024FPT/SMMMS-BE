@@ -117,99 +117,104 @@ namespace SAM.BusinessTier.Services.Implements
 
 
 
-        public async Task<GetOrderDetailResponse> GetOrderDetail(Guid id)
+        public async Task<GetOrderDetailResponse> GetOrderDetail(Guid orderId)
         {
             var order = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id),
-                include: x => x.Include(o => o.Account)
-                               .Include(o => o.Address)
-                                   .ThenInclude(a => a.City)
-                               .Include(o => o.Address)
-                                   .ThenInclude(a => a.District)
-                               .Include(o => o.Address)
-                                   .ThenInclude(a => a.Ward)
-                               .Include(o => o.Address)
-                                   .ThenInclude(a => a.Account)
-                               .Include(o => o.OrderDetails)
-                                   .ThenInclude(detail => detail.Inventory.Machinery)
-                                       .ThenInclude(machinery => machinery.MachineryComponentParts)
-                               .Include(o => o.Notes))
-                ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
+                predicate: x => x.Id.Equals(orderId),
+                selector: x => new GetOrderDetailResponse
+                {
+                    OrderId = x.Id,
+                    InvoiceCode = x.InvoiceCode,
+                    CreateDate = x.CreateDate,
+                    CompletedDate = x.CompletedDate,
+                    TotalAmount = x.TotalAmount,
+                    FinalAmount = x.FinalAmount,
+                    Description = x.Description,
+                    Status = EnumUtil.ParseEnum<OrderStatus>(x.Status),
+                    NoteStatus = x.Notes.CountNoteEachStatus(),
+                    Type = EnumUtil.ParseEnum<OrderType>(x.Type),
+                    Note = x.Notes.Select(note => new NoteResponse
+                    {
+                        Id = note.Id,
+                        Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
+                        Description = note.Description,
+                        CreateDate = note.CreateDate.Value,
+                    }).ToList(),
+                    UserInfo = x.Account == null ? null : new OrderUserResponse
+                    {
+                        Id = x.Account.Id,
+                        FullName = x.Account.FullName,
+                        Role = EnumUtil.ParseEnum<RoleEnum>(x.Account.Role)
+                    },
+                    Address = x.Address == null ? null : new GetAddressResponse
+                    {
+                        Id = x.Address.Id,
+                        Name = x.Address.Name,
+                        Status = EnumUtil.ParseEnum<AddressStatus>(x.Address.Status),
+                        Note = x.Address.Note,
+                        NamePersonal = x.Address.NamePersonal.ToString(),
+                        PhoneNumber = x.Address.PhoneNumber.ToString(),
+                        City = x.Address.City == null ? null : new CityResponse
+                        {
+                            Id = x.Address.City.Id,
+                            UnitId = x.Address.City.UnitId,
+                            Name = x.Address.City.Name
+                        },
+                        District = x.Address.District == null ? null : new DistrictResponse
+                        {
+                            Id = x.Address.District.Id,
+                            UnitId = x.Address.District.UnitId,
+                            Name = x.Address.District.Name
+                        },
+                        Ward = x.Address.Ward == null ? null : new WardResponse
+                        {
+                            Id = x.Address.Ward.Id,
+                            UnitId = x.Address.Ward.UnitId,
+                            Name = x.Address.Ward.Name
+                        },
+                        Account = x.Address.Account == null ? null : new AccountResponse
+                        {
+                            Id = x.Address.Account.Id,
+                            FullName = x.Address.Account.FullName,
+                            Role = EnumUtil.ParseEnum<RoleEnum>(x.Address.Account.Role),
+                        }
+                    },
+                    ProductList = x.OrderDetails.Select(detail => new OrderDetailResponse
+                    {
+                        OrderDetailId = detail.Id,
+                        InventoryId = detail.InventoryId,
+                        ProductId = detail.MachineryId,
+                        ProductName = detail.Inventory.Machinery.Name,
+                        MachineComponentId = detail.MachineComponent.Id,
+                        MachineComponentName = detail.MachineComponent.Name,
+                        Quantity = detail.Quantity,
+                        SellingPrice = detail.SellingPrice,
+                        TotalAmount = detail.TotalAmount,
+                        CreateDate = detail.CreateDate,
+                    }).ToList() ?? new List<OrderDetailResponse>()
 
-            var getOrderDetailResponse = new GetOrderDetailResponse
+                },
+                 include: x => x.Include(x => x.Account)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.City)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.District)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.Ward)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.Account)
+                   .Include(x => x.OrderDetails)
+                       .ThenInclude(detail => detail.Inventory.Machinery)
+                       .ThenInclude(machinery => machinery.MachineryComponentParts)
+                   .Include(x => x.Notes)
+            );
+
+            if (order == null)
             {
-                OrderId = order.Id,
-                InvoiceCode = order.InvoiceCode,
-                CreateDate = order.CreateDate,
-                CompletedDate = order.CompletedDate,
-                TotalAmount = order.TotalAmount,
-                FinalAmount = order.FinalAmount,
-                Description = order.Description,
-                Status = EnumUtil.ParseEnum<OrderStatus>(order.Status),
-                Type = EnumUtil.ParseEnum<OrderType>(order.Type),
-                NoteStatus = order.Notes.CountNoteEachStatus(),
-                Note = order.Notes?.Select(note => new NoteResponse
-                {
-                    Id = note.Id,
-                    Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
-                    Description = note.Description,
-                    CreateDate = note.CreateDate.Value,
-                }).ToList() ?? new List<NoteResponse>(),
-                UserInfo = order.Account == null ? null : new OrderUserResponse
-                {
-                    Id = order.Account.Id,
-                    FullName = order.Account.FullName,
-                    Role = EnumUtil.ParseEnum<RoleEnum>(order.Account.Role)
-                },
-                Address = order.Address == null ? null : new GetAddressResponse
-                {
-                    Id = order.Address.Id,
-                    Name = order.Address.Name,
-                    Status = EnumUtil.ParseEnum<AddressStatus>(order.Address.Status),
-                    Note = order.Address.Note,
-                    NamePersonal = order.Address.NamePersonal,
-                    PhoneNumber = order.Address.PhoneNumber,
-                    City = order.Address.City == null ? null : new CityResponse
-                    {
-                        Id = order.Address.City.Id,
-                        UnitId = order.Address.City.UnitId,
-                        Name = order.Address.City.Name
-                    },
-                    District = order.Address.District == null ? null : new DistrictResponse
-                    {
-                        Id = order.Address.District.Id,
-                        UnitId = order.Address.District.UnitId,
-                        Name = order.Address.District.Name
-                    },
-                    Ward = order.Address.Ward == null ? null : new WardResponse
-                    {
-                        Id = order.Address.Ward.Id,
-                        UnitId = order.Address.Ward.UnitId,
-                        Name = order.Address.Ward.Name
-                    },
-                    Account = order.Address.Account == null ? null : new AccountResponse
-                    {
-                        Id = order.Address.Account.Id,
-                        FullName = order.Address.Account.FullName,
-                        Role = EnumUtil.ParseEnum<RoleEnum>(order.Address.Account.Role),
-                    }
-                },
-                ProductList = order.OrderDetails.Select(detail => new OrderDetailResponse
-                {
-                    OrderDetailId = detail.Id,
-                    InventoryId = detail.InventoryId,
-                    ProductId = detail.MachineryId,
-                    ProductName = detail.Inventory.Machinery.Name,
-                    MachineComponentId = detail.MachineComponent.Id,
-                    MachineComponentName = detail.MachineComponent.Name,
-                    Quantity = detail.Quantity,
-                    SellingPrice = detail.SellingPrice,
-                    TotalAmount = detail.TotalAmount,
-                    CreateDate = detail.CreateDate,
-                }).ToList() ?? new List<OrderDetailResponse>()
-            };
+                throw new KeyNotFoundException("Order not found.");
+            }
 
-            return getOrderDetailResponse;
+            return order;
         }
 
 

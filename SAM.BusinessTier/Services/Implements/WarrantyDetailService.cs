@@ -247,12 +247,12 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccess;
         }
 
-        public async Task<Guid> CreateOrderForReplacedComponents(Guid warrantyDetailId, Guid accountId)
+        public async Task<Guid> CreateOrderForReplacedComponents(Guid id, CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
             WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
-                predicate: wd => wd.Id == warrantyDetailId,
+                predicate: wd => wd.Id == id,
                 include: wd => wd.Include(wd => wd.ComponentChanges)
                                  .ThenInclude(cc => cc.MachineComponent))
                 ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
@@ -271,7 +271,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TotalAmount = 0,
                 Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
                 Type = OrderType.Warranty.GetDescriptionFromEnum(),
-                AccountId = accountId,
+                AccountId = createNewOrderForWarrantyComponent.AccountId,
                 AddressId = warrantyDetail.AddressId,
                 Description = "Thanh toán cho bộ phận sửa chữa",
             };
