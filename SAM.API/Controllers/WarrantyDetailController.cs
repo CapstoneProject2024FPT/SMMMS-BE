@@ -44,11 +44,12 @@ namespace SAM.API.Controllers
             return Ok(MessageConstant.WarrantyDetail.UpdateWarrantyDetailSuccessMessage);
         }
         [HttpPost(ApiEndPointConstant.WarrantyDetail.WarrantydetailCreateOrderWarrantyChangeEndPoint)]
-        public async Task<IActionResult> UpdateWarrantyDetail(Guid warrantyId, Guid accountId)
+        public async Task<IActionResult> CreateOrderForReplacedComponents(Guid id ,CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
         {
-            var response = await _warrantyDetailService.CreateOrderForReplacedComponents(warrantyId, accountId);
+            var response = await _warrantyDetailService.CreateOrderForReplacedComponents(id ,createNewOrderForWarrantyComponent);
             return Ok(response);
         }
+
         //[HttpDelete(ApiEndPointConstant.WarrantyDetail.WarrantydetailEndPoint)]
         //public async Task<IActionResult> RemoveWarrantyDetailStatus(Guid id)
         //{
