@@ -289,7 +289,7 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     Id = Guid.NewGuid(),
                     OrderId = newOrder.Id,
-                    MachineryId = componentChange.MachineComponent.Id,
+                    MachineComponentId = componentChange.MachineComponent.Id,
                     Quantity = 1,
                     SellingPrice = componentChange.MachineComponent.SellingPrice,
                     TotalAmount = componentChange.MachineComponent.SellingPrice,
