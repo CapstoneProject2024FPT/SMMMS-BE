@@ -119,22 +119,22 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetOrderDetailResponse> GetOrderDetail(Guid id)
         {
-            // Fetch order including related entities from the database
             var order = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id),
-                include: x => x.Include(x => x.Account)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.City)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.District)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.Ward)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.Account)
-                               .Include(x => x.OrderDetails)
-                                   .ThenInclude(detail => detail.Inventory.Machinery)
-                               .Include(x => x.Notes))
-                ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
+    predicate: x => x.Id.Equals(id),
+    include: x => x.Include(x => x.Account)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.City)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.District)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.Ward)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.Account)
+                   .Include(x => x.OrderDetails)
+                       .ThenInclude(detail => detail.Inventory.Machinery)
+                       .ThenInclude(machinery => machinery.MachineryComponentParts)
+                   .Include(x => x.Notes))
+    ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
 
             // Map fetched data to the response DTO
             var getOrderDetailResponse = new GetOrderDetailResponse
@@ -155,7 +155,6 @@ namespace SAM.BusinessTier.Services.Implements
                     Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
                     Description = note.Description,
                     CreateDate = note.CreateDate.Value,
-
                 }).ToList(),
                 UserInfo = order.Account == null ? null : new OrderUserResponse
                 {
@@ -163,7 +162,7 @@ namespace SAM.BusinessTier.Services.Implements
                     FullName = order.Account.FullName,
                     Role = EnumUtil.ParseEnum<RoleEnum>(order.Account.Role)
                 },
-                Address = new GetAddressResponse
+                Address = order.Address == null ? null : new GetAddressResponse
                 {
                     Id = order.Address.Id,
                     Name = order.Address.Name,
@@ -200,8 +199,10 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     OrderDetailId = detail.Id,
                     InventoryId = detail.InventoryId,
-                    ProductId = detail.MachineryId.HasValue ? detail.MachineryId : detail.MachineComponentId,
-                    ProductName = detail.MachineryId.HasValue ? detail.Inventory.Machinery.Name : detail.MachineComponent.Name,
+                    ProductId = detail.MachineryId,
+                    ProductName = detail.Inventory.Machinery?.Name,
+                    MachineComponentId = detail?.MachineComponent?.Id, 
+                    MachineComponentName = detail?.MachineComponent?.Name, 
                     Quantity = detail.Quantity,
                     SellingPrice = detail.SellingPrice,
                     TotalAmount = detail.TotalAmount,
@@ -210,6 +211,7 @@ namespace SAM.BusinessTier.Services.Implements
             };
 
             return getOrderDetailResponse;
+
         }
 
 
@@ -281,8 +283,10 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         OrderDetailId = detail.Id,
                         InventoryId = detail.InventoryId,
-                        ProductId = detail.MachineryId.HasValue ? detail.MachineryId : detail.MachineComponentId,
-                        ProductName = detail.MachineryId.HasValue ? detail.Inventory.Machinery.Name : detail.MachineComponent.Name,
+                        ProductId = detail.MachineryId,
+                        ProductName = detail.Inventory.Machinery.Name,
+                        MachineComponentId = detail.MachineComponent.Id,
+                        MachineComponentName = detail.MachineComponent.Name,
                         Quantity = detail.Quantity,
                         SellingPrice = detail.SellingPrice,
                         TotalAmount = detail.TotalAmount,
@@ -293,17 +297,18 @@ namespace SAM.BusinessTier.Services.Implements
                 filter: filter,
                 orderBy: x => x.OrderByDescending(x => x.CreateDate),
                 include: x => x.Include(x => x.Account)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.City)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.District)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.Ward)
-                               .Include(x => x.Address)
-                                   .ThenInclude(a => a.Account)
-                               .Include(x => x.OrderDetails)
-                                   .ThenInclude(detail => detail.Inventory.Machinery)
-                               .Include(x => x.Notes),
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.City)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.District)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.Ward)
+                   .Include(x => x.Address)
+                       .ThenInclude(a => a.Account)
+                   .Include(x => x.OrderDetails)
+                       .ThenInclude(detail => detail.Inventory.Machinery)
+                       .ThenInclude(machinery => machinery.MachineryComponentParts)
+                   .Include(x => x.Notes),
                 page: pagingModel.page,
                 size: pagingModel.size
             );
