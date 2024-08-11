@@ -8,6 +8,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
 {
     public class CreateNewOrderForWarrantyComponent
     {
+        public Guid WarrantyId { get; set; }
         public Guid AccountId { get; set; }
     }   
 }

@@ -44,9 +44,9 @@ namespace SAM.API.Controllers
             return Ok(MessageConstant.WarrantyDetail.UpdateWarrantyDetailSuccessMessage);
         }
         [HttpPost(ApiEndPointConstant.WarrantyDetail.WarrantydetailCreateOrderWarrantyChangeEndPoint)]
-        public async Task<IActionResult> CreateOrderForReplacedComponents(Guid id ,CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
+        public async Task<IActionResult> CreateOrderForReplacedComponents(CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
         {
-            var response = await _warrantyDetailService.CreateOrderForReplacedComponents(id ,createNewOrderForWarrantyComponent);
+            var response = await _warrantyDetailService.CreateOrderForReplacedComponents(createNewOrderForWarrantyComponent);
             return Ok(response);
         }
 
