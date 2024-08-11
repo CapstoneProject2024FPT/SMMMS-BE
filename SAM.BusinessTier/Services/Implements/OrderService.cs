@@ -441,7 +441,7 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             // Directly fetch the MachineComponent associated with the OrderDetail
                             var machineComponent = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
-                                predicate: mc => mc.Id == detail.MachineryId);
+                                predicate: mc => mc.Id == detail.MachineComponentId);
 
                             if (machineComponent == null)
                             {
