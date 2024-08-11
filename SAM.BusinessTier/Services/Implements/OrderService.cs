@@ -120,23 +120,22 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<GetOrderDetailResponse> GetOrderDetail(Guid id)
         {
             var order = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
-    predicate: x => x.Id.Equals(id),
-    include: x => x.Include(x => x.Account)
-                   .Include(x => x.Address)
-                       .ThenInclude(a => a.City)
-                   .Include(x => x.Address)
-                       .ThenInclude(a => a.District)
-                   .Include(x => x.Address)
-                       .ThenInclude(a => a.Ward)
-                   .Include(x => x.Address)
-                       .ThenInclude(a => a.Account)
-                   .Include(x => x.OrderDetails)
-                       .ThenInclude(detail => detail.Inventory.Machinery)
-                       .ThenInclude(machinery => machinery.MachineryComponentParts)
-                   .Include(x => x.Notes))
-    ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
+                predicate: x => x.Id.Equals(id),
+                include: x => x.Include(o => o.Account)
+                               .Include(o => o.Address)
+                                   .ThenInclude(a => a.City)
+                               .Include(o => o.Address)
+                                   .ThenInclude(a => a.District)
+                               .Include(o => o.Address)
+                                   .ThenInclude(a => a.Ward)
+                               .Include(o => o.Address)
+                                   .ThenInclude(a => a.Account)
+                               .Include(o => o.OrderDetails)
+                                   .ThenInclude(detail => detail.Inventory.Machinery)
+                                       .ThenInclude(machinery => machinery.MachineryComponentParts)
+                               .Include(o => o.Notes))
+                ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
 
-            // Map fetched data to the response DTO
             var getOrderDetailResponse = new GetOrderDetailResponse
             {
                 OrderId = order.Id,
@@ -155,7 +154,7 @@ namespace SAM.BusinessTier.Services.Implements
                     Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
                     Description = note.Description,
                     CreateDate = note.CreateDate.Value,
-                }).ToList(),
+                }).ToList() ?? new List<NoteResponse>(),
                 UserInfo = order.Account == null ? null : new OrderUserResponse
                 {
                     Id = order.Account.Id,
@@ -200,9 +199,9 @@ namespace SAM.BusinessTier.Services.Implements
                     OrderDetailId = detail.Id,
                     InventoryId = detail.InventoryId,
                     ProductId = detail.MachineryId,
-                    ProductName = detail.Inventory.Machinery?.Name,
-                    MachineComponentId = detail?.MachineComponent?.Id, 
-                    MachineComponentName = detail?.MachineComponent?.Name, 
+                    ProductName = detail.Inventory.Machinery.Name,
+                    MachineComponentId = detail.MachineComponent.Id,
+                    MachineComponentName = detail.MachineComponent.Name,
                     Quantity = detail.Quantity,
                     SellingPrice = detail.SellingPrice,
                     TotalAmount = detail.TotalAmount,
@@ -211,8 +210,8 @@ namespace SAM.BusinessTier.Services.Implements
             };
 
             return getOrderDetailResponse;
-
         }
+
 
 
 
@@ -452,7 +451,7 @@ namespace SAM.BusinessTier.Services.Implements
                                 throw new BadHttpRequestException("Số lượng của bộ phận không đủ để trừ.");
                             }
 
-                             _unitOfWork.GetRepository<MachineComponent>().UpdateAsync(machineComponent);
+                            _unitOfWork.GetRepository<MachineComponent>().UpdateAsync(machineComponent);
                         }
 
                         updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
@@ -460,7 +459,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                         // You can return or log something here if needed
                     }
-                    
+
 
                     foreach (var detail in orderDetailsPaid)
                     {

@@ -247,7 +247,7 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccess;
         }
 
-        public async Task<Guid> CreateOrderForReplacedComponents(Guid warrantyDetailId)
+        public async Task<Guid> CreateOrderForReplacedComponents(Guid warrantyDetailId, Guid accountId)
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
@@ -271,7 +271,7 @@ namespace SAM.BusinessTier.Services.Implements
                 TotalAmount = 0,
                 Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
                 Type = OrderType.Warranty.GetDescriptionFromEnum(),
-                AccountId = warrantyDetail.AccountId,
+                AccountId = accountId,
                 AddressId = warrantyDetail.AddressId,
                 Description = "Thanh toán cho bộ phận sửa chữa",
             };
