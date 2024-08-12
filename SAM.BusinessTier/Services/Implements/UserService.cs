@@ -179,15 +179,13 @@ namespace SAM.BusinessTier.Services.Implements
             if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.User.CreateFailedMessage);
             return account.Id;
         }
-        public async Task<ICollection<StaffTaskStatusResponse>> GetStaffTaskStatusesByRole()
+        public async Task<ICollection<StaffTaskStatusResponse>> GetStaffTaskStatusesByRole(DateTime targetDate)
         {
             // Lấy danh sách tất cả nhân viên theo vai trò
             var staffList = await _unitOfWork.GetRepository<Account>()
                 .GetListAsync(predicate: a => a.Role.Equals(RoleEnum.Technical.GetDescriptionFromEnum()));
 
             var staffTaskStatuses = new List<StaffTaskStatusResponse>();
-
-            var currentDate = DateTime.UtcNow.Date;
 
             // Duyệt qua từng nhân viên
             foreach (var staff in staffList)
@@ -199,11 +197,11 @@ namespace SAM.BusinessTier.Services.Implements
                 // Đếm số lượng công việc theo trạng thái
                 var taskCountByStatus = tasks.CountTaskEachStatus();
 
-                // Lọc công việc theo ngày hiện tại
-                var todayTasks = tasks.Where(t => t.CreateDate.HasValue && t.CreateDate.Value.Date == currentDate.Date).ToList();
+                // Lọc công việc theo ngày được chỉ định
+                var specifiedDateTasks = tasks.Where(t => t.ExcutionDate.HasValue && t.ExcutionDate.Value.Date == targetDate.Date).ToList();
 
                 // Đếm số lượng công việc trong ngày theo trạng thái
-                var todayTaskCountByStatus = todayTasks.CountTaskEachStatus();
+                var specifiedDateTaskCountByStatus = specifiedDateTasks.CountTaskEachStatus();
 
                 // Thêm thông tin vào danh sách kết quả
                 staffTaskStatuses.Add(new StaffTaskStatusResponse
@@ -211,12 +209,13 @@ namespace SAM.BusinessTier.Services.Implements
                     StaffId = staff.Id,
                     StaffName = staff.FullName,
                     TaskStatusCount = taskCountByStatus,
-                    TodayTaskStatusCount = todayTaskCountByStatus
+                    TodayTaskStatusCount = specifiedDateTaskCountByStatus
                 });
             }
 
             return staffTaskStatuses;
         }
+
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)
         {
             // Lấy danh sách các account theo bộ lọc và phân trang

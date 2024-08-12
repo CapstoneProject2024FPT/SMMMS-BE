@@ -72,9 +72,9 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
         [HttpGet(ApiEndPointConstant.User.GetTaskOfStaff)]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetStaffTaskStatusesByRole(DateTime targetDate)
         {
-            var response = await _userService.GetStaffTaskStatusesByRole();
+            var response = await _userService.GetStaffTaskStatusesByRole(targetDate);
             return Ok(response);
         }
 
