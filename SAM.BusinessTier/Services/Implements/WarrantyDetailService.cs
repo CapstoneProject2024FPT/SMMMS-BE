@@ -322,7 +322,7 @@ namespace SAM.BusinessTier.Services.Implements
                     await _unitOfWork.GetRepository<ComponentChange>().InsertAsync(componentChange);
 
                     // Append component info to the note description
-                    noteDescription += $"Component: {component.Name}, Price: {component.SellingPrice}\n";
+                    noteDescription += $"Bộ Phận: {component.Name}, Giá: {component.SellingPrice}\n";
                 }
             }
 
@@ -363,7 +363,7 @@ namespace SAM.BusinessTier.Services.Implements
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
 
                 // Append completion info to the note description
-                noteDescription += "Warranty detail marked as completed.\n";
+                noteDescription += "Bảo trì hoàn tất.\n";
             }
 
             // Handle status "Canceled" scenario with note entry
@@ -371,11 +371,11 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 if (string.IsNullOrEmpty(updateDetailRequest.Description))
                 {
-                    throw new BadHttpRequestException("Description is required when canceling a warranty detail.");
+                    throw new BadHttpRequestException("Nội dung khi hủy");
                 }
 
                 // Create a note with the cancellation reason
-                noteDescription += $"Warranty detail canceled. Reason: {updateDetailRequest.Description}\n";
+                noteDescription += $"Hủy yêu cầu bảo hành vì: {updateDetailRequest.Description}\n";
             }
 
             // Create the note if there's any description to add
