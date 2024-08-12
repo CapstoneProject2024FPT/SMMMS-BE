@@ -13,7 +13,7 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task<Guid> CreateNewOrder(CreateNewOrderResponse createNewOrderRequest);
+        Task<Guid> CreateNewOrder(CreateNewOrderResquest createNewOrderRequest);
         Task<GetOrderDetailResponse> GetOrderDetail(Guid id);
         Task<IPaginate<GetOrderDetailResponse>> GetOrderList(OrderFilter filter, PagingModel pagingModel);
         Task<bool> UpdateOrder(Guid orderId, UpdateOrderRequest request);

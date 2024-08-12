@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.WarrantyDetail
 {
-    public class CreateNewOrderForWarrantyComponent
+    public class CreateNewOrderForWarrantyComponentRequest
     {
         public Guid WarrantyId { get; set; }
         public Guid AccountId { get; set; }

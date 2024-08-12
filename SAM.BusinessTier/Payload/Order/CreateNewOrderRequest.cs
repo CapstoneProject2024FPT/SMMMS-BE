@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Payload.Order
 {
-    public class CreateNewOrderResponse
+    public class CreateNewOrderResquest
     {
         public List<OrderMachinery> MachineryList { get; set; } = new List<OrderMachinery>();
 
