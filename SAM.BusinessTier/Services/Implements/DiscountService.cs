@@ -22,7 +22,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class DiscountService : BaseService<DiscountService>, IDiscountService
     {
-        public DiscountService(IUnitOfWork<SamContext> unitOfWork, ILogger<DiscountService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public DiscountService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<DiscountService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

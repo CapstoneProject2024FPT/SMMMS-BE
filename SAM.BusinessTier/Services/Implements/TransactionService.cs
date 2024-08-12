@@ -21,7 +21,7 @@ namespace SAM.BusinessTier.Services.Implements
     public class TransactionService : BaseService<TransactionService>, ITransactionService
 
     {
-        public TransactionService(IUnitOfWork<SamContext> unitOfWork, ILogger<TransactionService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public TransactionService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<TransactionService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

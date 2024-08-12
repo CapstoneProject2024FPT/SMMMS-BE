@@ -17,13 +17,13 @@ namespace SAM.API.Configs
     {
         public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
         {
-            services.AddScoped<IUnitOfWork<SamContext>, UnitOfWork<SamContext>>();
+            services.AddScoped<IUnitOfWork<SamDevContext>, UnitOfWork<SamDevContext>>();
             return services;
         }       
 
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<SamContext>(options =>
+            services.AddDbContext<SamDevContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("SQLServerDatabase"));
             });

@@ -24,7 +24,7 @@ namespace SAM.BusinessTier.Services.Implements
     {
         private readonly IConfiguration _configuration;
         private readonly IOrderService _orderService;
-        public PaymentService(IUnitOfWork<SamContext> unitOfWork, ILogger<PaymentService> logger, IMapper mapper,
+        public PaymentService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<PaymentService> logger, IMapper mapper,
             IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOrderService orderService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _orderService = orderService;

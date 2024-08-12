@@ -31,7 +31,7 @@ namespace SAM.BusinessTier.Services.Implements
     public class OrderService : BaseService<OrderService>, IOrderService
     {
         private readonly IUserService _accountService;
-        public OrderService(IUnitOfWork<SamContext> unitOfWork, ILogger<OrderService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor,
+        public OrderService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<OrderService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor,
             IUserService accountService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
 

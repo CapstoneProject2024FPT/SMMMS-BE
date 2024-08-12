@@ -21,7 +21,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class FavoriteService : BaseService<FavoriteService>, IFavoriteService
     {
-        public FavoriteService(IUnitOfWork<SamContext> unitOfWork, ILogger<FavoriteService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public FavoriteService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<FavoriteService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
 
         }

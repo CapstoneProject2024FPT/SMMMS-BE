@@ -28,7 +28,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class CategoryService : BaseService<CategoryService>, ICategoryService
     {
-        public CategoryService(IUnitOfWork<SamContext> unitOfWork, ILogger<CategoryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public CategoryService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<CategoryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
         public async Task<bool> AddDiscountToAccount(Guid id, List<Guid> request)

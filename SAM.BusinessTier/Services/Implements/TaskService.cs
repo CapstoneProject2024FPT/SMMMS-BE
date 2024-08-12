@@ -32,7 +32,7 @@ namespace SAM.BusinessTier.Services.Implements
     public class TaskService : BaseService<TaskService>, ITaskService
     {
         private readonly INotificationService _notificationService;
-        public TaskService(IUnitOfWork<SamContext> unitOfWork, ILogger<TaskService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor, INotificationService notificationService) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public TaskService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<TaskService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor, INotificationService notificationService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _notificationService = notificationService;
         }

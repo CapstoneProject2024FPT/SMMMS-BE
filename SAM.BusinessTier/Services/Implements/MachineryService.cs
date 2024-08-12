@@ -25,7 +25,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class MachineryService : BaseService<MachineryService>, IMachineryService
     {
-        public MachineryService(IUnitOfWork<SamContext> unitOfWork, ILogger<MachineryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public MachineryService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<MachineryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
         public async Task<bool> AddComponentToMachinery(Guid id, List<Guid> request)

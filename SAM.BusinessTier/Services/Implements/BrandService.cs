@@ -22,7 +22,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class BrandService : BaseService<BrandService>, IBrandService
     {
-        public BrandService(IUnitOfWork<SamContext> unitOfWork, ILogger<BrandService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public BrandService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<BrandService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

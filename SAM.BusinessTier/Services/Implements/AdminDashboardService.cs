@@ -17,7 +17,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class AdminDashboardService : BaseService<AdminDashboardService>, IAdminDashboardService
     {
-        public AdminDashboardService(IUnitOfWork<SamContext> unitOfWork, ILogger<AdminDashboardService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public AdminDashboardService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<AdminDashboardService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
         public async Task<AdminDashboardStatistics> GetYearlyStatistics(int year)

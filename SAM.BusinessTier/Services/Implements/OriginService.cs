@@ -22,7 +22,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class OriginService : BaseService<OriginService>, IOriginService
     {
-        public OriginService(IUnitOfWork<SamContext> unitOfWork, ILogger<OriginService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public OriginService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<OriginService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

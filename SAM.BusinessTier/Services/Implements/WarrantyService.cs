@@ -28,7 +28,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class WarrantyService : BaseService<WarrantyService>, IWarrantyService
     {
-        public WarrantyService(IUnitOfWork<SamContext> unitOfWork, ILogger<WarrantyService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public WarrantyService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<WarrantyService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

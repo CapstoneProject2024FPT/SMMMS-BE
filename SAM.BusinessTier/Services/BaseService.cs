@@ -9,12 +9,12 @@ namespace SAM.BusinessTier.Services
 {
     public abstract class BaseService<T> where T : class
     {
-        protected IUnitOfWork<SamContext> _unitOfWork;
+        protected IUnitOfWork<SamDevContext> _unitOfWork;
         protected ILogger<T> _logger;
         protected IMapper _mapper;
         protected IHttpContextAccessor _httpContextAccessor;
 
-        protected BaseService(IUnitOfWork<SamContext> unitOfWork, ILogger<T> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        protected BaseService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<T> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;

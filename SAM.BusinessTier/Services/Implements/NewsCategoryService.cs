@@ -22,7 +22,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class NewsCategoryService : BaseService<NewsCategoryService>, INewsCategoryService
     {
-        public NewsCategoryService(IUnitOfWork<SamContext> unitOfWork, ILogger<NewsCategoryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public NewsCategoryService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<NewsCategoryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

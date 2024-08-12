@@ -21,7 +21,7 @@ namespace SAM.BusinessTier.Services.Implements
     {
         private readonly FirebaseMessaging _firebaseMessaging;
 
-        public NotificationService(IUnitOfWork<SamContext> unitOfWork, ILogger<NotificationService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public NotificationService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<NotificationService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _firebaseMessaging = FirebaseMessaging.DefaultInstance;

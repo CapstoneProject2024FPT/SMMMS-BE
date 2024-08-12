@@ -21,7 +21,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class RankService : BaseService<RankService>, IRankService
     {
-        public RankService(IUnitOfWork<SamContext> unitOfWork, ILogger<RankService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public RankService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<RankService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 
