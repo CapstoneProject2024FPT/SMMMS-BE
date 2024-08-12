@@ -17,13 +17,13 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public WarrantyType? Type { get; set; }
 
-        public DateTime? CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
 
         public DateTime? StartDate { get; set; }
 
         public DateTime? CompletionDate { get; set; }
 
-        public WarrantyStatus? Status { get; set; }
+        public WarrantyStatus Status { get; set; }
 
         public string? Description { get; set; }
 
@@ -32,6 +32,7 @@ namespace SAM.BusinessTier.Payload.Warranty
         public DateTime? NextMaintenanceDate { get; set; }
 
         public int? Priority { get; set; }
+        public Guid OrderId { get; set; }
         public List<WarrantyDetailResponse>? WarrantyDetail { get; set; } = new List<WarrantyDetailResponse>();
 
         public InventoryResponse? Inventory { get; set; }

@@ -118,7 +118,7 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         Id = warranty.Id,
                         Type = EnumUtil.ParseEnum<WarrantyType>(warranty.Type),
-                        CreateDate = warranty.CreateDate,
+                        CreateDate = (DateTime)warranty.CreateDate,
                         StartDate = warranty.StartDate,
                         CompletionDate = warranty.CompletionDate,
                         Status = EnumUtil.ParseEnum<WarrantyStatus>(warranty.Status),
@@ -127,6 +127,7 @@ namespace SAM.BusinessTier.Services.Implements
                         NextMaintenanceDate = warranty.NextMaintenanceDate,
                         Priority = warranty.Priority,
                         WarrantyDetai = warranty.WarrantyDetails.CountWarrantyDetailEachStatus(),
+                        OrderId = (Guid)warranty.Inventory.OrderDetails.Select(od => od.OrderId).FirstOrDefault(),
                         Inventory = new InventoryResponse
                         {
                             Id = warranty.Inventory.Id,
@@ -256,7 +257,7 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         Id = warranty.Id,
                         Type = EnumUtil.ParseEnum<WarrantyType>(warranty.Type),
-                        CreateDate = warranty.CreateDate,
+                        CreateDate = (DateTime)warranty.CreateDate,
                         StartDate = warranty.StartDate,
                         CompletionDate = warranty.CompletionDate,
                         Status = EnumUtil.ParseEnum<WarrantyStatus>(warranty.Status),
@@ -264,6 +265,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Comments = warranty.Comments,
                         NextMaintenanceDate = warranty.NextMaintenanceDate,
                         Priority = warranty.Priority,
+                        OrderId = (Guid)warranty.Inventory.OrderDetails.Select(od => od.OrderId).FirstOrDefault(),
                         Inventory = new InventoryResponse
                         {
                             Id = warranty.Inventory.Id,
