@@ -85,6 +85,8 @@ public partial class SamDevContext : DbContext
 
     public virtual DbSet<WarrantyDetail> WarrantyDetails { get; set; }
 
+    public virtual DbSet<WarrantyNote> WarrantyNotes { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=14.225.204.144;Database=SAM_Dev;Uid=vinhuser;Pwd=12345;TrustServerCertificate=True");
@@ -792,6 +794,20 @@ public partial class SamDevContext : DbContext
                 .HasForeignKey(d => d.WarrantyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_WarrantyDetail_Warranty");
+        });
+
+        modelBuilder.Entity<WarrantyNote>(entity =>
+        {
+            entity.ToTable("WarrantyNote");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.Image).HasMaxLength(500);
+
+            entity.HasOne(d => d.WarrantyDetail).WithMany(p => p.WarrantyNotes)
+                .HasForeignKey(d => d.WarrantyDetailId)
+                .HasConstraintName("FK_WarrantyNote_WarrantyDetail");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -36,4 +36,6 @@ public partial class WarrantyDetail
     public virtual ICollection<TaskManager> TaskManagers { get; set; } = new List<TaskManager>();
 
     public virtual Warranty Warranty { get; set; } = null!;
+
+    public virtual ICollection<WarrantyNote> WarrantyNotes { get; set; } = new List<WarrantyNote>();
 }

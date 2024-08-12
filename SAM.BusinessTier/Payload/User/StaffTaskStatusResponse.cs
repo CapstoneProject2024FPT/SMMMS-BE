@@ -14,4 +14,10 @@ namespace SAM.BusinessTier.Payload.User
         public Dictionary<TaskManagerStatus, int> TodayTaskStatusCount { get; set; }
         public Dictionary<TaskManagerStatus, int> TaskStatusCount { get; set; }
     }
+    public class StaffTaskByDay
+    {
+        Guid StaffId { get; set; }
+        string StaffName { get; set; }
+        public Dictionary<TaskManagerStatus, int> TodayTaskStatusCount { get; set; }
+    }
 }

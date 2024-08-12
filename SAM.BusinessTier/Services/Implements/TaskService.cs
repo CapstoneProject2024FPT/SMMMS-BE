@@ -55,11 +55,6 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: t => t.AccountId == request.AccountId && t.Status == TaskManagerStatus.Process.GetDescriptionFromEnum());
             int processTaskCount = processTasks.Count();
 
-            // Kiểm tra xem nhân viên đã có 3 task Process chưa
-            if (processTaskCount >= 3)
-            {
-                throw new BadHttpRequestException("Nhân viên đã có 3 nhiệm vụ đang xử lý. Không thể giao nhiệm vụ mới.");
-            }
 
             // Kiểm tra số lượng task trong ngày của nhân viên
             if (taskCountForToday >= 3)
