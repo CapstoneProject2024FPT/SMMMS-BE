@@ -11,8 +11,6 @@ public partial class ComponentChange
 
     public Guid? MachineComponentId { get; set; }
 
-    public string? Image { get; set; }
-
     public DateTime? CreateDate { get; set; }
 
     public virtual MachineComponent? MachineComponent { get; set; }
