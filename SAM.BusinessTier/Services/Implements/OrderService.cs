@@ -83,7 +83,6 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     inventory.Status = InventoryStatus.Pending.GetDescriptionFromEnum();
                     _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
-
                     var orderDetail = new OrderDetail
                     {
                         Id = Guid.NewGuid(),
