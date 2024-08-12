@@ -434,12 +434,12 @@ namespace SAM.BusinessTier.Services.Implements
                 case OrderStatus.Paid:
                     var orderDetailsPaid = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
+
                     if (updateOrder.Type == OrderType.Warranty.GetDescriptionFromEnum())
                     {
-
+                        // Handle orders of type Warranty
                         foreach (var detail in orderDetailsPaid)
                         {
-                            // Directly fetch the MachineComponent associated with the OrderDetail
                             var machineComponent = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
                                 predicate: mc => mc.Id == detail.MachineComponentId);
 
@@ -448,7 +448,6 @@ namespace SAM.BusinessTier.Services.Implements
                                 throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
                             }
 
-                            // Deduct the quantity based on the order detail quantity
                             machineComponent.Quantity -= detail.Quantity;
 
                             if (machineComponent.Quantity < 0)
@@ -462,72 +461,72 @@ namespace SAM.BusinessTier.Services.Implements
                         updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
                         await _unitOfWork.CommitAsync();
 
-                        // You can return or log something here if needed
+                        break; 
                     }
-
-
-                    foreach (var detail in orderDetailsPaid)
+                    else
                     {
-                        var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
-                            predicate: x => x.Id == detail.InventoryId,
-                            include: i => i.Include(i => i.Machinery)
-                                            .ThenInclude(m => m.MachineryComponentParts)
-                                            .ThenInclude(cp => cp.MachineComponents));
-
-                        if (inventory == null || inventory.Machinery == null)
+                        // Handle orders of other types
+                        foreach (var detail in orderDetailsPaid)
                         {
-                            throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
-                        }
+                            var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                                predicate: x => x.Id == detail.InventoryId,
+                                include: i => i.Include(i => i.Machinery)
+                                               .ThenInclude(m => m.MachineryComponentParts)
+                                               .ThenInclude(cp => cp.MachineComponents));
 
-                        int warrantyYears = (int)inventory.Machinery.TimeWarranty;
-                        int numberOfDetails = (warrantyYears * 12) / (int)inventory.Machinery.MonthWarrantyNumber;
-
-                        Warranty newWarranty = new Warranty
-                        {
-                            Id = Guid.NewGuid(),
-                            Type = WarrantyType.Periodic.GetDescriptionFromEnum(),
-                            CreateDate = currentTime,
-                            StartDate = currentTime,
-                            Status = WarrantyStatus.Process.GetDescriptionFromEnum(),
-                            Description = "số lần máy được bảo trì là" + numberOfDetails,
-                            Priority = 1,
-                            InventoryId = detail.InventoryId,
-                            AccountId = updateOrder.AccountId,
-                            AddressId = updateOrder.AddressId,
-                        };
-                        await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
-
-                        // Create WarrantyDetail for Periodic Warranty based on TimeWarranty
-                        if (newWarranty.Type == WarrantyType.Periodic.GetDescriptionFromEnum())
-                        {
-                            for (int i = 1; i <= numberOfDetails; i++)
+                            if (inventory == null || inventory.Machinery == null)
                             {
-                                DateTime maintenanceDate = currentTime.AddMonths(i * 6);
-                                if (maintenanceDate.DayOfWeek == DayOfWeek.Saturday)
+                                throw new BadHttpRequestException(MessageConstant.Inventory.NotFoundFailedMessage);
+                            }
+
+                            int warrantyYears = (int)inventory.Machinery.TimeWarranty;
+                            int numberOfDetails = (warrantyYears * 12) / (int)inventory.Machinery.MonthWarrantyNumber;
+
+                            Warranty newWarranty = new Warranty
+                            {
+                                Id = Guid.NewGuid(),
+                                Type = WarrantyType.Periodic.GetDescriptionFromEnum(),
+                                CreateDate = currentTime,
+                                StartDate = currentTime,
+                                Status = WarrantyStatus.Process.GetDescriptionFromEnum(),
+                                Description = "Số lần máy được bảo trì là " + numberOfDetails,
+                                Priority = 1,
+                                InventoryId = detail.InventoryId,
+                                AccountId = updateOrder.AccountId,
+                                AddressId = updateOrder.AddressId,
+                            };
+                            await _unitOfWork.GetRepository<Warranty>().InsertAsync(newWarranty);
+
+                            // Create WarrantyDetail for Periodic Warranty based on TimeWarranty
+                            if (newWarranty.Type == WarrantyType.Periodic.GetDescriptionFromEnum())
+                            {
+                                for (int i = 1; i <= numberOfDetails; i++)
                                 {
-                                    maintenanceDate = maintenanceDate.AddDays(2); // Move to Monday
+                                    DateTime maintenanceDate = currentTime.AddMonths(i * 6);
+                                    if (maintenanceDate.DayOfWeek == DayOfWeek.Saturday)
+                                    {
+                                        maintenanceDate = maintenanceDate.AddDays(2);
+                                    }
+                                    else if (maintenanceDate.DayOfWeek == DayOfWeek.Sunday)
+                                    {
+                                        maintenanceDate = maintenanceDate.AddDays(1);
+                                    }
+                                    WarrantyDetail newWarrantyDetail = new WarrantyDetail
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        Type = newWarranty.Type,
+                                        CreateDate = currentTime,
+                                        StartDate = maintenanceDate,
+                                        Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
+                                        Description = $"Thời gian bảo trì định kỳ bắt đầu từ {maintenanceDate:yyyy-MM-dd HH:mm:ss}",
+                                        WarrantyId = newWarranty.Id,
+                                        AddressId = updateOrder.AddressId
+                                    };
+                                    await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
                                 }
-                                else if (maintenanceDate.DayOfWeek == DayOfWeek.Sunday)
-                                {
-                                    maintenanceDate = maintenanceDate.AddDays(1); // Move to Monday
-                                }
-                                WarrantyDetail newWarrantyDetail = new WarrantyDetail
-                                {
-                                    Id = Guid.NewGuid(),
-                                    Type = newWarranty.Type,
-                                    CreateDate = currentTime,
-                                    StartDate = maintenanceDate,
-                                    Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
-                                    Description = $"Thời gian bảo trì định kỳ bắt đầu từ {maintenanceDate:yyyy-MM-dd HH:mm:ss}",
-                                    WarrantyId = newWarranty.Id,
-                                    AddressId = updateOrder.AddressId
-                                };
-                                await _unitOfWork.GetRepository<WarrantyDetail>().InsertAsync(newWarrantyDetail);
                             }
                         }
                     }
-
-                    updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
                     break;
                 case OrderStatus.Canceled:
                     // Update Inventory status to Available
