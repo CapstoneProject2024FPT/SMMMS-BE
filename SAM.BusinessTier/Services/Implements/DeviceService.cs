@@ -19,7 +19,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class DeviceService : BaseService<DeviceService>, IDeviceService
     {
-        public DeviceService(IUnitOfWork<SamContext> unitOfWork, ILogger<DeviceService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public DeviceService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<DeviceService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

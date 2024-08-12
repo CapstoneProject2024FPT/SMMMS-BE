@@ -21,7 +21,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class AddressService : BaseService<AddressService>, IAddressService
     {
-        public AddressService(IUnitOfWork<SamContext> unitOfWork, ILogger<AddressService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public AddressService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<AddressService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }

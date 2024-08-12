@@ -24,7 +24,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class MachineryComponentService : BaseService<MachineryComponentService>, IMachineryComponentService
     {
-        public MachineryComponentService(IUnitOfWork<SamContext> unitOfWork, ILogger<MachineryComponentService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public MachineryComponentService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<MachineryComponentService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

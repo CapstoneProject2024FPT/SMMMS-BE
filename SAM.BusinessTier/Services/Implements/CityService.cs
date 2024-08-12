@@ -25,7 +25,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class CityService : BaseService<CityService>, ICityService
     {
-        public CityService(IUnitOfWork<SamContext> unitOfWork, ILogger<CityService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public CityService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<CityService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

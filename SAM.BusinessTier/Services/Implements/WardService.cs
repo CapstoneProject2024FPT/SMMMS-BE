@@ -19,7 +19,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class WardService : BaseService<WardService>, IWardService
     {
-        public WardService(IUnitOfWork<SamContext> unitOfWork, ILogger<WardService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public WardService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<WardService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

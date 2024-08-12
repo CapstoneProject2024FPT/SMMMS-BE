@@ -26,7 +26,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class InventoryService : BaseService<InventoryService>, IInventoryService
     {
-        public InventoryService(IUnitOfWork<SamContext> unitOfWork, ILogger<InventoryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public InventoryService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<InventoryService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

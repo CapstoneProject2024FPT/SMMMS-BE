@@ -25,7 +25,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class UserService : BaseService<UserService>, IUserService
     {
-        public UserService(IUnitOfWork<SamContext> unitOfWork, ILogger<UserService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public UserService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<UserService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

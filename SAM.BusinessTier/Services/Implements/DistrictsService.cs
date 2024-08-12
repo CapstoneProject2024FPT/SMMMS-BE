@@ -20,7 +20,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class DistrictService : BaseService<DistrictService>, IDistrictService
     {
-        public DistrictService(IUnitOfWork<SamContext> unitOfWork, ILogger<DistrictService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public DistrictService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<DistrictService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 

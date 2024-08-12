@@ -21,7 +21,7 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class ComponentChangeService : BaseService<ComponentChangeService>, IComponentChangeService
     {
-        public ComponentChangeService(IUnitOfWork<SamContext> unitOfWork, ILogger<ComponentChangeService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public ComponentChangeService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<ComponentChangeService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 
