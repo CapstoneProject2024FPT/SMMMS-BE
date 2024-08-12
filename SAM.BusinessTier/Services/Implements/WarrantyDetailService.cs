@@ -59,7 +59,6 @@ namespace SAM.BusinessTier.Services.Implements
                         } : null,
                         ComponentChange = detail.ComponentChanges.Select(part => new ComponentChangeResponse
                         {
-                            Image = part.Image,
                             CreateDate = part.CreateDate,
                             Component = new ComponentResponse
                             {
@@ -121,7 +120,6 @@ namespace SAM.BusinessTier.Services.Implements
                         } : null,
                         ComponentChange = detail.ComponentChanges.Select(part => new ComponentChangeResponse
                         {
-                            Image = part.Image,
                             CreateDate = part.CreateDate,
                             Component = new ComponentResponse
                             {
@@ -317,7 +315,6 @@ namespace SAM.BusinessTier.Services.Implements
                         WarrantyDetailId = warrantyDetail.Id,
                         MachineComponentId = component.Id,
                         CreateDate = currentTime,
-                        Image = updateDetailRequest.Image,
                     };
                     await _unitOfWork.GetRepository<ComponentChange>().InsertAsync(componentChange);
 

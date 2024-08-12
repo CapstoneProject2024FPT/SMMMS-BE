@@ -241,7 +241,6 @@ public partial class SamDevContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
-            entity.Property(e => e.Image).HasMaxLength(250);
 
             entity.HasOne(d => d.MachineComponent).WithMany(p => p.ComponentChanges)
                 .HasForeignKey(d => d.MachineComponentId)
