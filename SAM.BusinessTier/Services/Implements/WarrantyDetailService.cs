@@ -355,6 +355,7 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     warranty.NextMaintenanceDate = null;
                     warranty.CompletionDate = DateTime.Now;
+                    warranty.Status = WarrantyStatus.Completed.GetDescriptionFromEnum();
                 }
 
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
@@ -396,7 +397,7 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
-        public async Task<Guid> CreateOrderForReplacedComponents(CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
+        public async Task<Guid> CreateOrderForReplacedComponents(CreateNewOrderForWarrantyComponentRequest createNewOrderForWarrantyComponent)
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 

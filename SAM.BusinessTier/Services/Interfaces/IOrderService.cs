@@ -1,5 +1,4 @@
-﻿
-using SAM.BusinessTier.Payload;
+﻿using SAM.BusinessTier.Payload;
 using SAM.BusinessTier.Payload.Category;
 using SAM.BusinessTier.Payload.Order;
 using SAM.DataTier.Paginate;
