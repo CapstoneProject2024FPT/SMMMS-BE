@@ -20,7 +20,7 @@ namespace SAM.API.Controllers
             _orderService = orderService;
         }
         [HttpPost(ApiEndPointConstant.Order.OrdersEndPoint)]
-        public async Task<IActionResult> CreateNewOrder(CreateNewOrderResponse order)
+        public async Task<IActionResult> CreateNewOrder(CreateNewOrderResquest order)
         {
             var response = await _orderService.CreateNewOrder(order);
             return Ok(response);

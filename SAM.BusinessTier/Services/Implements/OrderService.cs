@@ -37,7 +37,7 @@ namespace SAM.BusinessTier.Services.Implements
 
         }
 
-        public async Task<Guid> CreateNewOrder(CreateNewOrderResponse request)
+        public async Task<Guid> CreateNewOrder(CreateNewOrderResquest request)
         {
             var currentUser = GetUsernameFromJwt();
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
