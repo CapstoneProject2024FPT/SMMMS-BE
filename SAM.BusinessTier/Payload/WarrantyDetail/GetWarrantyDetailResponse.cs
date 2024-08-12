@@ -33,6 +33,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
 
         public OrderUserResponse? Staff { get; set; }
         public List<ComponentChangeResponse>? ComponentChange { get; set; } = new List<ComponentChangeResponse>();
+        public List<WarrantyDetailNoteResponse>? Note { get; set; } = new List<WarrantyDetailNoteResponse>();
     }
     public class ComponentChangeResponse
     {
