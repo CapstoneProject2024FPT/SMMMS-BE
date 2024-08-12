@@ -71,11 +71,19 @@ namespace SAM.BusinessTier.Services.Implements
                                 SellingPrice = part.MachineComponent.SellingPrice
                             }
                         }).ToList(),
+                        Note = detail.WarrantyNotes.Select(note => new WarrantyDetailNoteResponse
+                        {
+                            Id = note.Id,
+                            Description = note.Description,
+                            CreateDate = note.CreateDate,
+                            Image = note.Image
+                        }).ToList(),
                     },
                     filter: filter,
                     orderBy: x => x.OrderBy(x => x.StartDate),
                     include: x => x.Include(x => x.Account)
                                    .Include(x => x.ComponentChanges)
+                                   .Include(x => x.WarrantyNotes)
                 ) ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
 
 
@@ -125,12 +133,21 @@ namespace SAM.BusinessTier.Services.Implements
                                 SellingPrice = part.MachineComponent.SellingPrice
                             }
                         }).ToList(),
+                        Note = detail.WarrantyNotes.Select(note => new WarrantyDetailNoteResponse
+                        {
+                            Id = note.Id,
+                            Description = note.Description,
+                            CreateDate = note.CreateDate,
+                            Image = note.Image
+                        }).ToList(),
+
                     },
                     predicate: detail => detail.Id == id,
                     include: x => x.Include(detail => detail.Account)
                                    .Include(detail => detail.Warranty.Inventory)
                                    .Include(detail => detail.ComponentChanges)
                                        .ThenInclude(part => part.MachineComponent)
+                                    .Include(x => x.WarrantyNotes)
                 );
 
             if (warrantyDetail == null)
@@ -148,6 +165,104 @@ namespace SAM.BusinessTier.Services.Implements
         {
             throw new NotImplementedException();
         }
+
+        //public async Task<bool> UpdateWarrantyDetail(Guid id, UpdateWarrantyDetailRequest updateDetailRequest)
+        //{
+        //    if (id == Guid.Empty)
+        //        throw new BadHttpRequestException(MessageConstant.WarrantyDetail.EmptyWarrantyDetailIdMessage);
+
+        //    DateTime currentTime = TimeUtils.GetCurrentSEATime();
+
+        //    WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
+        //        predicate: x => x.Id.Equals(id))
+        //    ?? throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
+
+        //    // Update warranty detail properties
+        //    warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
+        //    warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
+        //    warrantyDetail.NextMaintenanceDate = updateDetailRequest.NextMaintenanceDate.HasValue ? updateDetailRequest.NextMaintenanceDate.Value : warrantyDetail.NextMaintenanceDate;
+
+        //    if (!updateDetailRequest.Status.HasValue)
+        //    {
+        //        throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
+        //    }
+        //    else
+        //    {
+        //        warrantyDetail.Status = updateDetailRequest.Status.GetDescriptionFromEnum();
+        //    }
+
+        //    // Update Account if provided
+        //    if (updateDetailRequest.AccountId.HasValue)
+        //    {
+        //        Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+        //            predicate: x => x.Id.Equals(updateDetailRequest.AccountId.Value))
+        //        ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+
+        //        warrantyDetail.Account = account;
+        //    }
+
+        //    // Update or add component changes
+        //    if (updateDetailRequest.ComponentId != null && updateDetailRequest.ComponentId.Count > 0)
+        //    {
+        //        foreach (var componentId in updateDetailRequest.ComponentId)
+        //        {
+        //            var component = await _unitOfWork.GetRepository<MachineComponent>().SingleOrDefaultAsync(
+        //                predicate: x => x.Id.Equals(componentId))
+        //            ?? throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
+
+        //            var componentChange = new ComponentChange
+        //            {
+        //                Id = Guid.NewGuid(),
+        //                WarrantyDetailId = warrantyDetail.Id,
+        //                MachineComponentId = component.Id,
+        //                CreateDate = currentTime,
+        //                Image = updateDetailRequest.Image,
+        //            };
+        //            await _unitOfWork.GetRepository<ComponentChange>().InsertAsync(componentChange);
+        //        }
+        //    }
+
+        //    // Handle status "Completed" scenario
+        //    if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Completed")
+        //    {
+        //        warrantyDetail.CompletionDate = currentTime;
+
+        //        var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+        //            predicate: t => t.WarrantyDetailId == warrantyDetail.Id);
+
+        //        if (taskManager != null)
+        //        {
+        //            taskManager.Status = TaskManagerStatus.Completed.GetDescriptionFromEnum();
+        //            _unitOfWork.GetRepository<TaskManager>().UpdateAsync(taskManager);
+        //        }
+
+        //        var nextWarrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
+        //            predicate: wd => wd.WarrantyId == warrantyDetail.WarrantyId
+        //                             && wd.StartDate > warrantyDetail.StartDate
+        //                             && wd.Status != WarrantyDetailStatus.Completed.GetDescriptionFromEnum(),
+        //            orderBy: q => q.OrderBy(wd => wd.StartDate));
+
+        //        Warranty warranty = await _unitOfWork.GetRepository<Warranty>().SingleOrDefaultAsync(
+        //            predicate: w => w.Id == warrantyDetail.WarrantyId)
+        //        ?? throw new BadHttpRequestException(MessageConstant.Warranty.WarrantyNotFoundMessage);
+
+        //        if (nextWarrantyDetail != null)
+        //        {
+        //            warranty.NextMaintenanceDate = nextWarrantyDetail.StartDate;
+        //        }
+        //        else
+        //        {
+        //            warranty.NextMaintenanceDate = null;
+        //            warranty.CompletionDate = DateTime.Now;
+        //        }
+
+        //        _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
+        //    }
+
+        //    _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
+        //    bool isSuccess = await _unitOfWork.CommitAsync() > 0;
+        //    return isSuccess;
+        //}
 
         public async Task<bool> UpdateWarrantyDetail(Guid id, UpdateWarrantyDetailRequest updateDetailRequest)
         {
@@ -184,7 +299,10 @@ namespace SAM.BusinessTier.Services.Implements
                 warrantyDetail.Account = account;
             }
 
-            // Update or add component changes
+            // Prepare to create a note
+            string noteDescription = string.Empty;
+
+            // Update or add component changes and create a note for them
             if (updateDetailRequest.ComponentId != null && updateDetailRequest.ComponentId.Count > 0)
             {
                 foreach (var componentId in updateDetailRequest.ComponentId)
@@ -202,6 +320,9 @@ namespace SAM.BusinessTier.Services.Implements
                         Image = updateDetailRequest.Image,
                     };
                     await _unitOfWork.GetRepository<ComponentChange>().InsertAsync(componentChange);
+
+                    // Append component info to the note description
+                    noteDescription += $"Component: {component.Name}, Price: {component.SellingPrice}\n";
                 }
             }
 
@@ -240,12 +361,43 @@ namespace SAM.BusinessTier.Services.Implements
                 }
 
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
+
+                // Append completion info to the note description
+                noteDescription += "Warranty detail marked as completed.\n";
+            }
+
+            // Handle status "Canceled" scenario with note entry
+            if (updateDetailRequest.Status.GetDescriptionFromEnum() == "Canceled")
+            {
+                if (string.IsNullOrEmpty(updateDetailRequest.Description))
+                {
+                    throw new BadHttpRequestException("Description is required when canceling a warranty detail.");
+                }
+
+                // Create a note with the cancellation reason
+                noteDescription += $"Warranty detail canceled. Reason: {updateDetailRequest.Description}\n";
+            }
+
+            // Create the note if there's any description to add
+            if (!string.IsNullOrEmpty(noteDescription))
+            {
+                var warrantyNote = new WarrantyNote
+                {
+                    Id = Guid.NewGuid(),
+                    Description = noteDescription.Trim(),
+                    CreateDate = currentTime,
+                    WarrantyDetailId = warrantyDetail.Id,
+                    Image = updateDetailRequest.Image
+                };
+
+                await _unitOfWork.GetRepository<WarrantyNote>().InsertAsync(warrantyNote);
             }
 
             _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
         }
+
 
         public async Task<Guid> CreateOrderForReplacedComponents(CreateNewOrderForWarrantyComponent createNewOrderForWarrantyComponent)
         {
