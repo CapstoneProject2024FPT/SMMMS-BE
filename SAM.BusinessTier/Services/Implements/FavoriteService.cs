@@ -129,7 +129,6 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (favorite == null)
             {
-                // Nếu không tồn tại, ném lỗi không tìm thấy
                 throw new BadHttpRequestException(MessageConstant.Favorite.NotFoundFailedMessage);
             }
 
