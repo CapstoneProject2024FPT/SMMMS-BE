@@ -14,6 +14,5 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> UpdateTask(Guid id, UpdateTaskRequest updateTaskRequest);
         Task<ICollection<GetTaskResponse>> GetTaskList(TaskFilter filter);
         Task<GetTaskResponse> GetTaskById(Guid id);
-        Task<bool> RemoveTaskStatus(Guid id);
     }
 }

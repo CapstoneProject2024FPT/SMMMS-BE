@@ -25,6 +25,7 @@ using SAM.BusinessTier.Payload.Address;
 using SAM.BusinessTier.Payload.Districts;
 using SAM.BusinessTier.Payload.News;
 using SAM.BusinessTier.Payload.Wards;
+using System.Xml;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -210,7 +211,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (order == null)
             {
-                throw new KeyNotFoundException("Order not found.");
+                throw new KeyNotFoundException(MessageConstant.Order.OrderNotFoundMessage);
             }
 
             return order;
@@ -333,7 +334,7 @@ namespace SAM.BusinessTier.Services.Implements
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             if (updateOrder.Status == OrderStatus.Completed.GetDescriptionFromEnum())
             {
-                throw new BadHttpRequestException("Không thể cập nhật đơn hàng khi đã completed");
+                throw new BadHttpRequestException(MessageConstant.Order.UpdateFailedCompletedMessage);
             }
             switch (request.Status)
             {
@@ -451,7 +452,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                             if (machineComponent.Quantity < 0)
                             {
-                                throw new BadHttpRequestException("Số lượng của bộ phận không đủ để trừ.");
+                                throw new BadHttpRequestException(MessageConstant.MachineryComponents.ExceedQuantityMessage);
                             }
 
                             _unitOfWork.GetRepository<MachineComponent>().UpdateAsync(machineComponent);

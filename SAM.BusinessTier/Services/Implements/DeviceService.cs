@@ -43,7 +43,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var device = await _unitOfWork.GetRepository<Device>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id));
-            if (device == null) throw new BadHttpRequestException("Không tìm thấy thiết bị");
+            if (device == null) throw new BadHttpRequestException(MessageConstant.Device.EmptyMessage);
 
             device.Fcmtoken = request.FCMToken;
             device.DeviceType = request.DeviceType;
@@ -58,7 +58,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var device = await _unitOfWork.GetRepository<Device>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id));
-            if (device == null) throw new BadHttpRequestException("Không tìm thấy thiết bị");
+            if (device == null) throw new BadHttpRequestException(MessageConstant.Device.EmptyMessage);
 
             _unitOfWork.GetRepository<Device>().DeleteAsync(device);
             await _unitOfWork.CommitAsync();

@@ -10,5 +10,6 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
     {
         public Guid WarrantyId { get; set; }
         public Guid AccountId { get; set; }
+        public string? Description { get; set; }
     }   
 }

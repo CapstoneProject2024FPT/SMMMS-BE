@@ -170,7 +170,7 @@ namespace SAM.BusinessTier.Services.Implements
                 bool componentsAdded = await AddComponentToMachinery(newMachinery.Id, request.MachineComponentsId);
                 if (!componentsAdded)
                 {
-                    throw new BadHttpRequestException("Thêm bộ phận máy thất bại");
+                    throw new BadHttpRequestException(MessageConstant.MachineryComponents.CreateNewMachineryComponentsFailedMessage);
                 }
             }
             return newMachinery.Id;

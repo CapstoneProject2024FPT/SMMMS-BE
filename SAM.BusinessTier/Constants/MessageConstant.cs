@@ -150,6 +150,7 @@ public static class MessageConstant
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+        public const string ExceedComponentMessage = "Có vẻ máy này chưa có bộ phận nào";
 
     }
     public static class Specification
@@ -179,6 +180,7 @@ public static class MessageConstant
         public const string CreateOrderFailedMessage = "Tạo mới Đơn hàng thất bại";
         public const string UpdateSuccessMessage = "Đơn hàng được cập nhật thành công";
         public const string UpdateFailedMessage = "Đơn hàng cập nhật thất bại";
+        public const string UpdateFailedCompletedMessage = "Không thể cập nhật đơn hàng khi đã hoàn thành";
     }
 
     public static class OrderDetail
@@ -256,6 +258,7 @@ public static class MessageConstant
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
         public const string FullTaskMessage = "Nhân viên đã có 3 nhiệm vụ trong ngày. Không thể giao thêm nhiệm vụ.";
+        public const string TypeTaskMessage = "Cần nhập chi tiết bảo trì hoặc đơn hàng để giao nhiệm vụ cho nhân viên.";
     }
     public static class MachineryComponents
     {
@@ -292,5 +295,13 @@ public static class MessageConstant
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+    }
+    public static class Canceled
+    {
+        public const string CanceledNote = "Nhập nội dung khi hủy yêu cầu";
+    }
+    public static class Device
+    {
+        public const string EmptyMessage = "Không tìm thấy thiết bị";
     }
 }

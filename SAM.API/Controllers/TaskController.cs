@@ -44,13 +44,6 @@ namespace SAM.API.Controllers
             return Ok(MessageConstant.TaskManager.UpdateTaskSuccessMessage);
         }
 
-        [HttpDelete(ApiEndPointConstant.TaskManager.TaskEndPoint)]
-        public async Task<IActionResult> RemoveTaskStatus(Guid id)
-        {
-            var isSuccessful = await _taskService.RemoveTaskStatus(id);
-            if (!isSuccessful) return Ok(MessageConstant.TaskManager.UpdateTaskFailedMessage);
-            return Ok(MessageConstant.TaskManager.UpdateTaskSuccessMessage);
-        }
 
     }
     

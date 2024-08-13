@@ -17,6 +17,7 @@ namespace SAM.BusinessTier.Payload.WarrantyDetail
         public Guid? AccountId { get; set; }
         public List<Guid>? ComponentId { get; set; } = new List<Guid>();
         public string? Image { get; set; }
+        public string? Note { get; set; }
     }
 
 }

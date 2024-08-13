@@ -18,12 +18,6 @@ namespace SAM.API.Controllers
         {
             _warrantyDetailService = warrantyDetailService;
         }
-        //[HttpPost(ApiEndPointConstant.WarrantyDetail.WarrantyDetailsEndPoint)]
-        //public async Task<IActionResult> CreateNewWarrantyDetail(CreateNewWarrantyDetailRequest createNewWarrantyDetailRequest)
-        //{
-        //    var response = await _warrantyDetailService.CreateNewWarrantyDetail(createNewWarrantyDetailRequest);
-        //    return Ok(response);
-        //}
         [HttpGet(ApiEndPointConstant.WarrantyDetail.WarrantyDetailsEndPoint)]
         public async Task<IActionResult> GetWarrantyDetailList([FromQuery] WarrantyDetailFilter filter)
         {
@@ -50,12 +44,5 @@ namespace SAM.API.Controllers
             return Ok(response);
         }
 
-        //[HttpDelete(ApiEndPointConstant.WarrantyDetail.WarrantydetailEndPoint)]
-        //public async Task<IActionResult> RemoveWarrantyDetailStatus(Guid id)
-        //{
-        //    var isSuccessful = await _warrantyDetailService.RemoveWarrantyDetailStatus(id);
-        //    if (!isSuccessful) return Ok(MessageConstant.WarrantyDetail.UpdateWarrantyDetailFailedMessage);
-        //    return Ok(MessageConstant.WarrantyDetail.UpdateWarrantyDetailSuccessMessage);
-        //}
     }
 }
