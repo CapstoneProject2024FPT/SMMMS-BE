@@ -76,7 +76,6 @@ namespace SAM.BusinessTier.Services.Implements
                 _unitOfWork.GetRepository<MachineryComponentPart>().DeleteRangeAsync(ranksToDelete);
             }
 
-            // Commit the changes to the database
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
