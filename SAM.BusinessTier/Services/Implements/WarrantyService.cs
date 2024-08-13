@@ -400,11 +400,6 @@ namespace SAM.BusinessTier.Services.Implements
 
 
 
-        public Task<bool> RemoveWarrantyStatus(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> UpdateWarranty(Guid id, UpdateWarrantyRequest updateWarrantyRequest)
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();

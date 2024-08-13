@@ -44,7 +44,7 @@ namespace SAM.BusinessTier.Services.Implements
                     ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 if (machinery.MachineryComponentParts == null || !machinery.MachineryComponentParts.Any())
                 {
-                    throw new BadHttpRequestException("Có vẻ máy này chưa có bộ phận nào");
+                    throw new BadHttpRequestException(MessageConstant.Machinery.ExceedComponentMessage);
                 }
                 for (int i = 0; i < quantity; i++)
                 {

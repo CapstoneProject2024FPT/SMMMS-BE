@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SAM.API.Utils;
+using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Payload.Order;
 using SAM.BusinessTier.Payload.Payment;
@@ -150,7 +151,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             var payment = await _unitOfWork.GetRepository<Payment>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-                ?? throw new BadHttpRequestException("Không tìm thấy hóa đơn thanh toán");
+                ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
@@ -170,7 +171,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             var transaction = await _unitOfWork.GetRepository<TransactionPayment>().SingleOrDefaultAsync(
                 predicate: x => x.PaymentId.Equals(payment.Id))
-                ?? throw new BadHttpRequestException("không tìm thấy giao dịch");
+                ?? throw new BadHttpRequestException(MessageConstant.Transaction.NotFoundFailedMessage);
 
             transaction.Status = updatePaymentRequest.Status.GetDescriptionFromEnum();
 
@@ -190,7 +191,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 if (!orderUpdateSuccessful)
                 {
-                    throw new Exception("Cập nhật hóa đơn thất bại");
+                    throw new Exception(MessageConstant.Transaction.UpdateTransactionFailedMessage);
                 }
             }
 

@@ -95,7 +95,7 @@ namespace SAM.BusinessTier.Services.Implements
             }
             else
             {
-                throw new BadHttpRequestException("Cần nhập chi tiết bảo trì hoặc đơn hàng để giao nhiệm vụ cho nhân viên.");
+                throw new BadHttpRequestException(MessageConstant.TaskManager.TypeTaskMessage);
             }
 
             TaskManager newTask = new()
@@ -315,10 +315,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
 
 
-        public Task<bool> RemoveTaskStatus(Guid id)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<bool> UpdateTask(Guid id, UpdateTaskRequest updateTaskRequest)
         {

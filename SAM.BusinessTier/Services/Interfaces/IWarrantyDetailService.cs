@@ -12,11 +12,9 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface IWarrantyDetailService
     {
-        Task<Guid> CreateNewWarrantyDetail(CreateNewWarrantyDetailRequest createNewWarrantyDetailRequest);
         Task<bool> UpdateWarrantyDetail(Guid id, UpdateWarrantyDetailRequest updateWarrantyDetailRequest);
         Task<ICollection<GetWarrantyDetailResponse>> GetWarrantyDetailList(WarrantyDetailFilter filter);
         Task<GetWarrantyDetailResponse> GetWarrantyDetailById(Guid id);
-        Task<bool> RemoveWarrantyDetailStatus(Guid id);
         Task<Guid> CreateOrderForReplacedComponents(CreateNewOrderForWarrantyComponentRequest createNewOrderForWarrantyComponent);
     }
 }

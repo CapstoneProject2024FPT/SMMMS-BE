@@ -31,7 +31,6 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<bool> AddRankToAccount(Guid id, List<Guid> request)
         {
-            _logger.LogInformation($"Add Rank to Customer: {id}");
 
             // Retrieve the account or throw an exception if not found
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(

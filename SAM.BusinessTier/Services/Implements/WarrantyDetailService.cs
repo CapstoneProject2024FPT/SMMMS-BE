@@ -30,11 +30,6 @@ namespace SAM.BusinessTier.Services.Implements
         public WarrantyDetailService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<WarrantyDetailService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
-
-        public Task<Guid> CreateNewWarrantyDetail(CreateNewWarrantyDetailRequest createNewWarrantyDetailRequest)
-        {
-            throw new NotImplementedException();
-        }
         public async Task<ICollection<GetWarrantyDetailResponse>> GetWarrantyDetailList(WarrantyDetailFilter filter)
         {
             var warrantyDetails = await _unitOfWork.GetRepository<WarrantyDetail>()
@@ -96,7 +91,7 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<GetWarrantyDetailResponse> GetWarrantyDetailById(Guid id)
         {
             if (id == Guid.Empty)
-                throw new BadHttpRequestException("Invalid warranty detail ID.");
+                throw new BadHttpRequestException(MessageConstant.WarrantyDetail.EmptyWarrantyDetailIdMessage);
 
             var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>()
                 .SingleOrDefaultAsync(
@@ -150,7 +145,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (warrantyDetail == null)
             {
-                throw new BadHttpRequestException($"Warranty detail with ID {id} not found.");
+                throw new BadHttpRequestException(MessageConstant.WarrantyDetail.WarrantyDetailNotFoundMessage);
             }
 
             return warrantyDetail;
@@ -158,11 +153,6 @@ namespace SAM.BusinessTier.Services.Implements
 
 
 
-
-        public Task<bool> RemoveWarrantyDetailStatus(Guid id)
-        {
-            throw new NotImplementedException();
-        }
 
         //public async Task<bool> UpdateWarrantyDetail(Guid id, UpdateWarrantyDetailRequest updateDetailRequest)
         //{
@@ -319,7 +309,7 @@ namespace SAM.BusinessTier.Services.Implements
                     await _unitOfWork.GetRepository<ComponentChange>().InsertAsync(componentChange);
 
                     // Append component info to the note description
-                    noteDescription += $"Bộ Phận: {component.Name}, Giá: {component.SellingPrice}\n";
+                    noteDescription = updateDetailRequest.Note; ;
                 }
             }
 
@@ -361,7 +351,7 @@ namespace SAM.BusinessTier.Services.Implements
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
 
                 // Append completion info to the note description
-                noteDescription += "Bảo trì hoàn tất.\n";
+                noteDescription = updateDetailRequest.Note;
             }
 
             // Handle status "Canceled" scenario with note entry
@@ -369,11 +359,11 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 if (string.IsNullOrEmpty(updateDetailRequest.Description))
                 {
-                    throw new BadHttpRequestException("Nội dung khi hủy");
+                    throw new BadHttpRequestException(MessageConstant.Canceled.CanceledNote);
                 }
 
                 // Create a note with the cancellation reason
-                noteDescription += $"Hủy yêu cầu bảo hành vì: {updateDetailRequest.Description}\n";
+                noteDescription = updateDetailRequest.Note; ;
             }
 
             // Create the note if there's any description to add
@@ -409,7 +399,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (warrantyDetail.ComponentChanges == null || !warrantyDetail.ComponentChanges.Any())
             {
-                throw new BadHttpRequestException("Không có bộ phận trong hệ thống để tạo hóa đơn");
+                throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
             }
 
             Order newOrder = new Order
@@ -423,7 +413,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Type = OrderType.Warranty.GetDescriptionFromEnum(),
                 AccountId = createNewOrderForWarrantyComponent.AccountId,
                 AddressId = warrantyDetail.AddressId,
-                Description = "Thanh toán cho bộ phận sửa chữa",
+                Description = createNewOrderForWarrantyComponent.Description,
             };
 
             double totalAmount = 0;
