@@ -401,6 +401,16 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
             }
+            var existingOrder = await _unitOfWork.GetRepository<OrderDetail>().SingleOrDefaultAsync(
+                predicate: od =>
+                    warrantyDetail.ComponentChanges.Any(cc => cc.MachineComponent.Id == od.MachineComponentId) &&
+                    od.Order.Status != OrderStatus.Completed.GetDescriptionFromEnum() &&
+                    od.Order.Status != OrderStatus.Canceled.GetDescriptionFromEnum());
+
+            if (existingOrder != null)
+            {
+                throw new BadHttpRequestException(MessageConstant.Order.WarningOrderMessage);
+            }
 
             Order newOrder = new Order
             {

@@ -465,6 +465,7 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                     else
                     {
+                        updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
                         // Handle orders of other types
                         foreach (var detail in orderDetailsPaid)
                         {
