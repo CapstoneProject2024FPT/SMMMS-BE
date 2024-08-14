@@ -60,6 +60,7 @@ namespace SAM.API.Configs
             services.AddScoped<IDeviceService, DeviceService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IComponentChangeService, ComponentChangeService>();
+            services.AddScoped<ISendMailService, SendMailService>();
 
             return services;
         }

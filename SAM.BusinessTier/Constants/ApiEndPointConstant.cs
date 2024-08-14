@@ -69,6 +69,11 @@ public static class ApiEndPointConstant
         public const string CitiesEndPoint = ApiEndpoint + "/city";
         public const string CityEndPoint = CitiesEndPoint + "/{id}";
     }
+    public static class Mail
+    {
+        public const string MailsEndPoint = ApiEndpoint + "/mail";
+        public const string MailEndPoint = MailsEndPoint + "/{id}";
+    }
     public static class District
     {
         public const string DistrictsEndPoint = ApiEndpoint + "/district";

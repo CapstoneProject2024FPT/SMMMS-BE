@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 
+
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
@@ -28,6 +29,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddUnitOfWork();
+builder.Services.AddOptions();
 builder.Services.AddServices();
 builder.Services.AddJwtValidation();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

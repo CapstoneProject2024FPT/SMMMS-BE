@@ -1,74 +1,76 @@
-﻿//using AutoMapper;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.Extensions.Configuration;
-//using Microsoft.Extensions.Logging;
-//using SAM.BusinessTier.Payload.Mail;
-//using SAM.BusinessTier.Services.Interfaces;
-//using SAM.DataTier.Models;
-//using SAM.DataTier.Repository.Interfaces;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using AutoMapper;
+using MailKit.Security;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using MimeKit;
+using SAM.BusinessTier.Payload.Mail;
+using SAM.BusinessTier.Services.Interfaces;
+using SAM.BusinessTier.Utils;
+using SAM.DataTier.Models;
+using SAM.DataTier.Repository.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//namespace SAM.BusinessTier.Services.Implements
-//{
-//    public class SendMailService : BaseService<SendMailService>, ISendMailService
-        
-//    {
-//        private readonly IConfiguration _configuration;
-//        public SendMailService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<SendMailService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) : base(unitOfWork, logger, mapper, httpContextAccessor)
-//        {
-//            _configuration = configuration;
-//        }
+namespace SAM.BusinessTier.Services.Implements
+{
+    public class SendMailService : BaseService<SendMailService>, ISendMailService
+    {
+        private readonly MailSettings _settings;
+        public SendMailService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<SendMailService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        {
+            _settings = JsonUtil.GetFromAppSettings<MailSettings>("MailSettings");
+        }
 
-//        public async Task SendMail(MailContent mailContent)
-//        {
-//            var email = new MimeMessage();
-//            email.Sender = new MailboxAddress(mailSettings.DisplayName, mailSettings.Mail);
-//            email.From.Add(new MailboxAddress(mailSettings.DisplayName, mailSettings.Mail));
-//            email.To.Add(MailboxAddress.Parse(mailContent.To));
-//            email.Subject = mailContent.Subject;
-//            var mail = _configuration["MailSettings:Mail"];
+        public async Task SendMail(MailContent mailContent)
+        {
 
-//            var builder = new BodyBuilder();
-//            builder.HtmlBody = mailContent.Body;
-//            email.Body = builder.ToMessageBody();
+            var email = new MimeMessage();
+            email.Sender = new MailboxAddress(_settings.DisplayName, _settings.Mail);
+            email.From.Add(new MailboxAddress(_settings.DisplayName, _settings.Mail));
+            email.To.Add(MailboxAddress.Parse(mailContent.To));
+            email.Subject = mailContent.Subject;
 
-//            // dùng SmtpClient của MailKit
-//            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+            var builder = new BodyBuilder();
+            builder.HtmlBody = mailContent.Body;
+            email.Body = builder.ToMessageBody();
 
-//            try
-//            {
-//                smtp.Connect(mailSettings.Host, mailSettings.Port, SecureSocketOptions.StartTls);
-//                smtp.Authenticate(mailSettings.Mail, mailSettings.Password);
-//                await smtp.SendAsync(email);
-//            }
-//            catch (Exception ex)
-//            {
-//                // Gửi mail thất bại, nội dung email sẽ lưu vào thư mục mailssave
-//                System.IO.Directory.CreateDirectory("mailssave");
-//                var emailsavefile = string.Format(@"mailssave/{0}.eml", Guid.NewGuid());
-//                await email.WriteToAsync(emailsavefile);
+            // dùng SmtpClient của MailKit
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
 
-//                logger.LogInformation("Lỗi gửi mail, lưu tại - " + emailsavefile);
-//                logger.LogError(ex.Message);
-//            }
+            try
+            {
+                smtp.Connect(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_settings.Mail, _settings.Password);
+                await smtp.SendAsync(email);
+            }
+            catch (Exception ex)
+            {
+                // Gửi mail thất bại, nội dung email sẽ lưu vào thư mục mailssave
+                System.IO.Directory.CreateDirectory("mailssave");
+                var emailsavefile = string.Format(@"mailssave/{0}.eml", Guid.NewGuid());
+                await email.WriteToAsync(emailsavefile);
 
-//            smtp.Disconnect(true);
+                _logger.LogInformation("Lỗi gửi mail, lưu tại - " + emailsavefile);
+                _logger.LogError(ex.Message);
+            }
 
-//            logger.LogInformation("send mail to " + mailContent.To);
+            smtp.Disconnect(true);
 
-//        }
-//        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
-//        {
-//            await SendMail(new MailContent()
-//            {
-//                To = email,
-//                Subject = subject,
-//                Body = htmlMessage
-//            });
-//        }
-//    }
-//}
+            _logger.LogInformation("send mail to " + mailContent.To);
+
+        }
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            await SendMail(new MailContent()
+            {
+                To = email,
+                Subject = subject,
+                Body = htmlMessage
+            });
+        }
+    }
+}

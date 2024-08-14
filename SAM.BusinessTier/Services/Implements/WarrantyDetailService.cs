@@ -397,11 +397,14 @@ namespace SAM.BusinessTier.Services.Implements
             
             var checkComponent = await _unitOfWork.GetRepository<ComponentChange>().SingleOrDefaultAsync(
                 predicate: x => x.WarrantyDetailId.Equals(createNewOrderForWarrantyComponent.WarrantyId));
+
             var checkOrderDetail = await _unitOfWork.GetRepository<OrderDetail>().SingleOrDefaultAsync(
                 predicate: x => x.MachineComponentId.Equals(checkComponent.MachineComponentId));
+
             var checkOrder = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(checkOrderDetail.OrderId),
                 include: x => x.Include(x => x.OrderDetails));
+
             if (checkOrder.Status != OrderStatus.Completed.GetDescriptionFromEnum() && checkOrder.Status != OrderStatus.Canceled.GetDescriptionFromEnum())
             {
                 throw new BadHttpRequestException(MessageConstant.Order.WarningOrderMessage);
