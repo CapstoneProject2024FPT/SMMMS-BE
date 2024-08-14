@@ -394,16 +394,18 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
             }
-            //var existingOrder = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
-            //    predicate: od =>
-            //        warrantyDetail.ComponentChanges.Any(cc => cc.MachineComponent.Id == od.MachineComponentId) &&
-            //        od.Order.Status != OrderStatus.Completed.GetDescriptionFromEnum() &&
-            //        od.Order.Status != OrderStatus.Canceled.GetDescriptionFromEnum());
-
-            //if (existingOrder != null)
-            //{
-            //    throw new BadHttpRequestException(MessageConstant.Order.WarningOrderMessage);
-            //}
+            
+            var checkComponent = await _unitOfWork.GetRepository<ComponentChange>().SingleOrDefaultAsync(
+                predicate: x => x.WarrantyDetailId.Equals(createNewOrderForWarrantyComponent.WarrantyId));
+            var checkOrderDetail = await _unitOfWork.GetRepository<OrderDetail>().SingleOrDefaultAsync(
+                predicate: x => x.MachineComponentId.Equals(checkComponent.MachineComponentId));
+            var checkOrder = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(checkOrderDetail.OrderId),
+                include: x => x.Include(x => x.OrderDetails));
+            if (checkOrder.Status != OrderStatus.Completed.GetDescriptionFromEnum() && checkOrder.Status != OrderStatus.Canceled.GetDescriptionFromEnum())
+            {
+                throw new BadHttpRequestException(MessageConstant.Order.WarningOrderMessage);
+            }
 
             Order newOrder = new Order
             {
