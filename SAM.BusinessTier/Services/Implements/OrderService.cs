@@ -530,6 +530,11 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                     break;
                 case OrderStatus.Canceled:
+                    if (updateOrder.Status == OrderStatus.Paid.GetDescriptionFromEnum())
+                    {
+                        // You might want to log this or return an error message indicating the cancellation is not allowed
+                        throw new InvalidOperationException(MessageConstant.Order.WarningPaidOrderMessage);
+                    }
                     // Update Inventory status to Available
                     var orderDetailsCanceled = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
