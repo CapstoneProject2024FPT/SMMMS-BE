@@ -309,7 +309,6 @@ namespace SAM.BusinessTier.Services.Implements
                     await _unitOfWork.GetRepository<ComponentChange>().InsertAsync(componentChange);
 
                     // Append component info to the note description
-                    noteDescription = updateDetailRequest.Note; ;
                 }
             }
 
@@ -351,7 +350,6 @@ namespace SAM.BusinessTier.Services.Implements
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
 
                 // Append completion info to the note description
-                noteDescription = updateDetailRequest.Note;
             }
 
             // Handle status "Canceled" scenario with note entry
@@ -363,23 +361,18 @@ namespace SAM.BusinessTier.Services.Implements
                 }
 
                 // Create a note with the cancellation reason
-                noteDescription = updateDetailRequest.Note; ;
             }
 
-            // Create the note if there's any description to add
-            if (!string.IsNullOrEmpty(noteDescription))
-            {
                 var warrantyNote = new WarrantyNote
                 {
                     Id = Guid.NewGuid(),
-                    Description = noteDescription.Trim(),
+                    Description = updateDetailRequest.Note,
                     CreateDate = currentTime,
                     WarrantyDetailId = warrantyDetail.Id,
                     Image = updateDetailRequest.Image
                 };
 
                 await _unitOfWork.GetRepository<WarrantyNote>().InsertAsync(warrantyNote);
-            }
 
             _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;

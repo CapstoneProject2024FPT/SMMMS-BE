@@ -90,7 +90,6 @@ namespace SAM.BusinessTier.Services.Implements
                 Id = Guid.NewGuid(),
                 Type = newWarranty.Type,
                 CreateDate = currentTime,
-                StartDate = currentTime,
                 Status = WarrantyDetailStatus.AwaitingAssignment.GetDescriptionFromEnum(),
                 Description = $"Yêu cầu từ khách hàng - Bắt đầu từ {currentTime:yyyy-MM-dd HH:mm:ss}",
                 WarrantyId = newWarranty.Id,

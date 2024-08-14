@@ -16,5 +16,6 @@ namespace SAM.BusinessTier.Payload.Warranty
         public Guid? AddressId { get; set; }
 
         public Guid? AccountId { get; set; }
+        public DateTime? StartDate { get; set; }
     }
 }
