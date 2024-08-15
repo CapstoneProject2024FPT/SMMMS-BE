@@ -100,6 +100,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             rank.Name = string.IsNullOrEmpty(updateRankRequest.Name) ? rank.Name : updateRankRequest.Name;
             rank.Range = updateRankRequest.Range.HasValue ? updateRankRequest.Range.Value : rank.Range;
+            rank.Value = updateRankRequest.Value.HasValue ? updateRankRequest.Value.Value : rank.Range;
 
 
             _unitOfWork.GetRepository<Rank>().UpdateAsync(rank);

@@ -349,7 +349,12 @@ namespace SAM.BusinessTier.Services.Implements
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
-            
+            var task = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+                predicate: x => x.AccountId.Equals(user.Id) && x.Status == TaskManagerStatus.Process.GetDescriptionFromEnum());
+            if (task != null)
+            {
+                throw new BadHttpRequestException(MessageConstant.TaskManager.UpdateStaffProcessTaskFaildMessage);
+            }
             user.FullName = string.IsNullOrEmpty(updateRequest.FullName) ? user.FullName : updateRequest.FullName;
             user.PhoneNumber = string.IsNullOrEmpty(updateRequest.PhoneNumber) ? user.PhoneNumber : updateRequest.PhoneNumber;
             user.Email = string.IsNullOrEmpty(updateRequest.Email) ? user.Email : updateRequest.Email;
