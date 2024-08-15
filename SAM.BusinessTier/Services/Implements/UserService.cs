@@ -353,7 +353,7 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
             var task = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                 predicate: x => x.AccountId.Equals(user.Id) && x.Status == TaskManagerStatus.Process.GetDescriptionFromEnum());
-            if (task != null)
+            if (task != null && updateRequest.Status == UserStatus.InActivate)
             {
                 throw new BadHttpRequestException(MessageConstant.TaskManager.UpdateStaffProcessTaskFaildMessage);
             }
