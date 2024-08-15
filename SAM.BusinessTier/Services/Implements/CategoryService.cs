@@ -112,36 +112,36 @@ namespace SAM.BusinessTier.Services.Implements
             // Tạo danh sách response
             var responseList = new List<GetCategoriesResponse>();
 
-            foreach (var account in responese)
+            foreach (var category in responese)
             {
                 // Lấy thông tin rank cho từng account
-                DiscountCategory accountRank = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
-                    predicate: x => x.CategoryId.Equals(account.Id)
+                DiscountCategory discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                    predicate: x => x.CategoryId.Equals(category.Id)
                 );
 
-                DiscountResponse rankResponse = null;
+                DiscountResponse discountReponse = null;
 
-                if (accountRank != null)
+                if (discountCategory != null)
                 {
                     // Lấy thông tin rank từ bảng Rank
-                    var rank = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
-                        predicate: x => x.Id.Equals(accountRank.DiscountId)
+                    var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                        predicate: x => x.Id.Equals(discountCategory.DiscountId)
                     );
 
-                    if (rank != null)
+                    if (discount != null)
                     {
-                        rankResponse = new DiscountResponse
+                        discountReponse = new DiscountResponse
                         {
-                            Name = rank.Name,
-                            Type = EnumUtil.ParseEnum<DiscountType>(rank.Type),
-                            Value = rank.Value
+                            Name = discount.Name,
+                            Type = EnumUtil.ParseEnum<DiscountType>(discount.Type),
+                            Value = discount.Value
                         };
                     }
                 }
 
                 // Map account sang GetUsersResponse và thêm thông tin rank
-                var userResponse = _mapper.Map<GetCategoriesResponse>(account);
-                userResponse.Discount = rankResponse;
+                var userResponse = _mapper.Map<GetCategoriesResponse>(category);
+                userResponse.Discount = discountReponse;
 
                 responseList.Add(userResponse);
             }
