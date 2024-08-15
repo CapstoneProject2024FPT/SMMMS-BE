@@ -23,6 +23,7 @@ using SAM.BusinessTier.Enums.Other;
 using Microsoft.EntityFrameworkCore;
 using SAM.BusinessTier.Payload.Brand;
 using Azure;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -108,42 +109,41 @@ namespace SAM.BusinessTier.Services.Implements
                selector: x => _mapper.Map<GetCategoriesResponse>(x),
                filter: filter);
 
-
+            // Tạo danh sách response
             var responseList = new List<GetCategoriesResponse>();
 
-            foreach (var discount in responese)
+            foreach (var account in responese)
             {
                 // Lấy thông tin rank cho từng account
-                DiscountCategory discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
-                    predicate: x => x.CategoryId.Equals(x.Id)
+                DiscountCategory accountRank = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                    predicate: x => x.CategoryId.Equals(account.Id)
                 );
 
-                DiscountResponse discountResponse = null;
+                DiscountResponse rankResponse = null;
 
-                if (discountCategory != null)
+                if (accountRank != null)
                 {
                     // Lấy thông tin rank từ bảng Rank
-                    var discount1 = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
-                        predicate: x => x.Id.Equals(discountCategory.DiscountId)
+                    var rank = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                        predicate: x => x.Id.Equals(accountRank.DiscountId)
                     );
 
-                    if (discount1 != null)
+                    if (rank != null)
                     {
-                        discountResponse = new DiscountResponse
+                        rankResponse = new DiscountResponse
                         {
-                            Name = discount1.Name,
-                            Type = EnumUtil.ParseEnum<DiscountType>(discount1.Type),
-                            Value = discount1.Value
+                            Name = rank.Name,
+                            Type = EnumUtil.ParseEnum<DiscountType>(rank.Type),
+                            Value = rank.Value
                         };
                     }
                 }
 
                 // Map account sang GetUsersResponse và thêm thông tin rank
-                var categoryResponse = _mapper.Map<GetCategoriesResponse>(discount);
-                categoryResponse.Discount = discountResponse;
+                var userResponse = _mapper.Map<GetCategoriesResponse>(account);
+                userResponse.Discount = rankResponse;
 
-                responseList.Add(categoryResponse);
-
+                responseList.Add(userResponse);
             }
 
 
