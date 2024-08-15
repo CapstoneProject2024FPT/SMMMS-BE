@@ -117,17 +117,11 @@ namespace SAM.BusinessTier.Services.Implements
                 var rank = await _unitOfWork.GetRepository<Rank>()
                     .SingleOrDefaultAsync(predicate: r => r.Id == accountRank.RankId);
 
-                if (rank != null && rank.Value.HasValue)
-                {
                     double rankDiscount = (rank.Value.Value / 100.0) * totalAmount;
                     newOrder.FinalAmount = totalAmount - rankDiscount;
-                }
-                else
-                {
-                    newOrder.FinalAmount = totalAmount;
-                }
-            }
-            else
+                    
+
+            }else
             {
                 newOrder.FinalAmount = totalAmount;
             }
