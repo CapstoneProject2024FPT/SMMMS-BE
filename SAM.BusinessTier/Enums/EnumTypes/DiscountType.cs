@@ -13,3 +13,4 @@ namespace SAM.BusinessTier.Enums.EnumTypes
         Seasonal
     }
 }
+    
