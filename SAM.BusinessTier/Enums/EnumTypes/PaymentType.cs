@@ -8,6 +8,7 @@ namespace SAM.BusinessTier.Enums.EnumTypes
 {
     public enum PaymentType
     {
-        VNPAY
+        VNPAY_Order,
+        VNPAY_Warranty
     }
 }
