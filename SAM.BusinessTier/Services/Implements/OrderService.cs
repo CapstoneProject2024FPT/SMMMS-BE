@@ -74,14 +74,7 @@ namespace SAM.BusinessTier.Services.Implements
                 // Tính toán FinalAmount cho máy móc
                 double? finalAmount = await CalculateFinalAmount(machineryExists.Id, machineryExists.SellingPrice, machineryExists.CategoryId);
 
-                if (finalAmount.HasValue)
-                {
-                    machinery.FinalAmount = (float?)finalAmount.Value;
-                }
-                else
-                {
-                    machinery.FinalAmount = machinery.SellingPrice;
-                }
+                double effectiveSellingPrice = finalAmount.HasValue ? finalAmount.Value : machineryExists.SellingPrice.Value;
 
                 var inventories = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
                     predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum()
@@ -104,8 +97,9 @@ namespace SAM.BusinessTier.Services.Implements
                         MachineryId = machinery.MachineryId,
                         InventoryId = inventory.Id,
                         Quantity = 1,
-                        SellingPrice = machinery.FinalAmount, // Sử dụng FinalAmount tính toán
-                        TotalAmount = machinery.FinalAmount, // Sử dụng FinalAmount tính toán
+                        SellingPrice = machinery.StockPrice,
+                        TotalAmount = machinery.SellingPrice, 
+                        FinalPrice = effectiveSellingPrice, 
                         CreateDate = DateTime.Now
                     };
 
@@ -114,7 +108,7 @@ namespace SAM.BusinessTier.Services.Implements
                 }
             }
 
-            // Lấy thông tin Rank của account hiện tại
+            // Tính toán tổng số tiền và giảm giá theo hạng tài khoản
             var accountRank = await _unitOfWork.GetRepository<AccountRank>()
                 .SingleOrDefaultAsync(predicate: ar => ar.AccountId == account.Id);
 

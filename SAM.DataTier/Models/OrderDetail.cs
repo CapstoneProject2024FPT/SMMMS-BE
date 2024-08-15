@@ -13,6 +13,8 @@ public partial class OrderDetail
 
     public double? TotalAmount { get; set; }
 
+    public double? FinalPrice { get; set; }
+
     public DateTime? CreateDate { get; set; }
 
     public Guid? OrderId { get; set; }
