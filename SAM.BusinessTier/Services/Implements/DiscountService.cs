@@ -28,11 +28,12 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<Guid> CreateNewDiscounts(CreateNewDiscountRequest createNewDiscountRequest)
         {
-            Discount discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync();
-            if (discount != null) throw new BadHttpRequestException(MessageConstant.District.DistrictExistedMessage);
+            Discount discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                predicate: x => x.Name.Equals(createNewDiscountRequest.Name));
+            if (discount != null) throw new BadHttpRequestException(MessageConstant.Discount.DiscountNameExisted);
             discount = _mapper.Map<Discount>(createNewDiscountRequest);
             discount.Id = Guid.NewGuid();
-            discount.Status = DiscountStatus.Active.GetDescriptionFromEnum();
+            discount.Status = DiscountStatus.InActive.GetDescriptionFromEnum();
             discount.CreateDate = DateTime.Now;
 
 
