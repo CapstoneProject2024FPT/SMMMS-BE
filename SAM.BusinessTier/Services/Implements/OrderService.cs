@@ -108,23 +108,22 @@ namespace SAM.BusinessTier.Services.Implements
                 }
             }
 
-            // Tính toán tổng số tiền và giảm giá theo hạng tài khoản
-            var accountRank = await _unitOfWork.GetRepository<AccountRank>()
-                .SingleOrDefaultAsync(predicate: ar => ar.AccountId == account.Id);
+            //// Tính toán tổng số tiền và giảm giá theo hạng tài khoản
+            //var accountRank = await _unitOfWork.GetRepository<AccountRank>()
+            //    .SingleOrDefaultAsync(predicate: ar => ar.AccountId == account.Id);
 
-            if (accountRank != null)
-            {
-                var rank = await _unitOfWork.GetRepository<Rank>()
-                    .SingleOrDefaultAsync(predicate: r => r.Id == accountRank.RankId);
+            //if (accountRank != null)
+            //{
+            //    var rank = await _unitOfWork.GetRepository<Rank>()
+            //        .SingleOrDefaultAsync(predicate: r => r.Id == accountRank.RankId);
 
-                    double rankDiscount = (rank.Value.Value / 100.0) * totalAmount;
-                    newOrder.FinalAmount = totalAmount - rankDiscount;
-                    
+            //        double rankDiscount = (rank.Value.Value / 100.0) * totalAmount;
+            //        newOrder.FinalAmount = totalAmount - rankDiscount;
 
-            }else
-            {
-                newOrder.FinalAmount = totalAmount;
-            }
+            //}else
+            //{
+            //    newOrder.FinalAmount = totalAmount;
+            //}
 
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
