@@ -11,10 +11,10 @@ namespace SAM.BusinessTier.Payload.Category
 {
     public class CategoryFilter
     {
-        public string? name { get; set; }
-        public CategoryStatus? status { get; set; }
-        public CategoryType? type { get; set; }
-        public CategoryKind? kind { get; set; }
+        public string? Name { get; set; }
+        public CategoryStatus? Status { get; set; }
+        public CategoryType? Type { get; set; }
+        public CategoryKind? Kind { get; set; }
         public Guid? MasterCategoryId { get; set; }
 
     }
