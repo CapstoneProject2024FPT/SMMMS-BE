@@ -16,6 +16,7 @@ namespace SAM.BusinessTier.Payload.MachineryComponent
         public ComponentStatus? Status { get; set; }
 
         public int? TimeWarranty { get; set; }
+        public DateTime? CreateDate { get; set; }
 
         public Guid? CategoryId { get; set; }
 
