@@ -15,7 +15,7 @@ namespace SAM.BusinessTier.Payload.Discount
 
         public string? Status { get; set; }
 
-        public double? Value { get; set; }
+        public int? Value { get; set; }
 
         public DateTime? CreateDate { get; set; }
 

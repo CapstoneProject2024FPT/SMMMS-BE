@@ -22,6 +22,7 @@ namespace SAM.BusinessTier.Payload.Order
         public int? Quantity { get; set; }
         public float? StockPrice { get; set; }
         public float? SellingPrice { get; set; }
+        public float? FinalAmount { get; set; }
     }
 
 }

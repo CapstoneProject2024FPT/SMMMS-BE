@@ -71,6 +71,18 @@ namespace SAM.BusinessTier.Services.Implements
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 }
 
+                // Tính toán FinalAmount cho máy móc
+                double? finalAmount = await CalculateFinalAmount(machineryExists.Id, machineryExists.SellingPrice, machineryExists.CategoryId);
+
+                if (finalAmount.HasValue)
+                {
+                    machinery.FinalAmount = (float?)finalAmount.Value;
+                }
+                else
+                {
+                    machinery.FinalAmount = machinery.SellingPrice;
+                }
+
                 var inventories = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
                     predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum()
                 );
@@ -84,6 +96,7 @@ namespace SAM.BusinessTier.Services.Implements
                 {
                     inventory.Status = InventoryStatus.Pending.GetDescriptionFromEnum();
                     _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+
                     var orderDetail = new OrderDetail
                     {
                         Id = Guid.NewGuid(),
@@ -91,8 +104,8 @@ namespace SAM.BusinessTier.Services.Implements
                         MachineryId = machinery.MachineryId,
                         InventoryId = inventory.Id,
                         Quantity = 1,
-                        SellingPrice = machinery.StockPrice,
-                        TotalAmount = machinery.SellingPrice,
+                        SellingPrice = machinery.FinalAmount, // Sử dụng FinalAmount tính toán
+                        TotalAmount = machinery.FinalAmount, // Sử dụng FinalAmount tính toán
                         CreateDate = DateTime.Now
                     };
 
@@ -125,7 +138,6 @@ namespace SAM.BusinessTier.Services.Implements
                 newOrder.FinalAmount = totalAmount;
             }
 
-
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
             await _unitOfWork.CommitAsync();
@@ -133,7 +145,30 @@ namespace SAM.BusinessTier.Services.Implements
             return newOrder.Id;
         }
 
+        private async Task<double?> CalculateFinalAmount(Guid machineryId, double? sellingPrice, Guid? categoryId)
+        {
+            double? finalAmount = sellingPrice;
 
+            if (sellingPrice.HasValue && categoryId.HasValue)
+            {
+                var discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                    predicate: dc => dc.CategoryId == categoryId);
+
+                if (discountCategory != null)
+                {
+                    var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                        predicate: d => d.Id == discountCategory.DiscountId);
+
+                    if (discount != null && discount.Value.HasValue)
+                    {
+                        double discountValue = (discount.Value.Value / 100.0) * sellingPrice.Value;
+                        finalAmount = sellingPrice - discountValue;
+                    }
+                }
+            }
+
+            return finalAmount;
+        }
 
 
 

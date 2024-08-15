@@ -16,7 +16,7 @@ namespace SAM.BusinessTier.Payload.Discount
 
         public DiscountStatus? Status { get; set; }
 
-        public double? Value { get; set; }
+        public int? Value { get; set; }
 
     }
 }

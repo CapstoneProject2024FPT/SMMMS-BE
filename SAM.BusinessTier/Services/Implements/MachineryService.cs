@@ -253,10 +253,9 @@ namespace SAM.BusinessTier.Services.Implements
             return machineryList;
         }
 
-
         public async Task<IPaginate<GetMachinerySpecificationsRespone>> GetMachineryList(MachineryFilter filter, PagingModel pagingModel)
         {
-            IPaginate<GetMachinerySpecificationsRespone> machineryList = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync(
+            var machineryList = await _unitOfWork.GetRepository<Machinery>().GetPagingListAsync(
                 selector: x => new GetMachinerySpecificationsRespone
                 {
                     Id = x.Id,
@@ -310,7 +309,10 @@ namespace SAM.BusinessTier.Services.Implements
                         Name = spec.Name,
                         Value = spec.Value
                     }).ToList(),
-                    Quantity = x.Inventories.CountInventoryEachStatus()
+                    Quantity = x.Inventories.CountInventoryEachStatus(),
+
+                    // FinalAmount sẽ được tính toán sau khi có danh sách.
+                    FinalAmount = x.SellingPrice
                 },
                 filter: filter,
                 orderBy: x => x.OrderByDescending(x => x.CreateDate),
@@ -326,9 +328,42 @@ namespace SAM.BusinessTier.Services.Implements
                 size: pagingModel.size
             ) ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
+            // Tính toán FinalAmount cho từng máy móc trong danh sách
+            foreach (var machinery in machineryList.Items)
+            {
+                machinery.FinalAmount = await CalculateFinalAmount((Guid)machinery.Id, machinery.SellingPrice, machinery.Category.Id);
+            }
 
             return machineryList;
         }
+
+        // Hàm tính toán FinalAmount
+        private async Task<double?> CalculateFinalAmount(Guid machineryId, double? sellingPrice, Guid? categoryId)
+        {
+            double? finalAmount = sellingPrice;
+
+            if (sellingPrice.HasValue && categoryId.HasValue)
+            {
+                var discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                    predicate: dc => dc.CategoryId == categoryId);
+
+                if (discountCategory != null)
+                {
+                    var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                        predicate: d => d.Id == discountCategory.DiscountId);
+
+                    if (discount != null && discount.Value.HasValue)
+                    {
+                        double discountValue = (discount.Value.Value / 100.0) * sellingPrice.Value;
+                        finalAmount = sellingPrice - discountValue;
+                    }
+                }
+            }
+
+            return finalAmount;
+        }
+
+
 
 
 
@@ -346,6 +381,37 @@ namespace SAM.BusinessTier.Services.Implements
                                .ThenInclude(part => part.MachineComponents))
                 ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
+            double? finalAmount = machinery.SellingPrice;
+
+            // Kiểm tra nếu SellingPrice không bị null
+            if (machinery.SellingPrice.HasValue && machinery.CategoryId.HasValue)
+            {
+                var discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                    predicate: dc => dc.CategoryId == machinery.CategoryId);
+
+                if (discountCategory != null)
+                {
+                    var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                        predicate: d => d.Id == discountCategory.DiscountId);
+
+                    // Kiểm tra nếu discount không bị null
+                    if (discount != null)
+                    {
+                        // Kiểm tra nếu discount.Value không bị null
+                        if (discount.Value.HasValue)
+                        {
+                            double discountValue = (discount.Value.Value / 100.0) * machinery.SellingPrice.Value;
+                            finalAmount = machinery.SellingPrice.Value - discountValue;
+                        }
+                        else
+                        {
+                            // Nếu discount.Value bị null, giữ FinalAmount là SellingPrice
+                            finalAmount = machinery.SellingPrice;
+                        }
+                    }
+                }
+            }
+
             var getMachinerySpecificationsRespone = new GetMachinerySpecificationsRespone
             {
                 Id = machinery.Id,
@@ -360,6 +426,7 @@ namespace SAM.BusinessTier.Services.Implements
                 Description = machinery.Description,
                 StockPrice = machinery.StockPrice,
                 SellingPrice = machinery.SellingPrice,
+                FinalAmount = finalAmount,
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
                 MonthWarrantyNumber = machinery.MonthWarrantyNumber,

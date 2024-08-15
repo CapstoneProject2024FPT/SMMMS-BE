@@ -78,7 +78,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
             discount.Name = string.IsNullOrEmpty(updateDiscountRequest.Name) ? discount.Name : updateDiscountRequest.Name;
-            discount.Value = updateDiscountRequest.Value.HasValue ? updateDiscountRequest.Value.Value : updateDiscountRequest.Value;
+            discount.Value = (int?)(updateDiscountRequest.Value.HasValue ? updateDiscountRequest.Value.Value : updateDiscountRequest.Value);
             
             if (!updateDiscountRequest.Status.HasValue && !updateDiscountRequest.Type.HasValue)
             {
