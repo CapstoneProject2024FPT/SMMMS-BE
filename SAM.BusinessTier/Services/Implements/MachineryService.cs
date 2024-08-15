@@ -195,6 +195,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Description = machinery.Description,
                         StockPrice =  machinery.StockPrice,
                         SellingPrice = machinery.SellingPrice,
+                        FinalAmount = machinery.SellingPrice,
                         Priority = machinery.Priority,
                         TimeWarranty = machinery.TimeWarranty,
                         MonthWarrantyNumber = machinery.MonthWarrantyNumber,
@@ -248,7 +249,13 @@ namespace SAM.BusinessTier.Services.Implements
                                    .Include(x => x.MachineryComponentParts)
                                    .ThenInclude(part => part.MachineComponents))
                 ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
-
+            // Tính toán FinalAmount cho từng máy móc trong danh sách
+            foreach (var machinery in machineryList)
+            {
+                var (finalAmount, discountValue1) = await CalculateFinalAmount((Guid)machinery.Id, machinery.SellingPrice, machinery.Category.Id);
+                machinery.FinalAmount = finalAmount;
+                machinery.Discount = (int?)discountValue1;
+            }
 
             return machineryList;
         }
@@ -331,17 +338,19 @@ namespace SAM.BusinessTier.Services.Implements
             // Tính toán FinalAmount cho từng máy móc trong danh sách
             foreach (var machinery in machineryList.Items)
             {
-                machinery.FinalAmount = await CalculateFinalAmount((Guid)machinery.Id, machinery.SellingPrice, machinery.Category.Id);
+                var (finalAmount, discountValue1) = await CalculateFinalAmount((Guid)machinery.Id, machinery.SellingPrice, machinery.Category.Id);
+                machinery.FinalAmount = finalAmount;
+                machinery.Discount = (int?)discountValue1;
             }
 
             return machineryList;
         }
 
         // Hàm tính toán FinalAmount
-        private async Task<double?> CalculateFinalAmount(Guid machineryId, double? sellingPrice, Guid? categoryId)
+        private async Task<(double? finalAmount, double? discountValue)> CalculateFinalAmount(Guid machineryId, double? sellingPrice, Guid? categoryId)
         {
             double? finalAmount = sellingPrice;
-
+            int? discountValue1 = 0;
             if (sellingPrice.HasValue && categoryId.HasValue)
             {
                 var discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
@@ -356,11 +365,12 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         double discountValue = (discount.Value.Value / 100.0) * sellingPrice.Value;
                         finalAmount = sellingPrice - discountValue;
+                        discountValue1 = discount.Value.Value;
                     }
                 }
             }
 
-            return finalAmount;
+            return (finalAmount, discountValue1);
         }
 
 
@@ -382,7 +392,7 @@ namespace SAM.BusinessTier.Services.Implements
                 ?? throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
 
             double? finalAmount = machinery.SellingPrice;
-
+            var discountNumber = 0;
             // Kiểm tra nếu SellingPrice không bị null
             if (machinery.SellingPrice.HasValue && machinery.CategoryId.HasValue)
             {
@@ -402,11 +412,13 @@ namespace SAM.BusinessTier.Services.Implements
                         {
                             double discountValue = (discount.Value.Value / 100.0) * machinery.SellingPrice.Value;
                             finalAmount = machinery.SellingPrice.Value - discountValue;
+                            discountNumber = (int)discount.Value.Value;
                         }
                         else
                         {
                             // Nếu discount.Value bị null, giữ FinalAmount là SellingPrice
                             finalAmount = machinery.SellingPrice;
+                            discountNumber = (int)discount.Value.Value;
                         }
                     }
                 }
@@ -427,6 +439,7 @@ namespace SAM.BusinessTier.Services.Implements
                 StockPrice = machinery.StockPrice,
                 SellingPrice = machinery.SellingPrice,
                 FinalAmount = finalAmount,
+                Discount = discountNumber,
                 Priority = machinery.Priority,
                 TimeWarranty = machinery.TimeWarranty,
                 MonthWarrantyNumber = machinery.MonthWarrantyNumber,

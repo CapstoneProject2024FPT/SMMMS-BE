@@ -25,6 +25,7 @@ namespace SAM.BusinessTier.Payload.Machinery
         public double? StockPrice { get; set; }
         public double? SellingPrice { get; set; }
         public double? FinalAmount {  get; set; }
+        public int? Discount { get; set; }
         public int? Priority { get; set; }
 
         public int? TimeWarranty { get; set; }
