@@ -19,6 +19,14 @@ namespace SAM.BusinessTier.Payload.Category
         public CategoryType Type { get; set; }
         public CategoryKind? Kind { get; set; }
         public Guid? MasterCategoryId { get; set; }
+        public DiscountResponse? Discount { get; set; }
 
     }
+    public class DiscountResponse
+    {
+        public string? Name { get; set; }
+        public DiscountType? Type { get; set; }
+        public int? Value { get; set; }
+    }
+
 }

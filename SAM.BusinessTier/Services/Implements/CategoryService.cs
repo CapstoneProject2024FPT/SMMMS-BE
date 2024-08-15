@@ -22,7 +22,7 @@ using SAM.BusinessTier.Payload.Machinery;
 using SAM.BusinessTier.Enums.Other;
 using Microsoft.EntityFrameworkCore;
 using SAM.BusinessTier.Payload.Brand;
-
+using Azure;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -104,11 +104,50 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<ICollection<GetCategoriesResponse>> GetCategories(CategoryFilter filter)
         {
-            ICollection<GetCategoriesResponse> respone = await _unitOfWork.GetRepository<Category>().GetListAsync(
+            ICollection<GetCategoriesResponse> responese = await _unitOfWork.GetRepository<Category>().GetListAsync(
                selector: x => _mapper.Map<GetCategoriesResponse>(x),
                filter: filter);
-            return respone;
 
+
+            var responseList = new List<GetCategoriesResponse>();
+
+            foreach (var discount in responese)
+            {
+                // Lấy thông tin rank cho từng account
+                DiscountCategory discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                    predicate: x => x.CategoryId.Equals(x.Id)
+                );
+
+                DiscountResponse discountResponse = null;
+
+                if (discountCategory != null)
+                {
+                    // Lấy thông tin rank từ bảng Rank
+                    var discount1 = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                        predicate: x => x.Id.Equals(discountCategory.DiscountId)
+                    );
+
+                    if (discount1 != null)
+                    {
+                        discountResponse = new DiscountResponse
+                        {
+                            Name = discount1.Name,
+                            Type = EnumUtil.ParseEnum<DiscountType>(discount1.Type),
+                            Value = discount1.Value
+                        };
+                    }
+                }
+
+                // Map account sang GetUsersResponse và thêm thông tin rank
+                var categoryResponse = _mapper.Map<GetCategoriesResponse>(discount);
+                categoryResponse.Discount = discountResponse;
+
+                responseList.Add(categoryResponse);
+
+            }
+
+
+            return responese;
         }
 
         public async Task<GetCategoriesResponse> GetCategory(Guid id)
@@ -117,7 +156,32 @@ namespace SAM.BusinessTier.Services.Implements
             Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
-            return _mapper.Map<GetCategoriesResponse>(category);
+            DiscountCategory accountRank = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                predicate: x => x.CategoryId.Equals(id));
+
+            DiscountResponse rankResponse = null;
+
+            if (accountRank != null)
+            {
+                // Retrieve the rank information
+                DataTier.Models.Discount rank = await _unitOfWork.GetRepository<DataTier.Models.Discount>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(accountRank.DiscountId));
+
+                if (rank != null)
+                {
+                    rankResponse = new DiscountResponse
+                    {
+                        Name = rank.Name,
+                        Type = EnumUtil.ParseEnum<DiscountType>(rank.Type),
+                        Value = rank.Value
+                    };
+                }
+            }
+
+            // Map the user to GetUsersResponse and include the rank information
+            var response = _mapper.Map<GetCategoriesResponse>(category);
+            response.Discount = rankResponse;
+            return response;
         }
 
         public async Task<bool> RemoveCategoryStatus(Guid id)
@@ -126,10 +190,10 @@ namespace SAM.BusinessTier.Services.Implements
             Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id),
                 include: x => x.Include(x => x.Machineries))
-                ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);         
+                ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
             foreach (var item in category.Machineries)
             {
-                    item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
+                item.Status = MachineryStatus.UnAvailable.GetDescriptionFromEnum();
             }
             category.Status = CategoryStatus.Inactive.GetDescriptionFromEnum();
             foreach (var item in category.MachineComponents)
