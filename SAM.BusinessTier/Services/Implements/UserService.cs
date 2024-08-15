@@ -250,7 +250,8 @@ namespace SAM.BusinessTier.Services.Implements
                         rankResponse = new RankResponse
                         {
                             Name = rank.Name,
-                            Range = rank.Range
+                            Range = rank.Range,
+                            Value = rank.Value
                         };
                     }
                 }
@@ -295,7 +296,8 @@ namespace SAM.BusinessTier.Services.Implements
                     rankResponse = new RankResponse
                     {
                         Name = rank.Name,
-                        Range = rank.Range
+                        Range = rank.Range,
+                        Value = rank.Value
                     };
                 }
             }

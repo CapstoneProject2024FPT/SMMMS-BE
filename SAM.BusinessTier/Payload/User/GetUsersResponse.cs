@@ -46,6 +46,7 @@ namespace SAM.BusinessTier.Payload.User
         public string? Name { get; set; }
 
         public int? Range { get; set; }
+        public int? Value { get; set; }
     }
     public class CertificationResponse
     {
