@@ -98,12 +98,12 @@ namespace SAM.API.Controllers
             if (!isSuccessful) return Ok(MessageConstant.User.UpdateStatusFailedMessage);
             return Ok(MessageConstant.User.UpdateStatusSuccessMessage);
         }
-        [HttpPost(ApiEndPointConstant.User.UserToRankEndPoint)]
-        public async Task<IActionResult> AddRankToAccount(Guid id, List<Guid> request)
-        {
-            var response = await _userService.AddRankToAccount(id, request);
-            return Ok(response);
-        }
+        //[HttpPost(ApiEndPointConstant.User.UserToRankEndPoint)]
+        //public async Task<IActionResult> AddRankToAccount(Guid id, List<Guid> request)
+        //{
+        //    var response = await _userService.AddRankToAccount(id, request);
+        //    return Ok(response);
+        //}
         [HttpPost(ApiEndPointConstant.User.UserEndPointChangePassword)]
         public async Task<IActionResult> ChangePassword(Guid id, [FromBody] ChangePasswordRequest changePasswordRequest)
         {

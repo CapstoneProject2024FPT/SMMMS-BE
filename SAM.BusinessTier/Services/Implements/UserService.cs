@@ -32,21 +32,18 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<bool> AddRankToAccount(Guid id, List<Guid> request)
         {
 
-            // Retrieve the account or throw an exception if not found
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
             ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
 
-            // Retrieve current rank IDs associated with the account
             List<Guid> currentRankIds = (List<Guid>)await _unitOfWork.GetRepository<AccountRank>().GetListAsync(
                 selector: x => x.RankId,
                 predicate: x => x.AccountId.Equals(id));
 
-            // Determine the IDs to add, remove, and keep
             (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedRankIds =
                 CustomListUtil.splitidstoaddandremove(currentRankIds, request);
 
-            // Add new ranks
+
             if (splittedRankIds.idsToAdd.Count > 0)
             {
                 List<AccountRank> ranksToInsert = new List<AccountRank>();
@@ -59,7 +56,6 @@ namespace SAM.BusinessTier.Services.Implements
                 await _unitOfWork.GetRepository<AccountRank>().InsertRangeAsync(ranksToInsert);
             }
 
-            // Remove obsolete ranks
             if (splittedRankIds.idsToRemove.Count > 0)
             {
                 List<AccountRank> ranksToDelete = (List<AccountRank>)await _unitOfWork.GetRepository<AccountRank>()
@@ -70,7 +66,6 @@ namespace SAM.BusinessTier.Services.Implements
                  _unitOfWork.GetRepository<AccountRank>().DeleteRangeAsync(ranksToDelete);
             }
 
-            // Commit the changes to the database
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
         }
@@ -217,7 +212,6 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)
         {
-            // Lấy danh sách các account theo bộ lọc và phân trang
             IPaginate<GetUsersResponse> response = await _unitOfWork.GetRepository<Account>().GetPagingListAsync(
                  selector: x => _mapper.Map<GetUsersResponse>(x),
                  filter: filter,
@@ -226,7 +220,6 @@ namespace SAM.BusinessTier.Services.Implements
                  orderBy: x => x.OrderBy(x => x.Username)
             );
 
-            // Tạo danh sách response
             var responseList = new List<GetUsersResponse>();
 
             foreach (var account in response.Items)
