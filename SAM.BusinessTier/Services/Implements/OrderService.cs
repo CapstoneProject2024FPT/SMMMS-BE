@@ -415,10 +415,10 @@ namespace SAM.BusinessTier.Services.Implements
                     // Kiểm tra kết quả và thêm rank cho account nếu có
                     if (rankCheck != null)
                     {
-                        var addRankResult = await _accountService.AddrankForAccount(account.Id, rankCheck.Id);
+                        var addRankResult = await _accountService.AddrankForAccount(account.Id, rankCheck.Id); //checked check
                     }
 
-
+                    
                     var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                         predicate: t => t.OrderId == orderId);
 
