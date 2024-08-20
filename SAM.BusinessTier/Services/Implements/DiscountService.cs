@@ -196,9 +196,21 @@ namespace SAM.BusinessTier.Services.Implements
             var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
+
+            if (updateDiscountRequest.Status.HasValue && updateDiscountRequest.Status == DiscountStatus.Active)
+            {
+                var existingActiveDiscount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
+                    predicate: x => x.Status.Equals(DiscountStatus.Active.GetDescriptionFromEnum()) && x.Id != id);
+
+                if (existingActiveDiscount != null)
+                {
+                    throw new BadHttpRequestException(MessageConstant.Discount.AlredyMessage);
+                }
+            }
+
             discount.Name = string.IsNullOrEmpty(updateDiscountRequest.Name) ? discount.Name : updateDiscountRequest.Name;
-            discount.Value = (int?)(updateDiscountRequest.Value.HasValue ? updateDiscountRequest.Value.Value : updateDiscountRequest.Value);
-            
+            discount.Value = updateDiscountRequest.Value.HasValue ? updateDiscountRequest.Value.Value : discount.Value;
+
             if (!updateDiscountRequest.Status.HasValue && !updateDiscountRequest.Type.HasValue)
             {
                 throw new BadHttpRequestException(MessageConstant.Status.ExsitingValue);
@@ -208,9 +220,11 @@ namespace SAM.BusinessTier.Services.Implements
                 discount.Status = updateDiscountRequest.Status.GetDescriptionFromEnum();
                 discount.Type = updateDiscountRequest.Type.GetDescriptionFromEnum();
             }
+
             _unitOfWork.GetRepository<Discount>().UpdateAsync(discount);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
         }
+
     }
 }

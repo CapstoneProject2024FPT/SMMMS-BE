@@ -297,7 +297,7 @@ public static class MessageConstant
         public const string DiscountNotFoundMessage = "Khuyến mãi không tồn tại trong hệ thống hoặc đang không hoạt động";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
-        public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";
+        public const string AlredyMessage = "Dang có 1 khuyến mãi khác đang hoạt động";
     }
     public static class Canceled
     {
