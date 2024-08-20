@@ -18,6 +18,12 @@ namespace SAM.API.Controllers
         {
             _discountService = discountService;
         }
+        [HttpPost(ApiEndPointConstant.Discount.AddCategoryToDiscount)]
+        public async Task<IActionResult> AddDiscountToCategories(Guid id, [FromBody] List<Guid> categories)
+        {
+            var response = await _discountService.AddDiscountToCategories(id, categories);
+            return Ok(response);
+        }
         [HttpPost(ApiEndPointConstant.Discount.DiscountsEndPoint)]
         public async Task<IActionResult> CreateNewDiscounts(CreateNewDiscountRequest createNewDiscountRequest)
         {

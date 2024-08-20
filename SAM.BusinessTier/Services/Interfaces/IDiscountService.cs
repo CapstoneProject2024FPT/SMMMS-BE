@@ -16,5 +16,6 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<ICollection<GetDiscountResponse>> GetDiscountList(DiscountFilter filter);
         Task<GetDiscountResponse> GetDiscountById(Guid id);
         Task<bool> RemoveDiscountStatus(Guid id);
+        Task<bool> AddDiscountToCategories(Guid id, List<Guid> request);
     }
 }

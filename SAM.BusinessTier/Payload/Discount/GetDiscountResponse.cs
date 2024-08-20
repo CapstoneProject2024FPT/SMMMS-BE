@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.BusinessTier.Enums.EnumTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,11 @@ namespace SAM.BusinessTier.Payload.Discount
 
         public DateTime? CreateDate { get; set; }
 
+        public CategoriesResponse? Categories { get; set; }
+
+    }
+    public class CategoriesResponse
+    {
+        public string? Name { get; set; }
     }
 }

@@ -179,6 +179,7 @@ public static class ApiEndPointConstant
         public const string DiscountsEndPoint = ApiEndpoint + "/discount";
         public const string DiscountEndPoint = DiscountsEndPoint + "/{id}";
         public const string DiscountsEndPointDetail = DiscountsEndPoint + "/detail/{id}";
+        public const string AddCategoryToDiscount = DiscountEndPoint + "/categories";
 
     }
     public static class Payment
