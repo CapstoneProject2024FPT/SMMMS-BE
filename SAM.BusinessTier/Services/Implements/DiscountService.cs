@@ -96,8 +96,31 @@ namespace SAM.BusinessTier.Services.Implements
             var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
-                    
-            return _mapper.Map<GetDiscountResponse>(discount);
+            DiscountCategory accountRank = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
+                            predicate: x => x.DiscountId.Equals(id));
+
+            CategoriesResponse rankResponse = null;
+
+            if (accountRank != null)
+            {
+                // Retrieve the rank information
+                Category rank = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(accountRank.CategoryId));
+
+                if (rank != null)
+                {
+                    rankResponse = new CategoriesResponse
+                    {
+                        Id = rank.Id,
+                        Name = rank.Name
+                    };
+                }
+            }
+
+            // Map the user to GetUsersResponse and include the rank information
+            var response = _mapper.Map<GetDiscountResponse>(discount);
+            response.Categories = rankResponse;
+            return response;
         }
 
         public async Task<ICollection<GetDiscountResponse>> GetDiscountList(DiscountFilter filter)
