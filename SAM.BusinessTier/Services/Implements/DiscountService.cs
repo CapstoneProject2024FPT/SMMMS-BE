@@ -180,11 +180,18 @@ namespace SAM.BusinessTier.Services.Implements
             var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
+
             discount.Status = DiscountStatus.InActive.GetDescriptionFromEnum();
+
+            // Gọi phương thức với mảng rỗng
+            AddDiscountToCategories(id, new List<Guid>());
+
             _unitOfWork.GetRepository<Discount>().UpdateAsync(discount);
+
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
             return isSuccess;
         }
+
 
         public async Task<bool> UpdateDiscount(Guid id, UpdateDiscountRequest updateDiscountRequest)
         {
