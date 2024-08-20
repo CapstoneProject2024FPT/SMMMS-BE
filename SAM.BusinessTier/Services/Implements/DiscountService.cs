@@ -184,7 +184,7 @@ namespace SAM.BusinessTier.Services.Implements
             discount.Status = DiscountStatus.InActive.GetDescriptionFromEnum();
 
             // Gọi phương thức với mảng rỗng
-            AddDiscountToCategories(id, new List<Guid>());
+            await AddDiscountToCategories(id, new List<Guid>());
 
             _unitOfWork.GetRepository<Discount>().UpdateAsync(discount);
 
