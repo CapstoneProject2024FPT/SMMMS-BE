@@ -405,7 +405,7 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(checkOrderDetail.OrderId),
                 include: x => x.Include(x => x.OrderDetails));
 
-            if (checkOrder.Status != OrderStatus.Completed.GetDescriptionFromEnum() || checkOrder.Status != OrderStatus.Canceled.GetDescriptionFromEnum())
+            if (checkOrder.Status == OrderStatus.Completed.GetDescriptionFromEnum() || checkOrder.Status == OrderStatus.Canceled.GetDescriptionFromEnum())
             {
                 throw new BadHttpRequestException(MessageConstant.Order.WarningOrderMessage);
             }

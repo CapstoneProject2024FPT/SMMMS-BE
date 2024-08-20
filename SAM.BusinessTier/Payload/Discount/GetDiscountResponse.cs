@@ -20,7 +20,7 @@ namespace SAM.BusinessTier.Payload.Discount
 
         public DateTime? CreateDate { get; set; }
 
-        public CategoriesResponse? Categories { get; set; }
+        public List<CategoriesResponse>? Categories { get; set; } = new List<CategoriesResponse>();
 
     }
     public class CategoriesResponse

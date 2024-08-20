@@ -1,6 +1,7 @@
 ﻿using SAM.BusinessTier.Enums.EnumStatus;
 using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Enums.Other;
+using SAM.BusinessTier.Payload.Discount;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace SAM.BusinessTier.Payload.Category
         public CategoryType Type { get; set; }
         public CategoryKind? Kind { get; set; }
         public Guid? MasterCategoryId { get; set; }
-        public DiscountResponse? Discount { get; set; }
+        public List<DiscountResponse>? Discounts { get; set; } = new List<DiscountResponse>();
 
     }
     public class DiscountResponse

@@ -32,9 +32,9 @@ namespace SAM.BusinessTier.Services.Implements
         {
 
             // Retrieve the account or throw an exception if not found
-            Category category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+            Discount discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
-            ?? throw new BadHttpRequestException(MessageConstant.Category.NotFoundFailedMessage);
+            ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
 
             // Retrieve current rank IDs associated with the account
             List<Guid> currentDiscountIds = (List<Guid>)await _unitOfWork.GetRepository<DiscountCategory>().GetListAsync(
@@ -93,78 +93,87 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetDiscountResponse> GetDiscountById(Guid id)
         {
+            // Lấy thông tin discount
             var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
-            DiscountCategory accountRank = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
-                            predicate: x => x.DiscountId.Equals(id));
 
-            CategoriesResponse rankResponse = null;
+            // Lấy các DiscountCategory liên quan đến discount này
+            var discountCategories = await _unitOfWork.GetRepository<DiscountCategory>().GetListAsync(
+                predicate: x => x.DiscountId.Equals(id));
 
-            if (accountRank != null)
+            // Tạo danh sách CategoriesResponse để lưu các rank tương ứng
+            List<CategoriesResponse> rankResponses = new List<CategoriesResponse>();
+
+            foreach (var discountCategory in discountCategories)
             {
-                // Retrieve the rank information
-                Category rank = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                    predicate: x => x.Id.Equals(accountRank.CategoryId));
+                // Lấy thông tin rank cho từng DiscountCategory
+                var rank = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(discountCategory.CategoryId));
 
                 if (rank != null)
                 {
-                    rankResponse = new CategoriesResponse
+                    rankResponses.Add(new CategoriesResponse
                     {
                         Id = rank.Id,
                         Name = rank.Name
-                    };
+                    });
                 }
             }
 
-            // Map the user to GetUsersResponse and include the rank information
+            // Tạo đối tượng response và gán danh sách rankResponses
             var response = _mapper.Map<GetDiscountResponse>(discount);
-            response.Categories = rankResponse;
+            response.Categories = rankResponses;
+
             return response;
         }
 
+
         public async Task<ICollection<GetDiscountResponse>> GetDiscountList(DiscountFilter filter)
         {
-            var reponse = await _unitOfWork.GetRepository<Discount>().GetListAsync(
+            // Lấy danh sách Discount theo filter
+            var discounts = await _unitOfWork.GetRepository<Discount>().GetListAsync(
                 selector: x => _mapper.Map<GetDiscountResponse>(x),
                 filter: filter);
+
             // Tạo danh sách response
             var responseList = new List<GetDiscountResponse>();
 
-            foreach (var discount in reponse)
+            foreach (var discount in discounts)
             {
-                // Lấy thông tin rank cho từng account
-                DiscountCategory discountCategory = await _unitOfWork.GetRepository<DiscountCategory>().SingleOrDefaultAsync(
-                    predicate: x => x.DiscountId.Equals(discount.Id)
-                );
+                // Lấy danh sách DiscountCategory liên quan đến Discount này
+                var discountCategories = await _unitOfWork.GetRepository<DiscountCategory>().GetListAsync(
+                    predicate: x => x.DiscountId.Equals(discount.Id));
 
-                CategoriesResponse categoriesResponse = null;
+                // Tạo danh sách CategoriesResponse để lưu các hạng mục tương ứng
+                var categoriesResponses = new List<CategoriesResponse>();
 
-                if (discountCategory != null)
+                foreach (var discountCategory in discountCategories)
                 {
-                    // Lấy thông tin rank từ bảng Rank
-                    var categories = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
-                        predicate: x => x.Id.Equals(discountCategory.CategoryId)
-                    );
+                    // Lấy thông tin Category
+                    var category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
+                        predicate: x => x.Id.Equals(discountCategory.CategoryId));
 
-                    if (categories != null)
+                    if (category != null)
                     {
-                        categoriesResponse = new CategoriesResponse
+                        categoriesResponses.Add(new CategoriesResponse
                         {
-                            Id = categories.Id,
-                            Name = categories.Name
-                        };
+                            Id = category.Id,
+                            Name = category.Name
+                        });
                     }
                 }
 
-                // Map account sang GetUsersResponse và thêm thông tin rank
-                var userResponse = _mapper.Map<GetDiscountResponse>(discount);
-                userResponse.Categories = categoriesResponse;
+                // Gán danh sách CategoriesResponse vào đối tượng GetDiscountResponse
+                discount.Categories = categoriesResponses;
 
-                responseList.Add(userResponse);
+                // Thêm đối tượng vào danh sách response
+                responseList.Add(discount);
             }
-            return reponse;
+
+            return responseList;
         }
+
 
         public async Task<bool> RemoveDiscountStatus(Guid id)
         {
