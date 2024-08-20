@@ -294,7 +294,7 @@ public static class MessageConstant
         public const string UpdateDiscountFailedMessage = "Cập nhật thông tin Khuyến mãi thất bại";
         public const string UpdateDiscountSuccessMessage = "Cập nhật thông tin Khuyến mãi thành công";
         public const string EmptyDiscountIdMessage = "Khuyến mãi Id không hợp lệ";
-        public const string DiscountNotFoundMessage = "Khuyến mãi không tồn tại trong hệ thống";
+        public const string DiscountNotFoundMessage = "Khuyến mãi không tồn tại trong hệ thống hoặc đang không hoạt động";
         public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
         public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
         public const string ExceedQuantityMessage = "Số lượng vượt mức tồn kho";

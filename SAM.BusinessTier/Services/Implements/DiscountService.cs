@@ -31,12 +31,10 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<bool> AddDiscountToCategories(Guid id, List<Guid> request)
         {
 
-            // Retrieve the account or throw an exception if not found
             Discount discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id))
+                predicate: x => x.Id.Equals(id) && x.Status == DiscountStatus.Active.GetDescriptionFromEnum())
             ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
 
-            // Retrieve current rank IDs associated with the account
             List<Guid> currentDiscountIds = (List<Guid>)await _unitOfWork.GetRepository<DiscountCategory>().GetListAsync(
                 selector: x => x.CategoryId,
                 predicate: x => x.DiscountId.Equals(id));
