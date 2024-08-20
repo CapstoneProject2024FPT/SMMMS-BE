@@ -200,7 +200,7 @@ namespace SAM.BusinessTier.Services.Implements
             if (updateDiscountRequest.Status.HasValue && updateDiscountRequest.Status == DiscountStatus.Active)
             {
                 var existingActiveDiscount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
-                    predicate: x => x.Status.Equals(DiscountStatus.Active.GetDescriptionFromEnum()) && x.Id != id);
+                    predicate: x => x.Status == DiscountStatus.Active.GetDescriptionFromEnum() && x.Id != id);
 
                 if (existingActiveDiscount != null)
                 {
