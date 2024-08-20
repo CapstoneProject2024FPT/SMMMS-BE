@@ -14,13 +14,18 @@ namespace SAM.BusinessTier.Payload.Order
         public string? Note { get; set; }
         public string? Description { get; set; }
         public Guid AddressId { get; set; }
+        public double? TotalAmountOrder { get; set; }
+        public double? FinalAmountOrder { get; set; }
+
+
 
     }
     public class OrderMachinery
     {
         public Guid? MachineryId { get; set; }
-        public double? StockPrice { get; set; }
         public double? SellingPrice { get; set; }
+        public double? TotalAmount { get; set; }
+        public double? FinalAmount { get; set; }
         public int? Quantity { get; set; }
     }
 

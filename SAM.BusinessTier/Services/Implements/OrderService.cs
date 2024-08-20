@@ -52,7 +52,8 @@ namespace SAM.BusinessTier.Services.Implements
                 InvoiceCode = TimeUtils.GetTimestamp(currentTime),
                 CreateDate = currentTime,
                 CompletedDate = null,
-                TotalAmount = 0,
+                TotalAmount = request.TotalAmountOrder,
+                FinalAmount = request.FinalAmountOrder,
                 Description = request.Description,
                 Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
                 Type = OrderType.Order.GetDescriptionFromEnum(),
@@ -61,20 +62,15 @@ namespace SAM.BusinessTier.Services.Implements
             };
 
             var orderDetails = new List<OrderDetail>();
-            double totalAmount = 0;
 
             foreach (var machinery in request.MachineryList)
             {
-                var machineryExists = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(predicate: x => x.Id.Equals(machinery.MachineryId));
+                var machineryExists = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                    predicate: x => x.Id.Equals(machinery.MachineryId));
                 if (machineryExists == null)
                 {
                     throw new BadHttpRequestException(MessageConstant.Machinery.MachineryNotFoundMessage);
                 }
-
-                // Tính toán FinalAmount cho máy móc
-                double? finalAmount = await CalculateFinalAmount(machineryExists.Id, machineryExists.SellingPrice, machineryExists.CategoryId);
-
-                double effectiveSellingPrice = finalAmount.HasValue ? finalAmount.Value : machineryExists.SellingPrice.Value;
 
                 var inventories = await _unitOfWork.GetRepository<Inventory>().GetListAsync(
                     predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum()
@@ -88,7 +84,7 @@ namespace SAM.BusinessTier.Services.Implements
                 foreach (var inventory in inventories.Take((int)machinery.Quantity))
                 {
                     inventory.Status = InventoryStatus.Pending.GetDescriptionFromEnum();
-                    _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+                     _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
 
                     var orderDetail = new OrderDetail
                     {
@@ -97,33 +93,14 @@ namespace SAM.BusinessTier.Services.Implements
                         MachineryId = machinery.MachineryId,
                         InventoryId = inventory.Id,
                         Quantity = 1,
-                        SellingPrice = machinery.StockPrice,
-                        TotalAmount = machinery.SellingPrice, 
-                        FinalPrice = effectiveSellingPrice, 
-                        CreateDate = DateTime.Now
+                        SellingPrice = machinery.SellingPrice,
+                        TotalAmount = machinery.TotalAmount,
+                        FinalPrice = machinery.FinalAmount,
+                        CreateDate = currentTime
                     };
 
                     orderDetails.Add(orderDetail);
-                    totalAmount += orderDetail.FinalPrice ?? 0;
                 }
-            }
-
-            // Tính toán tổng số tiền và giảm giá theo hạng tài khoản
-            var accountRank = await _unitOfWork.GetRepository<AccountRank>()
-                .SingleOrDefaultAsync(predicate: ar => ar.AccountId == account.Id);
-
-            if (accountRank != null)
-            {
-                var rank = await _unitOfWork.GetRepository<Rank>()
-                    .SingleOrDefaultAsync(predicate: r => r.Id == accountRank.RankId);
-
-                double rankDiscount = (rank.Value.Value / 100.0) * totalAmount;
-                newOrder.FinalAmount = totalAmount - rankDiscount;
-
-            }
-            else
-            {
-                newOrder.FinalAmount = totalAmount;
             }
 
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
@@ -132,6 +109,7 @@ namespace SAM.BusinessTier.Services.Implements
 
             return newOrder.Id;
         }
+
 
         private async Task<double?> CalculateFinalAmount(Guid machineryId, double? sellingPrice, Guid? categoryId)
         {
