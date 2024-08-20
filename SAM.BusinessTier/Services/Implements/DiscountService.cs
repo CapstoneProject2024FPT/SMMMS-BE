@@ -128,6 +128,7 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         categoriesResponse = new CategoriesResponse
                         {
+                            Id = categories.Id,
                             Name = categories.Name
                         };
                     }

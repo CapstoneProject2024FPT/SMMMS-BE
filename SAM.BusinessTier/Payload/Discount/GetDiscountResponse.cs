@@ -25,6 +25,7 @@ namespace SAM.BusinessTier.Payload.Discount
     }
     public class CategoriesResponse
     {
+        public Guid Id { get; set; }
         public string? Name { get; set; }
     }
 }
