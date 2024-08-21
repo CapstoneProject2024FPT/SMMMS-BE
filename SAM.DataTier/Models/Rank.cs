@@ -13,5 +13,5 @@ public partial class Rank
 
     public int? Value { get; set; }
 
-    public virtual ICollection<AccountRank> AccountRanks { get; set; } = new List<AccountRank>();
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 }

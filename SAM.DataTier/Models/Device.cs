@@ -14,6 +14,4 @@ public partial class Device
     public DateTime? LastUpdated { get; set; }
 
     public Guid? AccountId { get; set; }
-
-    public virtual Account? Account { get; set; }
 }

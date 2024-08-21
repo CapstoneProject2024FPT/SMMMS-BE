@@ -18,6 +18,4 @@ public partial class Notification
     public string? NotificationType { get; set; }
 
     public Guid? AccountId { get; set; }
-
-    public virtual Account? Account { get; set; }
 }

@@ -114,6 +114,10 @@ public partial class SamDevContext : DbContext
             entity.Property(e => e.Role).HasMaxLength(255);
             entity.Property(e => e.Status).HasMaxLength(255);
             entity.Property(e => e.Username).HasMaxLength(255);
+
+            entity.HasOne(d => d.Rank).WithMany(p => p.Accounts)
+                .HasForeignKey(d => d.RankId)
+                .HasConstraintName("FK_Account_Rank");
         });
 
         modelBuilder.Entity<AccountRank>(entity =>
@@ -125,16 +129,6 @@ public partial class SamDevContext : DbContext
             entity.HasIndex(e => e.Id, "UQ__AccountR__3214EC06DB6D44D9").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
-
-            entity.HasOne(d => d.Account).WithMany(p => p.AccountRanks)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AccountRank_Account");
-
-            entity.HasOne(d => d.Rank).WithMany(p => p.AccountRanks)
-                .HasForeignKey(d => d.RankId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AccountRank_Rank");
         });
 
         modelBuilder.Entity<Address>(entity =>
@@ -264,10 +258,6 @@ public partial class SamDevContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("FCMToken");
             entity.Property(e => e.LastUpdated).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.Devices)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK_Device_Account");
         });
 
         modelBuilder.Entity<Discount>(entity =>
@@ -555,10 +545,6 @@ public partial class SamDevContext : DbContext
             entity.Property(e => e.Message).HasMaxLength(4000);
             entity.Property(e => e.NotificationType).HasMaxLength(50);
             entity.Property(e => e.Title).HasMaxLength(4000);
-
-            entity.HasOne(d => d.Account).WithMany(p => p.Notifications)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK_Notification_Account");
         });
 
         modelBuilder.Entity<Order>(entity =>

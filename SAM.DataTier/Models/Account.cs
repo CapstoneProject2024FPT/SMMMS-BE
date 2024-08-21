@@ -31,21 +31,19 @@ public partial class Account
 
     public string? FcmToken { get; set; }
 
-    public virtual ICollection<AccountRank> AccountRanks { get; set; } = new List<AccountRank>();
+    public Guid? RankId { get; set; }
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
 
-    public virtual ICollection<Device> Devices { get; set; } = new List<Device>();
-
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
     public virtual ICollection<News> News { get; set; } = new List<News>();
 
-    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
-
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual Rank? Rank { get; set; }
 
     public virtual ICollection<TaskManager> TaskManagers { get; set; } = new List<TaskManager>();
 
