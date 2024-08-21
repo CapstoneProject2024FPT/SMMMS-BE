@@ -29,72 +29,72 @@ namespace SAM.BusinessTier.Services.Implements
         {
         }
 
-        public async Task<bool> AddRankToAccount(Guid id, List<Guid> request)
-        {
+        //public async Task<bool> AddRankToAccount(Guid id, List<Guid> request)
+        //{
 
-            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id))
-            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+        //    Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+        //        predicate: x => x.Id.Equals(id))
+        //    ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
 
-            List<Guid> currentRankIds = (List<Guid>)await _unitOfWork.GetRepository<AccountRank>().GetListAsync(
-                selector: x => x.RankId,
-                predicate: x => x.AccountId.Equals(id));
+        //    List<Guid> currentRankIds = (List<Guid>)await _unitOfWork.GetRepository<AccountRank>().GetListAsync(
+        //        selector: x => x.RankId,
+        //        predicate: x => x.AccountId.Equals(id));
 
-            (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedRankIds =
-                CustomListUtil.splitidstoaddandremove(currentRankIds, request);
+        //    (List<Guid> idsToRemove, List<Guid> idsToAdd, List<Guid> idsToKeep) splittedRankIds =
+        //        CustomListUtil.splitidstoaddandremove(currentRankIds, request);
 
 
-            if (splittedRankIds.idsToAdd.Count > 0)
-            {
-                List<AccountRank> ranksToInsert = new List<AccountRank>();
-                splittedRankIds.idsToAdd.ForEach(rankId => ranksToInsert.Add(new AccountRank
-                {
-                    Id = Guid.NewGuid(),
-                    AccountId = id,
-                    RankId = rankId,
-                }));
-                await _unitOfWork.GetRepository<AccountRank>().InsertRangeAsync(ranksToInsert);
-            }
+        //    if (splittedRankIds.idsToAdd.Count > 0)
+        //    {
+        //        List<AccountRank> ranksToInsert = new List<AccountRank>();
+        //        splittedRankIds.idsToAdd.ForEach(rankId => ranksToInsert.Add(new AccountRank
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            AccountId = id,
+        //            RankId = rankId,
+        //        }));
+        //        await _unitOfWork.GetRepository<AccountRank>().InsertRangeAsync(ranksToInsert);
+        //    }
 
-            if (splittedRankIds.idsToRemove.Count > 0)
-            {
-                List<AccountRank> ranksToDelete = (List<AccountRank>)await _unitOfWork.GetRepository<AccountRank>()
-                    .GetListAsync(predicate: x =>
-                        x.AccountId.Equals(id) &&
-                        splittedRankIds.idsToRemove.Contains(x.RankId));
+        //    if (splittedRankIds.idsToRemove.Count > 0)
+        //    {
+        //        List<AccountRank> ranksToDelete = (List<AccountRank>)await _unitOfWork.GetRepository<AccountRank>()
+        //            .GetListAsync(predicate: x =>
+        //                x.AccountId.Equals(id) &&
+        //                splittedRankIds.idsToRemove.Contains(x.RankId));
 
-                 _unitOfWork.GetRepository<AccountRank>().DeleteRangeAsync(ranksToDelete);
-            }
+        //         _unitOfWork.GetRepository<AccountRank>().DeleteRangeAsync(ranksToDelete);
+        //    }
 
-            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-            return isSuccessful;
-        }
+        //    bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+        //    return isSuccessful;
+        //}
 
-        public async Task<Guid> AddrankForAccount(Guid accountId, Guid rankId)
-        {
-            var currentUser = GetUsernameFromJwt();
+        //public async Task<Guid> AddrankForAccount(Guid accountId, Guid rankId)
+        //{
+        //    var currentUser = GetUsernameFromJwt();
 
-            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(accountId))
-            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
-            Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(rankId))
-            ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+        //    Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+        //        predicate: x => x.Id.Equals(accountId))
+        //    ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
+        //    Rank rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
+        //        predicate: x => x.Id.Equals(rankId))
+        //    ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
 
-            AccountRank accountRank = new AccountRank()
-            {
-                Id = Guid.NewGuid(),
-                AccountId = accountId,
-                RankId = rankId,
-               };
+        //    AccountRank accountRank = new AccountRank()
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        AccountId = accountId,
+        //        RankId = rankId,
+        //       };
             
 
-            await _unitOfWork.GetRepository<AccountRank>().InsertAsync(accountRank);
-            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-            if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Rank.CreateNewRankFailedMessage);
+        //    await _unitOfWork.GetRepository<AccountRank>().InsertAsync(accountRank);
+        //    bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+        //    if (!isSuccessful) throw new BadHttpRequestException(MessageConstant.Rank.CreateNewRankFailedMessage);
 
-            return accountRank.Id;
-        }
+        //    return accountRank.Id;
+        //}
 
         public async Task<bool> ChangePassword(Guid userId, ChangePasswordRequest changePasswordRequest)
         {
@@ -181,23 +181,17 @@ namespace SAM.BusinessTier.Services.Implements
 
             var staffTaskStatuses = new List<StaffTaskStatusResponse>();
 
-            // Duyệt qua từng nhân viên
             foreach (var staff in staffList)
             {
-                // Lấy tất cả công việc của nhân viên đó
                 var tasks = await _unitOfWork.GetRepository<TaskManager>()
                     .GetListAsync(predicate: t => t.AccountId == staff.Id);
 
-                // Đếm số lượng công việc theo trạng thái
                 var taskCountByStatus = tasks.CountTaskEachStatus();
 
-                // Lọc công việc theo ngày được chỉ định
                 var specifiedDateTasks = tasks.Where(t => t.ExcutionDate.HasValue && t.ExcutionDate.Value.Date == targetDate.Date).ToList();
 
-                // Đếm số lượng công việc trong ngày theo trạng thái
                 var specifiedDateTaskCountByStatus = specifiedDateTasks.CountTaskEachStatus();
 
-                // Thêm thông tin vào danh sách kết quả
                 staffTaskStatuses.Add(new StaffTaskStatusResponse
                 {
                     StaffId = staff.Id,
@@ -213,48 +207,66 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<IPaginate<GetUsersResponse>> GetAllUsers(UserFilter filter, PagingModel pagingModel)
         {
             IPaginate<GetUsersResponse> response = await _unitOfWork.GetRepository<Account>().GetPagingListAsync(
-                 selector: x => _mapper.Map<GetUsersResponse>(x),
+                 selector: x => new GetUsersResponse { 
+                     Id = x.Id,
+                     Username = x.Username,
+                     FullName = x.FullName,
+                     Email = x.Email,
+                     Gender = x.Gender,
+                     PhoneNumber = x.PhoneNumber,
+                     Image = x.Image,
+                     Point = x.Point,
+                     YearsOfExperience = x.YearsOfExperience,
+                     Role = EnumUtil.ParseEnum<RoleEnum>(x.Role),
+                     Status = EnumUtil.ParseEnum<UserStatus>(x.Status),
+                     Rank = new RankResponse
+                     {
+                         Name = x.Rank.Name,
+                         Range = x.Rank.Range,
+                         Value = x.Rank.Value
+                     }
+                 },
                  filter: filter,
                  page: pagingModel.page,
                  size: pagingModel.size,
                  orderBy: x => x.OrderBy(x => x.Username)
             );
 
-            var responseList = new List<GetUsersResponse>();
+            //var responseList = new List<GetUsersResponse>();
 
-            foreach (var account in response.Items)
-            {
-                // Lấy thông tin rank cho từng account
-                AccountRank accountRank = await _unitOfWork.GetRepository<AccountRank>().SingleOrDefaultAsync(
-                    predicate: x => x.AccountId.Equals(account.Id)
-                );
+            //foreach (var account in response.Items)
+            //{
+            //    // Lấy thông tin rank cho từng account
+            //    AccountRank accountRank = await _unitOfWork.GetRepository<AccountRank>().SingleOrDefaultAsync(
+            //        predicate: x => x.AccountId.Equals(account.Id)
+            //    );
 
-                RankResponse rankResponse = null;
+            //    RankResponse rankResponse = null;
 
-                if (accountRank != null)
-                {
-                    // Lấy thông tin rank từ bảng Rank
-                    var rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
-                        predicate: x => x.Id.Equals(accountRank.RankId)
-                    );
+            //    if (accountRank != null)
+            //    {
+            //        // Lấy thông tin rank từ bảng Rank
+            //        var rank = await _unitOfWork.GetRepository<Rank>().SingleOrDefaultAsync(
+            //            predicate: x => x.Id.Equals(accountRank.RankId)
+            //        );
 
-                    if (rank != null)
-                    {
-                        rankResponse = new RankResponse
-                        {
-                            Name = rank.Name,
-                            Range = rank.Range,
-                            Value = rank.Value
-                        };
-                    }
-                }
+            //        if (rank != null)
+            //        {
+            //            rankResponse = new RankResponse
+            //            {
+            //                Name = rank.Name,
+            //                Range = rank.Range,
+            //                Value = rank.Value
+            //            };
+            //        }
+            //    }
 
-                // Map account sang GetUsersResponse và thêm thông tin rank
-                var userResponse = _mapper.Map<GetUsersResponse>(account);
-                userResponse.Rank = rankResponse;
+            //    // Map account sang GetUsersResponse và thêm thông tin rank
+            //    var userResponse = _mapper.Map<GetUsersResponse>(account);
+            //    userResponse.Rank = rankResponse;
 
-                responseList.Add(userResponse);
-            }
+            //    responseList.Add(userResponse);
+            //}
 
 
 
@@ -268,38 +280,31 @@ namespace SAM.BusinessTier.Services.Implements
                 throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
 
             // Retrieve the user or throw an exception if not found
-            Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(id))
+            var user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(id),
+                selector: x => new GetUsersResponse
+                {
+                    Id = x.Id,
+                    Username = x.Username,
+                    FullName = x.FullName,
+                    Email = x.Email,
+                    Gender = x.Gender,
+                    PhoneNumber = x.PhoneNumber,
+                    Image = x.Image,
+                    Point = x.Point,
+                    YearsOfExperience = x.YearsOfExperience,
+                    Role = EnumUtil.ParseEnum<RoleEnum>(x.Role),
+                    Status = EnumUtil.ParseEnum<UserStatus>(x.Status),
+                    Rank = new RankResponse
+                    {
+                        Name = x.Rank.Name,
+                        Range = x.Rank.Range,
+                        Value = x.Rank.Value
+                    }
+                })
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
 
-            // Retrieve the rank ID associated with the user
-            AccountRank accountRank = await _unitOfWork.GetRepository<AccountRank>().SingleOrDefaultAsync(
-                predicate: x => x.AccountId.Equals(id));
-
-            RankResponse rankResponse = null;
-
-            if (accountRank != null)
-            {
-                // Retrieve the rank information
-                DataTier.Models.Rank rank = await _unitOfWork.GetRepository<DataTier.Models.Rank>().SingleOrDefaultAsync(
-                    predicate: x => x.Id.Equals(accountRank.RankId));
-
-                if (rank != null)
-                {
-                    rankResponse = new RankResponse
-                    {
-                        Name = rank.Name,
-                        Range = rank.Range,
-                        Value = rank.Value
-                    };
-                }
-            }
-
-            // Map the user to GetUsersResponse and include the rank information
-            var response = _mapper.Map<GetUsersResponse>(user);
-            response.Rank = rankResponse;
-
-            return response;
+            return user;
         }
 
         public async Task<LoginResponse> Login(LoginRequest loginRequest)

@@ -16,10 +16,10 @@ namespace SAM.BusinessTier.Services.Interfaces
         Task<bool> UpdateUserInfor(Guid id, UpdateUserInforRequest updateRequest);
         Task<bool> RemoveUserStatus(Guid id);
 
-        Task<bool> AddRankToAccount(Guid id, List<Guid> request);
+        //Task<bool> AddRankToAccount(Guid id, List<Guid> request);
 
         Task<bool> ChangePassword(Guid userId, ChangePasswordRequest changePasswordRequest);
-        Task<Guid> AddrankForAccount(Guid accountId, Guid rankId);
+        //Task<Guid> AddrankForAccount(Guid accountId, Guid rankId);
 
         Task<ICollection<StaffTaskStatusResponse>> GetStaffTaskStatusesByRole(DateTime targetDate);
     }

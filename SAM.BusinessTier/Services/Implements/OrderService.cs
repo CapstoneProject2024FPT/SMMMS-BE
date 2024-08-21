@@ -393,7 +393,8 @@ namespace SAM.BusinessTier.Services.Implements
                     // Kiểm tra kết quả và thêm rank cho account nếu có
                     if (rankCheck != null)
                     {
-                        var addRankResult = await _accountService.AddrankForAccount(account.Id, rankCheck.Id); //checked check
+                        account.RankId = rankCheck.Id;
+                        _unitOfWork.GetRepository<Account>().UpdateAsync(account);
                     }
 
                     

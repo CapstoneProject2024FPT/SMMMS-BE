@@ -44,7 +44,6 @@ namespace SAM.BusinessTier.Payload.User
     public class RankResponse
     {
         public string? Name { get; set; }
-
         public int? Range { get; set; }
         public int? Value { get; set; }
     }
