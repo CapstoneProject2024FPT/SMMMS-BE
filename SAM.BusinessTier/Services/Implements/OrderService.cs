@@ -555,10 +555,37 @@ namespace SAM.BusinessTier.Services.Implements
                 case OrderStatus.Canceled:
                     if (updateOrder.Status == OrderStatus.Paid.GetDescriptionFromEnum())
                     {
-                        // You might want to log this or return an error message indicating the cancellation is not allowed
                         throw new InvalidOperationException(MessageConstant.Order.WarningPaidOrderMessage);
                     }
-                    // Update Inventory status to Available
+                    if (updateOrder.Type == OrderType.Warranty.GetDescriptionFromEnum())
+                    {
+                        // Tìm các OrderDetail liên quan đến Order bị hủy
+                        var orderDetails = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
+                            predicate: od => od.OrderId == updateOrder.Id);
+
+                        foreach (var orderDetail in orderDetails)
+                        {
+                            var componentChange = await _unitOfWork.GetRepository<ComponentChange>().SingleOrDefaultAsync(
+                                predicate: cc => cc.MachineComponentId == orderDetail.MachineComponentId);
+
+                            if (componentChange != null)
+                            {
+                                var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
+                                    predicate: wd => wd.Id == componentChange.WarrantyDetailId);
+
+                                if (warrantyDetail != null && warrantyDetail.Comments != null)
+                                {
+                                    // Kiểm tra nếu Comments chứa OrderId của đơn hàng bị hủy
+                                    if (warrantyDetail.Comments.Contains($"OrderId: {updateOrder.Id}"))
+                                    {
+                                        // Cập nhật Comments thành null
+                                        warrantyDetail.Comments = null;
+                                        _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     var orderDetailsCanceled = await _unitOfWork.GetRepository<OrderDetail>().GetListAsync(
                         predicate: x => x.OrderId == orderId);
                     foreach (var detail in orderDetailsCanceled)

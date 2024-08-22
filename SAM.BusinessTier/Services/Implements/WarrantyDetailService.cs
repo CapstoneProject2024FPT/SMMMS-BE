@@ -384,7 +384,7 @@ namespace SAM.BusinessTier.Services.Implements
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
-            WarrantyDetail warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
+            var warrantyDetail = await _unitOfWork.GetRepository<WarrantyDetail>().SingleOrDefaultAsync(
                 predicate: wd => wd.Id == createNewOrderForWarrantyComponent.WarrantyId,
                 include: wd => wd.Include(wd => wd.ComponentChanges)
                                  .ThenInclude(cc => cc.MachineComponent))
@@ -394,67 +394,60 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
             }
-            
-            var checkComponent = await _unitOfWork.GetRepository<ComponentChange>().SingleOrDefaultAsync(
-                predicate: x => x.WarrantyDetailId.Equals(createNewOrderForWarrantyComponent.WarrantyId));
 
-            var checkOrderDetail = await _unitOfWork.GetRepository<OrderDetail>().SingleOrDefaultAsync(
-                predicate: x => x.MachineComponentId.Equals(checkComponent.MachineComponentId));
-
-            var checkOrder = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(checkOrderDetail.OrderId),
-                include: x => x.Include(x => x.OrderDetails));
-
-            if (checkOrder.Status == OrderStatus.Completed.GetDescriptionFromEnum() || checkOrder.Status == OrderStatus.Canceled.GetDescriptionFromEnum())
+            if (warrantyDetail.Comments != null)
             {
                 throw new BadHttpRequestException(MessageConstant.Order.WarningOrderMessage);
             }
-
-            Order newOrder = new Order
+            else
             {
-                Id = Guid.NewGuid(),
-                InvoiceCode = TimeUtils.GetTimestamp(currentTime),
-                CreateDate = currentTime,
-                CompletedDate = null,
-                TotalAmount = 0,
-                Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
-                Type = OrderType.Warranty.GetDescriptionFromEnum(),
-                AccountId = createNewOrderForWarrantyComponent.AccountId,
-                AddressId = warrantyDetail.AddressId,
-                Description = createNewOrderForWarrantyComponent.Description,
-            };
-
-            double totalAmount = 0;
-
-            foreach (var componentChange in warrantyDetail.ComponentChanges)
-            {
-                if (componentChange.MachineComponent == null)
-                {
-                    throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
-                }
-
-                OrderDetail orderDetail = new OrderDetail
+                var newOrder = new Order
                 {
                     Id = Guid.NewGuid(),
-                    OrderId = newOrder.Id,
-                    MachineComponentId = componentChange.MachineComponent.Id,
-                    Quantity = 1,
-                    SellingPrice = componentChange.MachineComponent.SellingPrice,
-                    TotalAmount = componentChange.MachineComponent.SellingPrice,
-                    CreateDate = DateTime.UtcNow
+                    InvoiceCode = TimeUtils.GetTimestamp(currentTime),
+                    CreateDate = currentTime,
+                    CompletedDate = null,
+                    TotalAmount = 0,
+                    Status = OrderStatus.UnPaid.GetDescriptionFromEnum(),
+                    Type = OrderType.Warranty.GetDescriptionFromEnum(),
+                    AccountId = createNewOrderForWarrantyComponent.AccountId,
+                    AddressId = warrantyDetail.AddressId,
+                    Description = createNewOrderForWarrantyComponent.Description,
                 };
 
-                totalAmount += orderDetail.TotalAmount ?? 0;
-                await _unitOfWork.GetRepository<OrderDetail>().InsertAsync(orderDetail);
+                double totalAmount = 0;
+
+                foreach (var componentChange in warrantyDetail.ComponentChanges)
+                {
+                    if (componentChange.MachineComponent == null)
+                    {
+                        throw new BadHttpRequestException(MessageConstant.MachineryComponents.MachineryComponentsNotFoundMessage);
+                    }
+
+                    var orderDetail = new OrderDetail
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderId = newOrder.Id,
+                        MachineComponentId = componentChange.MachineComponent.Id,
+                        Quantity = 1,
+                        SellingPrice = componentChange.MachineComponent.SellingPrice,
+                        TotalAmount = componentChange.MachineComponent.SellingPrice,
+                        CreateDate = DateTime.UtcNow
+                    };
+
+                    totalAmount += orderDetail.TotalAmount ?? 0;
+                    await _unitOfWork.GetRepository<OrderDetail>().InsertAsync(orderDetail);
+                }
+
+                newOrder.FinalAmount = totalAmount;
+                newOrder.TotalAmount = totalAmount;
+                warrantyDetail.Comments = $"Đã tạo đơn hàng với OrderId: {newOrder.Id}";
+                _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
+                await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
+                await _unitOfWork.CommitAsync();
+                return newOrder.Id;
+
             }
-
-            newOrder.FinalAmount = totalAmount;
-            newOrder.TotalAmount = totalAmount;
-
-            await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
-            await _unitOfWork.CommitAsync();
-
-            return newOrder.Id;
         }
 
 
