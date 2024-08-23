@@ -89,9 +89,8 @@ namespace SAM.BusinessTier.Services.Implements
                 }
 
                 addressId = order.AddressId;
-                order.Status = OrderStatus.Delivery.GetDescriptionFromEnum(); // Assuming OrderStatus.Delivery is defined
-
-                // Update the order asynchronously
+                order.Status = OrderStatus.Delivery.GetDescriptionFromEnum();
+                order.CompletedDate = request.ExcutionDate;
                 _unitOfWork.GetRepository<Order>().UpdateAsync(order);
             }
             else
