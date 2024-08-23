@@ -44,10 +44,9 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Guid? addressId = null;
-
             // Lấy danh sách task trong ngày của nhân viên
             var tasksForToday = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
-                predicate: t => t.AccountId == request.AccountId && t.CreateDate.HasValue && t.CreateDate.Value.Date == currentTime.Date);
+                predicate: t => t.AccountId == request.AccountId && t.ExcutionDate.HasValue && t.ExcutionDate.Value.Date == request.ExcutionDate.Value.Date);
             int taskCountForToday = tasksForToday.Count();
 
             // Lấy danh sách tất cả task của nhân viên với trạng thái Process
