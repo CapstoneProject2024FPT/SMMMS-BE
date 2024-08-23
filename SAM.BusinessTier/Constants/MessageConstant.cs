@@ -192,7 +192,7 @@ public static class MessageConstant
 
     public static class User
     {
-        public const string UserExisted = "Tài khoản đã tồn tại trong hệ thống";
+        public const string UserExisted = "Tài khoản đã tồn tại trong hệ thống hoặc Email đã tồn tại trong hệ thống";
         public const string CreateFailedMessage = "Tạo mới Tài khoản thất bại";
         public const string UserNotFoundMessage = "Tài khoản không tồn tại trong hệ thống";
         public const string EmptyUserIdMessage = "Số Tài khoản ko hợp lệ";

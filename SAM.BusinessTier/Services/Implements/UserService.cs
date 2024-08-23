@@ -122,7 +122,7 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<Guid> CreateNewUser(CreateNewUserRequest request)
         {
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Username.Equals(request.Username));
+                predicate: x => x.Username.Equals(request.Username) && x.Email.Equals(request.Email));
             if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
             account = new Account()
             {
@@ -149,7 +149,7 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<Guid> CreateNewStaff(CreateNewStaffRequest request)
         {
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Username.Equals(request.Username));
+                predicate: x => x.Username.Equals(request.Username) && x.Email.Equals(request.Email));
             if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
             account = new Account()
             {
