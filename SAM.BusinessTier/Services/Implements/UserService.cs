@@ -126,7 +126,7 @@ namespace SAM.BusinessTier.Services.Implements
             if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
             Account account1 = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Email.Equals(request.Email));
-            if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserEmailExisted);
+            if (account1 != null) throw new BadHttpRequestException(MessageConstant.User.UserEmailExisted);
             account = new Account()
             {
                 Id = Guid.NewGuid(),
@@ -156,7 +156,7 @@ namespace SAM.BusinessTier.Services.Implements
             if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
             Account account1 = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Email.Equals(request.Email));
-            if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserEmailExisted);
+            if (account1 != null) throw new BadHttpRequestException(MessageConstant.User.UserEmailExisted);
             account = new Account()
             {
                 Id = Guid.NewGuid(),
