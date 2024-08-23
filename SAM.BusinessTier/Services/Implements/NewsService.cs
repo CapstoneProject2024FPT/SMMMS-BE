@@ -90,7 +90,6 @@ namespace SAM.BusinessTier.Services.Implements
                     Title = x.Title,
                     Description = x.Description,
                     NewsContent = x.NewsContent,
-
                     Cover = x.Cover,
                     Status = string.IsNullOrEmpty(x.Status) ? null : EnumUtil.ParseEnum<NewsStatus>(x.Status),
                     Type = string.IsNullOrEmpty(x.Type) ? null : EnumUtil.ParseEnum<NewsTypes>(x.Type),
@@ -115,7 +114,7 @@ namespace SAM.BusinessTier.Services.Implements
                     }).ToList(),
                 },
                 filter: filter,
-                orderBy: x => x.OrderBy(n => n.CreateDate),
+                orderBy: x => x.OrderByDescending(n => n.CreateDate),
                 include: x => x.Include(n => n.NewsCategory)
                                .Include(n => n.Account)
                                .Include(n => n.NewsImages),
