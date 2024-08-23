@@ -390,7 +390,6 @@ namespace SAM.BusinessTier.Services.Implements
                         );
 
                     var rankCheck = ranks.FirstOrDefault();
-                    // Kiểm tra kết quả và thêm rank cho account nếu có
                     if (rankCheck != null)
                     {
                         account.RankId = rankCheck.Id;

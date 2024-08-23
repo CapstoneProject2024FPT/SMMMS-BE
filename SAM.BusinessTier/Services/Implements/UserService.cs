@@ -122,8 +122,11 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<Guid> CreateNewUser(CreateNewUserRequest request)
         {
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Username.Equals(request.Username) && x.Email.Equals(request.Email));
+                predicate: x => x.Username.Equals(request.Username));
             if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
+            Account account1 = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Email.Equals(request.Email));
+            if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserEmailExisted);
             account = new Account()
             {
                 Id = Guid.NewGuid(),
@@ -149,8 +152,11 @@ namespace SAM.BusinessTier.Services.Implements
         public async Task<Guid> CreateNewStaff(CreateNewStaffRequest request)
         {
             Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Username.Equals(request.Username) && x.Email.Equals(request.Email));
+                predicate: x => x.Username.Equals(request.Username));
             if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserExisted);
+            Account account1 = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Email.Equals(request.Email));
+            if (account != null) throw new BadHttpRequestException(MessageConstant.User.UserEmailExisted);
             account = new Account()
             {
                 Id = Guid.NewGuid(),
