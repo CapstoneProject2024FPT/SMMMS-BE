@@ -175,7 +175,7 @@ namespace SAM.BusinessTier.Services.Implements
                 .GetListAsync(
                     selector: x => x,
                     filter: filter,
-                    orderBy: x => x.OrderBy(x => x.CreateDate),
+                    orderBy: x => x.OrderByDescending(x => x.CreateDate),
                     include: x => x.Include(x => x.NewsCategory)
                                    .Include(x => x.Account)
                                    .Include(x => x.NewsImages))
