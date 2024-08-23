@@ -333,10 +333,22 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<bool> RemoveUserStatus(Guid id)
         {
-            if (id == Guid.Empty) throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
+            if (id == Guid.Empty)
+                throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
+
+            // Lấy thông tin tài khoản
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
+
+            // Kiểm tra nhiệm vụ chưa hoàn thành
+            var hasUnfinishedTasks = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
+                predicate: t => t.AccountId.Equals(id) && t.Status != TaskManagerStatus.Completed.GetDescriptionFromEnum());
+
+            if (hasUnfinishedTasks != null)
+                throw new BadHttpRequestException(MessageConstant.User.TaskCheckCompletedFaild);
+
+            // Cập nhật trạng thái của tài khoản
             user.Status = UserStatus.InActivate.GetDescriptionFromEnum();
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

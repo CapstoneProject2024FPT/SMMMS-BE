@@ -201,6 +201,7 @@ public static class MessageConstant
         public const string CheckPasswordFailed = "Mật khẩu cũ không đúng";
         public const string ChangePasswordToFailed = "Đổi mật khẩu thất bại";
         public const string ChangePasswordToSuccess = "Đổi mật khẩu thành công";
+        public const string TaskCheckCompletedFaild = "Nhân viên đang có nhiệm vụ chưa hoàn thành.";
     }
 
     public static class ProductReview
