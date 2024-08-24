@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
+using ExpoCommunityNotificationServer.Client;
+using ExpoCommunityNotificationServer.Models;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Enums.EnumStatus;
+using SAM.BusinessTier.Enums.EnumTypes;
 using SAM.BusinessTier.Payload.Notification;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -13,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SAM.BusinessTier.Services.Implements
@@ -27,26 +34,60 @@ namespace SAM.BusinessTier.Services.Implements
             _firebaseMessaging = FirebaseMessaging.DefaultInstance;
         }
 
-        public async Task SendPushNotificationAsync(string token, string title, string body)
+        public async Task SendPushNotificationAsync(string title, string body, Guid AccountId)
         {
-            var message = new Message
-            {
-                Token = token,
-                Notification = new FirebaseAdmin.Messaging.Notification
-                {
-                    Title = title,
-                    Body = body
-                }
-            };
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Id.Equals(AccountId))
+                ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
 
-            try
+            var deviceIds = (await _unitOfWork.GetRepository<Device>()
+                .FindAsync(
+                    expression: token => token.AccountId == account.Id))
+                .Select(_ => _.Fcmtoken).ToList();
+
+            if (deviceIds == null || !deviceIds.Any())
             {
-                string response = await _firebaseMessaging.SendAsync(message);
-                _logger.LogInformation($"Successfully sent message: {response}");
+                _logger.LogWarning($"No device tokens found for user {account.Id}. Notification will not be sent.");
+                return;
             }
-            catch (Exception ex)
+
+            if (deviceIds == null || !deviceIds.Any())
             {
-                _logger.LogError(ex, "Error sending push notification");
+                _logger.LogWarning($"No device tokens found for user {account.Id}. Notification will not be sent.");
+                return;
+            }
+
+            IPushApiClient _client = new PushApiClient("ehAXa94NsN6NnpSTLLZkb2vnmxZC3Y-vF0k7xDkk");
+            foreach (var deviceId in deviceIds)
+            {
+                PushTicketRequest pushTicketRequest = new PushTicketRequest()
+                {
+                    PushTo = new List<string> { "ExponentPushToken[sXm413DvO1hm8Okz0139g_]" },
+                    PushTitle = title,
+                    PushBody = body,
+            //        PushData = new Dictionary<string, object>()
+            //{
+            //    { "key1", "value1" },
+            //    { "key2", "value2" }
+            //}
+                };
+
+                _logger.LogInformation($"[Expo NOTIFICATION] Data full: {JsonSerializer.Serialize(pushTicketRequest)}");
+                _logger.LogInformation($"[Expo NOTIFICATION] Data: {JsonSerializer.Serialize(pushTicketRequest.PushData)}");
+
+                try
+                {
+                    PushTicketResponse result = await _client.SendPushAsync(pushTicketRequest);
+                    _logger.LogInformation($"[Expo NOTIFICATION] Success push notification: {JsonSerializer.Serialize(result)}");
+                }
+                catch (ExpoCommunityNotificationServer.Exceptions.InvalidRequestException ex)
+                {
+                    _logger.LogError(ex, "Invalid request: {Message}", ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error occurred while sending notification");
+                }
             }
         }
     }

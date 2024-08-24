@@ -20,7 +20,8 @@ namespace SAM.BusinessTier.Services.Implements
     public class SendMailService : BaseService<SendMailService>, ISendMailService
     {
         private readonly MailSettings _settings;
-        public SendMailService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<SendMailService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        public SendMailService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<SendMailService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) :
+            base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _settings = JsonUtil.GetFromAppSettings<MailSettings>("MailSettings");
         }

@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static SAM.BusinessTier.Constants.ApiEndPointConstant;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -25,12 +24,16 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<Guid> RegisterDevice(DeviceRegistrationRequest request)
         {
+            var currentUser = GetUsernameFromJwt();
+            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
+                predicate: x => x.Username.Equals(currentUser))
+                ?? throw new BadHttpRequestException(MessageConstant.Account.NotFoundFailedMessage);
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             var device = new Device
             {
-                AccountId = request.AccountId,
+                Id = Guid.NewGuid(),
+                AccountId = account.Id,
                 Fcmtoken = request.FCMToken,
-                DeviceType = request.DeviceType,
                 LastUpdated = currentTime
             };
 
@@ -46,7 +49,6 @@ namespace SAM.BusinessTier.Services.Implements
             if (device == null) throw new BadHttpRequestException(MessageConstant.Device.EmptyMessage);
 
             device.Fcmtoken = request.FCMToken;
-            device.DeviceType = request.DeviceType;
             device.LastUpdated = TimeUtils.GetCurrentSEATime();
 
             _unitOfWork.GetRepository<Device>().UpdateAsync(device);

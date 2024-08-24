@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using Azure;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace SAM.DataTier.Repository.Implement
 {
@@ -133,6 +134,36 @@ namespace SAM.DataTier.Repository.Implement
             if (predicate != null) query = query.Where(predicate);
             if (orderBy != null) return orderBy(query).Select(selector).ToPaginateAsync(page, size, 1);
             return query.AsNoTracking().Select(selector).ToPaginateAsync(page, size, 1);
+        }
+
+        public async Task<IList<T>> FindAsync(
+            Expression<Func<T, bool>>? expression = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            Func<IQueryable<T>, IQueryable<T>>? includeFunc = null,
+            bool isAsNoTracking = true,
+            CancellationToken cancellationToken = default)
+        {
+            IQueryable<T> query = _dbSet;
+            if (includeFunc != null)
+            {
+                query = includeFunc(query);
+            }
+            if (isAsNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (expression != null)
+            {
+                query = query.Where(expression);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            return await query.ToListAsync(cancellationToken);
         }
 
         #endregion

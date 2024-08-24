@@ -10,7 +10,7 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface INotificationService
     {
-        Task SendPushNotificationAsync(string token, string title, string body);
+        Task SendPushNotificationAsync(string title, string body, Guid AccountId);
         //Task<Guid> CreateNotification(CreateNotificationRequest request);
         //Task<GetNotificationResponse> GetNotification(Guid id);
         //Task<ICollection<GetNotificationResponse>> GetNotifications(NotificationFilter filter);

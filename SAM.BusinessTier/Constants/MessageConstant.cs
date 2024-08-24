@@ -309,5 +309,7 @@ public static class MessageConstant
     public static class Device
     {
         public const string EmptyMessage = "Không tìm thấy thiết bị";
+        public const string UpdateStatusSuccessMessage = "Cập nhật trạng thái thành công";
+        public const string UpdateStatusFailedMessage = "Cập nhật trạng thái thất bại";
     }
 }

@@ -32,6 +32,7 @@ namespace SAM.BusinessTier.Services.Implements
     public class TaskService : BaseService<TaskService>, ITaskService
     {
         private readonly INotificationService _notificationService;
+
         public TaskService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<TaskService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor, INotificationService notificationService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _notificationService = notificationService;
@@ -39,9 +40,6 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<Guid> CreateNewTask(CreateNewTaskRequest request)
         {
-            var currentUser = GetUsernameFromJwt();
-            Account account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
-                predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Guid? addressId = null;
             // Lấy danh sách task trong ngày của nhân viên
@@ -56,10 +54,10 @@ namespace SAM.BusinessTier.Services.Implements
 
 
             // Kiểm tra số lượng task trong ngày của nhân viên
-            if (taskCountForToday >= 3)
-            {
-                throw new BadHttpRequestException(MessageConstant.TaskManager.FullTaskMessage);
-            }
+            //if (taskCountForToday >= 4)
+            //{
+            //    throw new BadHttpRequestException(MessageConstant.TaskManager.FullTaskMessage);
+            //}
 
             if (request.WarrantyDetailId.HasValue)
             {
@@ -109,26 +107,20 @@ namespace SAM.BusinessTier.Services.Implements
                 OrderId = request.OrderId,
                 AddressId = addressId
             };
-
+            var title = "Có nhiệm vụ mới";
+            var body = $"Nhiệm vụ của bạn là {request.Type}";
+            await _notificationService.SendPushNotificationAsync(title, body,request.AccountId);
+            var newNotifications = new Notification
+            {
+                Id = Guid.NewGuid(),
+                Title = title,
+                Message = body,
+                AccountId = request.AccountId,
+                CreatedDate = currentTime
+            };
+            await _unitOfWork.GetRepository<Notification>().InsertAsync(newNotifications);
             await _unitOfWork.GetRepository<TaskManager>().InsertAsync(newTask);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-            //if (isSuccessful)
-            //{
-            //    // Create notification payload
-            //    var notificationPayload = new NotificationRequest
-            //    {
-            //        Title = "Bạn có nhiệm vụ mới",
-            //        Body = $"Bạn có thông nhiệm vụ mới",
-            //        FCMToken = account.FcmToken // Assume this is part of the request
-            //    };
-
-            //    // Send the notification
-            //    await _notificationService.SendPushNotificationAsync(
-            //       notificationPayload.FCMToken,
-            //       notificationPayload.Title,
-            //       notificationPayload.Body);
-            //}
-
             if (!isSuccessful)
             {
                 throw new BadHttpRequestException(MessageConstant.TaskManager.CreateNewTaskFailedMessage);

@@ -258,6 +258,10 @@ public partial class SamDevContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("FCMToken");
             entity.Property(e => e.LastUpdated).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Devices)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Device_Account");
         });
 
         modelBuilder.Entity<Discount>(entity =>
@@ -546,6 +550,10 @@ public partial class SamDevContext : DbContext
             entity.Property(e => e.Message).HasMaxLength(4000);
             entity.Property(e => e.NotificationType).HasMaxLength(50);
             entity.Property(e => e.Title).HasMaxLength(4000);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Notification_Account");
         });
 
         modelBuilder.Entity<Order>(entity =>

@@ -8,8 +8,6 @@ namespace SAM.BusinessTier.Payload.Notification
 {
     public class DeviceRegistrationRequest
     {
-        public Guid? AccountId { get; set; }
         public string? FCMToken { get; set; }
-        public string? DeviceType { get; set; }
     }
 }
