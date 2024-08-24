@@ -15,5 +15,7 @@ public partial class Note
 
     public Guid? OrderId { get; set; }
 
+    public string? Image { get; set; }
+
     public virtual Order? Order { get; set; }
 }

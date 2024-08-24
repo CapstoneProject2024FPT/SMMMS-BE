@@ -19,7 +19,6 @@ namespace SAM.BusinessTier.Payload.Order
         public DateTime? CompletedDate { get; set; }
         public List<OrderDetailResponse>? ProductList { get; set; } = new List<OrderDetailResponse>();
         public double? TotalAmount { get; set; }
-        //public double? Discount { get; set; }
         public double? FinalAmount { get; set; }
         public Dictionary<NoteStatus, int>? NoteStatus { get; set; }
         public List<NoteResponse>? Note { get; set; } = new List<NoteResponse>();
@@ -35,6 +34,7 @@ namespace SAM.BusinessTier.Payload.Order
         public Guid? Id { get; set; }
         public NoteStatus? Status { get; set; }
         public string? Description { get; set; }
+        public string? Image { get; set; }
         public DateTime CreateDate { get; set; }
 
     }

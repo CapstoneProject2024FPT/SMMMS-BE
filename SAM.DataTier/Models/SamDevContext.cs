@@ -527,6 +527,7 @@ public partial class SamDevContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(4000);
+            entity.Property(e => e.Image).HasMaxLength(550);
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);

@@ -12,7 +12,7 @@ namespace SAM.BusinessTier.Payload.Order
         public OrderStatus? Status { get; set; }
         public string? Note { get; set; }
         public string? Description { get; set; }
-
+        public string? Image {  get; set; }
         //public DateTime CompletedDate { get; set; }
     }
 }

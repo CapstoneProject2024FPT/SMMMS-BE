@@ -160,6 +160,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = note.Id,
                         Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
                         Description = note.Description,
+                        Image = note.Image,
                         CreateDate = note.CreateDate.Value,
                     }).ToList(),
                     UserInfo = x.Account == null ? null : new OrderUserResponse
@@ -263,6 +264,7 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         Id = note.Id,
                         Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
+                        Image = note.Image ,
                         Description = note.Description,
                         CreateDate = note.CreateDate.Value,
                     }).ToList(),
@@ -411,6 +413,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = Guid.NewGuid(),
                         Status = NoteStatus.SUCCESS.GetDescriptionFromEnum(),
                         CreateDate = currentTime,
+                        Image = request.Image,
                         Description = request.Note,
                         OrderId = updateOrder.Id
 
@@ -441,6 +444,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = Guid.NewGuid(),
                         Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
                         CreateDate = currentTime,
+                        Image = request.Image,
                         Description = request.Note,
                         OrderId = updateOrder.Id
 
@@ -602,6 +606,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Id = Guid.NewGuid(),
                         Status = NoteStatus.FAILED.GetDescriptionFromEnum(),
                         CreateDate = currentTime,
+                        Image = request.Image,
                         Description = request.Note,
                         OrderId = updateOrder.Id
 
