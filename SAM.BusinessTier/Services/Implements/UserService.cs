@@ -25,7 +25,8 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class UserService : BaseService<UserService>, IUserService
     {
-        public UserService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<UserService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor) : base(unitOfWork, logger, mapper, httpContextAccessor)
+        readonly private INotificationService _notificationService;
+        public UserService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<UserService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor, INotificationService notificationService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
         }
 
@@ -104,16 +105,13 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Id.Equals(userId))
                 ?? throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
 
-            // Kiểm tra mật khẩu hiện tại
             if (string.IsNullOrEmpty(changePasswordRequest.CurrentPassword) || !PasswordUtil.VerifyHashedPassword(user.Password, changePasswordRequest.CurrentPassword))
             {
                 throw new BadHttpRequestException(MessageConstant.User.CheckPasswordFailed);
             }
 
-            // Cập nhật mật khẩu mới
             user.Password = PasswordUtil.HashPassword(changePasswordRequest.NewPassword);
 
-            // Cập nhật tài khoản
             _unitOfWork.GetRepository<Account>().UpdateAsync(user);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
             return isSuccessful;
@@ -315,14 +313,43 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
+            // Tìm kiếm tài khoản dựa trên username
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(loginRequest.Username));
+
+            // Kiểm tra nếu tài khoản không tồn tại hoặc mật khẩu không khớp
             if (user == null || !PasswordUtil.VerifyHashedPassword(user.Password, loginRequest.Password))
             {
                 return null;
             }
 
+            if (user.Role == RoleEnum.Technical.GetDescriptionFromEnum())
+            {
+                var processingTasks = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+                    predicate: x => x.AccountId == user.Id && x.Status == TaskManagerStatus.Process.GetDescriptionFromEnum());
+
+                if (processingTasks != null)
+                {
+                    var title = "Nhiệm vụ đang xử lý";
+                    var body = $"Bạn còn nhiệm vụ chưa hoàn thành. Hãy nhanh chóng đến hoàn thành.";
+                    await _notificationService.SendPushNotificationAsync(title, body, user.Id);
+
+                    var newNotification = new Notification
+                    {
+                        Id = Guid.NewGuid(),
+                        Title = title,
+                        Message = body,
+                        AccountId = user.Id,
+                        CreatedDate = DateTime.Now
+                    };
+                    await _unitOfWork.GetRepository<Notification>().InsertAsync(newNotification);
+                }
+            }
+
+            // Tạo JWT token cho người dùng
             var tokenModel = JwtUtil.GenerateJwtToken(user);
+
+            // Tạo đối tượng LoginResponse
             var loginResponse = new LoginResponse
             {
                 Username = loginRequest.Username,
@@ -331,11 +358,11 @@ namespace SAM.BusinessTier.Services.Implements
                 Status = EnumUtil.ParseEnum<UserStatus>(user.Status),
                 Id = user.Id,
                 TokenModel = tokenModel,
-
-
             };
+
             return loginResponse;
         }
+
 
         public async Task<bool> RemoveUserStatus(Guid id)
         {
