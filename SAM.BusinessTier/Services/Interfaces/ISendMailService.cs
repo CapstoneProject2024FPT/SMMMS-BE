@@ -9,8 +9,8 @@ namespace SAM.BusinessTier.Services.Interfaces
 {
     public interface ISendMailService
     {
-        Task SendMail(MailContent mailContent);
+        Task SendMail(string to, string subject, string body);
 
-        Task SendEmailAsync(string email, string subject, string htmlMessage);
+        //Task SendEmailAsync(string email, string subject, string htmlMessage);
     }
 }

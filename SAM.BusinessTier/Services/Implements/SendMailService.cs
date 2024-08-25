@@ -26,17 +26,17 @@ namespace SAM.BusinessTier.Services.Implements
             _settings = JsonUtil.GetFromAppSettings<MailSettings>("MailSettings");
         }
 
-        public async Task SendMail(MailContent mailContent)
+        public async Task SendMail(string to, string subject,string body)
         {
 
             var email = new MimeMessage();
             email.Sender = new MailboxAddress(_settings.DisplayName, _settings.Mail);
             email.From.Add(new MailboxAddress(_settings.DisplayName, _settings.Mail));
-            email.To.Add(MailboxAddress.Parse(mailContent.To));
-            email.Subject = mailContent.Subject;
+            email.To.Add(MailboxAddress.Parse(to));
+            email.Subject = subject;
 
             var builder = new BodyBuilder();
-            builder.HtmlBody = mailContent.Body;
+            builder.HtmlBody = body;
             email.Body = builder.ToMessageBody();
 
             // dùng SmtpClient của MailKit
@@ -61,17 +61,17 @@ namespace SAM.BusinessTier.Services.Implements
 
             smtp.Disconnect(true);
 
-            _logger.LogInformation("send mail to " + mailContent.To);
+            _logger.LogInformation("send mail to " + to);
 
         }
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
-        {
-            await SendMail(new MailContent()
-            {
-                To = email,
-                Subject = subject,
-                Body = htmlMessage
-            });
-        }
+        //public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        //{
+        //    await SendMail(new MailContent()
+        //    {
+        //        To = email,
+        //        Subject = subject,
+        //        Body = htmlMessage
+        //    });
+        //}
     }
 }

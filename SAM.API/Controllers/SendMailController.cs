@@ -19,9 +19,9 @@ namespace SAM.API.Controllers
             _senMailService = sendMailService;
         }
         [HttpPost(ApiEndPointConstant.Mail.MailsEndPoint)]
-        public async Task SendMail(MailContent mailContent)
+        public async Task SendMail(string to, string subject, string body)
         {
-            await _senMailService.SendMail(mailContent);
+            await _senMailService.SendMail(to, subject, body);
         }
 
     }

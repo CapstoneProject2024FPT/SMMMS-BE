@@ -32,10 +32,10 @@ namespace SAM.BusinessTier.Services.Implements
     public class OrderService : BaseService<OrderService>, IOrderService
     {
         private readonly IUserService _accountService;
+        private readonly ISendMailService _sendMailService;
         public OrderService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<OrderService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor,
-            IUserService accountService) : base(unitOfWork, logger, mapper, httpContextAccessor)
+            IUserService accountService, ISendMailService sendMailService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
-
         }
 
         public async Task<Guid> CreateNewOrder(CreateNewOrderResquest request)
@@ -84,7 +84,7 @@ namespace SAM.BusinessTier.Services.Implements
                 foreach (var inventory in inventories.Take((int)machinery.Quantity))
                 {
                     inventory.Status = InventoryStatus.Pending.GetDescriptionFromEnum();
-                     _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+                    _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
 
                     var orderDetail = new OrderDetail
                     {
@@ -264,7 +264,7 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         Id = note.Id,
                         Status = EnumUtil.ParseEnum<NoteStatus>(note.Status),
-                        Image = note.Image ,
+                        Image = note.Image,
                         Description = note.Description,
                         CreateDate = note.CreateDate.Value,
                     }).ToList(),
@@ -398,7 +398,7 @@ namespace SAM.BusinessTier.Services.Implements
                         _unitOfWork.GetRepository<Account>().UpdateAsync(account);
                     }
 
-                    
+
                     var taskManager = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
                         predicate: t => t.OrderId == orderId);
 
@@ -422,6 +422,19 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         await _unitOfWork.GetRepository<Note>().InsertAsync(note);
                     }
+                    string body = $@"
+                                    Kính gửi {updateOrder.Account.FullName},
+
+                                    Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã hoàn thành.
+
+                                    Chi tiết đơn hàng:
+                                    Thời gian thanh toán {updateOrder.CreateDate}
+                                    Tổng hóa đơn: {updateOrder.FinalAmount}
+                                    Trân trọng,
+                                    SMMMS
+                                ";
+                    string subject = "Thanh toán thành công";
+                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
                     break;
 
                 case OrderStatus.Delivery:
@@ -487,7 +500,7 @@ namespace SAM.BusinessTier.Services.Implements
                         updateOrder.Status = OrderStatus.Paid.GetDescriptionFromEnum();
                         await _unitOfWork.CommitAsync();
 
-                        break; 
+                        break;
                     }
                     else
                     {
@@ -554,6 +567,19 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         }
                     }
+                    body = $@"
+                                    Kính gửi {updateOrder.Account.FullName},
+
+                                    Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã được xử lý thành công.
+
+                                    Chi tiết đơn hàng:
+                                    Thời gian thanh toán {updateOrder.CreateDate}
+                                    Tổng hóa đơn: {updateOrder.FinalAmount}
+                                    Trân trọng,
+                                    SMMMS
+                                ";
+                    subject = "Thanh toán thành công";
+                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
                     break;
                 case OrderStatus.Canceled:
                     if (updateOrder.Status == OrderStatus.Paid.GetDescriptionFromEnum())
@@ -618,6 +644,19 @@ namespace SAM.BusinessTier.Services.Implements
 
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
+                    body = $@"
+                                    Kính gửi {updateOrder.Account.FullName},
+
+                                    Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi rất tiếc khi đơn hàng bị hủy. Hi vọng dịch vụ của chúng tôi không làm bạn thất vọng.
+
+                                    Chi tiết đơn hàng:
+                                    Thời gian thanh toán {updateOrder.CreateDate}
+                                    Tổng hóa đơn: {updateOrder.FinalAmount}
+                                    Trân trọng,
+                                    SMMMS
+                                ";
+                    subject = "Thanh toán thất bại";
+                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
                     break;
                 default:
                     return false;
