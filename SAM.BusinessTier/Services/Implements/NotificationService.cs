@@ -62,7 +62,7 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 PushTicketRequest pushTicketRequest = new PushTicketRequest()
                 {
-                    PushTo = new List<string> { "ExponentPushToken[sXm413DvO1hm8Okz0139g_]" },
+                    PushTo = new List<string> { deviceId },
                     PushTitle = title,
                     PushBody = body,
             //        PushData = new Dictionary<string, object>()

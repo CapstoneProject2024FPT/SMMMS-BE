@@ -123,7 +123,7 @@ namespace SAM.BusinessTier.Services.Implements
                 BrandId = request.BrandId,
                 Model = request.Model,
                 Description = request.Description,
-                Status = MachineryStatus.Available.GetDescriptionFromEnum(),
+                Status = MachineryStatus.OutOfStock.GetDescriptionFromEnum(),
                 StockPrice = request.StockPrice,
                 SellingPrice = request.SellingPrice,
                 Priority = request.Priority,
