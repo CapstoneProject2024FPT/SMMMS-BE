@@ -57,10 +57,10 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccess;
         }
 
-        public async Task<bool> RemoveDevice(Guid id)
+        public async Task<bool> RemoveDevice(string token)
         {
             var device = await _unitOfWork.GetRepository<Device>().SingleOrDefaultAsync(
-                predicate: x => x.Fcmtoken.Equals(id));
+                predicate: x => x.Fcmtoken.Equals(token));
             if (device == null) throw new BadHttpRequestException(MessageConstant.Device.EmptyMessage);
 
             _unitOfWork.GetRepository<Device>().DeleteAsync(device);

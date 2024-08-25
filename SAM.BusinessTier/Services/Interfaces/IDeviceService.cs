@@ -12,6 +12,6 @@ namespace SAM.BusinessTier.Services.Interfaces
     {
         Task<Guid> RegisterDevice(DeviceRegistrationRequest request);
         Task<bool> UpdateDevice(Guid id, DeviceRegistrationRequest request);
-        Task<bool> RemoveDevice(Guid id);
+        Task<bool> RemoveDevice(string token);
     }
 }
