@@ -589,6 +589,7 @@ namespace SAM.BusinessTier.Services.Implements
                                     SMMMS
                                 ";
                     subject = "Thanh toán thành công";
+
                     await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
                     break;
                 case OrderStatus.Canceled:
