@@ -101,7 +101,16 @@ namespace SAM.BusinessTier.Services.Implements
 
                     orderDetails.Add(orderDetail);
                 }
+                var remainingInventoryCount = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
+                    predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum());
+
+                if (remainingInventoryCount != null)
+                {
+                    machineryExists.Status = MachineryStatus.OutOfStock.GetDescriptionFromEnum();
+                     _unitOfWork.GetRepository<Machinery>().UpdateAsync(machineryExists);
+                }
             }
+
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
             await _unitOfWork.CommitAsync();
@@ -620,10 +629,14 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                             predicate: x => x.Id == detail.InventoryId);
+                        var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                            predicate: x => x.Id == inventory.MachineryId);
                         if (inventory != null)
                         {
                             inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
+                            machinery.Status = MachineryStatus.Available.GetDescriptionFromEnum();
                             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
+                            _unitOfWork.GetRepository<Machinery>().UpdateAsync(machinery);
                         }
                     }
                     note = new Note()
