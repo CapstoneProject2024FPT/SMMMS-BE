@@ -363,7 +363,8 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Username.Equals(currentUser),
                 selector: x => x.Id);
             Order updateOrder = await _unitOfWork.GetRepository<Order>().SingleOrDefaultAsync(
-                predicate: x => x.Id.Equals(orderId))
+                predicate: x => x.Id.Equals(orderId),
+                include: x => x.Include(x => x.Account))
                 ?? throw new BadHttpRequestException(MessageConstant.Order.OrderNotFoundMessage);
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             if (updateOrder.Status == OrderStatus.Completed.GetDescriptionFromEnum())
@@ -577,7 +578,7 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         }
                     }
-                    body = $@"
+                    string body1 = $@"
                                     Kính gửi {updateOrder.Account.FullName},
 
                                     Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã được xử lý thành công.
@@ -588,9 +589,9 @@ namespace SAM.BusinessTier.Services.Implements
                                     Trân trọng,
                                     SMMMS
                                 ";
-                    subject = "Thanh toán thành công";
+                    string subject1 = "Thanh toán thành công";
 
-                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
+                    await _sendMailService.SendMail(to: updateOrder.Account.Email, subject1, body1);
                     break;
                 case OrderStatus.Canceled:
                     if (updateOrder.Status == OrderStatus.Paid.GetDescriptionFromEnum())
@@ -669,7 +670,7 @@ namespace SAM.BusinessTier.Services.Implements
                                     SMMMS
                                 ";
                     subject = "Thanh toán thất bại";
-                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
+                    await _sendMailService.SendMail(to: updateOrder.Account.Email, subject, body);
                     break;
                 default:
                     return false;
