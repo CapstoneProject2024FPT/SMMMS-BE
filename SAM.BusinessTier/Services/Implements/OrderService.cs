@@ -37,6 +37,7 @@ namespace SAM.BusinessTier.Services.Implements
             IUserService accountService, ISendMailService sendMailService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
             _sendMailService = sendMailService;
+            _accountService = accountService;
         }
 
         public async Task<Guid> CreateNewOrder(CreateNewOrderResquest request)
@@ -105,7 +106,7 @@ namespace SAM.BusinessTier.Services.Implements
                 var remainingInventoryCount = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                     predicate: x => x.MachineryId == machinery.MachineryId && x.Status == InventoryStatus.Available.GetDescriptionFromEnum());
 
-                if (remainingInventoryCount != null)
+                if (remainingInventoryCount == null)
                 {
                     machineryExists.Status = MachineryStatus.OutOfStock.GetDescriptionFromEnum();
                      _unitOfWork.GetRepository<Machinery>().UpdateAsync(machineryExists);
