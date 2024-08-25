@@ -25,7 +25,7 @@ namespace SAM.API.Controllers
         }
 
         [HttpDelete(ApiEndPointConstant.Device.DevicesEndPoint)]
-        public async Task<IActionResult> RemoveDevice(string token)
+        public async Task<IActionResult> RemoveDevice([FromBody]string token)
         {
             var isSuccessful = await _deviceService.RemoveDevice(token);
             if (!isSuccessful) return Ok(MessageConstant.Device.UpdateStatusFailedMessage);
