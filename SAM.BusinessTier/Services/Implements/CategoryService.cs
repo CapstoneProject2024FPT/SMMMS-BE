@@ -23,7 +23,6 @@ using SAM.BusinessTier.Enums.Other;
 using Microsoft.EntityFrameworkCore;
 using SAM.BusinessTier.Payload.Brand;
 using Azure;
-using static Google.Apis.Requests.BatchRequest;
 
 namespace SAM.BusinessTier.Services.Implements
 {

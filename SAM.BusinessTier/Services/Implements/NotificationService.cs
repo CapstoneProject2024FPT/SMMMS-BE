@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using ExpoCommunityNotificationServer.Client;
 using ExpoCommunityNotificationServer.Models;
-using FirebaseAdmin;
-using FirebaseAdmin.Messaging;
-using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
@@ -26,12 +23,10 @@ namespace SAM.BusinessTier.Services.Implements
 {
     public class NotificationService : BaseService<NotificationService>, INotificationService
     {
-        private readonly FirebaseMessaging _firebaseMessaging;
 
         public NotificationService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<NotificationService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor)
             : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
-            _firebaseMessaging = FirebaseMessaging.DefaultInstance;
         }
 
         public async Task SendPushNotificationAsync(string title, string body, Guid AccountId)
