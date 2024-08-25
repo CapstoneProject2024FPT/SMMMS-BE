@@ -432,19 +432,19 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         await _unitOfWork.GetRepository<Note>().InsertAsync(note);
                     }
-                    //string body = $@"
-                    //                Kính gửi {updateOrder.Account.FullName},
+                    string body = $@"
+                                    Kính gửi {updateOrder.Account.FullName},
 
-                    //                Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã hoàn thành.
+                                    Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã hoàn thành.
 
-                    //                Chi tiết đơn hàng:
-                    //                Thời gian thanh toán {updateOrder.CreateDate}
-                    //                Tổng hóa đơn: {updateOrder.FinalAmount}
-                    //                Trân trọng,
-                    //                SMMMS
-                    //            ";
-                    //string subject = "Thanh toán thành công";
-                    //await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
+                                    Chi tiết đơn hàng:
+                                    Thời gian thanh toán {updateOrder.CreateDate}
+                                    Tổng hóa đơn: {updateOrder.FinalAmount}
+                                    Trân trọng,
+                                    SMMMS
+                                ";
+                    string subject = "Thanh toán thành công";
+                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
                     break;
 
                 case OrderStatus.Delivery:
@@ -577,19 +577,19 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         }
                     }
-                    //body = $@"
-                    //                Kính gửi {updateOrder.Account.FullName},
+                    body = $@"
+                                    Kính gửi {updateOrder.Account.FullName},
 
-                    //                Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã được xử lý thành công.
+                                    Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã được xử lý thành công.
 
-                    //                Chi tiết đơn hàng:
-                    //                Thời gian thanh toán {updateOrder.CreateDate}
-                    //                Tổng hóa đơn: {updateOrder.FinalAmount}
-                    //                Trân trọng,
-                    //                SMMMS
-                    //            ";
-                    //subject = "Thanh toán thành công";
-                    //await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
+                                    Chi tiết đơn hàng:
+                                    Thời gian thanh toán {updateOrder.CreateDate}
+                                    Tổng hóa đơn: {updateOrder.FinalAmount}
+                                    Trân trọng,
+                                    SMMMS
+                                ";
+                    subject = "Thanh toán thành công";
+                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
                     break;
                 case OrderStatus.Canceled:
                     if (updateOrder.Status == OrderStatus.Paid.GetDescriptionFromEnum())
@@ -656,19 +656,19 @@ namespace SAM.BusinessTier.Services.Implements
 
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
-                    //body = $@"
-                    //                Kính gửi {updateOrder.Account.FullName},
+                    body = $@"
+                                    Kính gửi {updateOrder.Account.FullName},
 
-                    //                Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi rất tiếc khi đơn hàng bị hủy. Hi vọng dịch vụ của chúng tôi không làm bạn thất vọng.
+                                    Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi rất tiếc khi đơn hàng bị hủy. Hi vọng dịch vụ của chúng tôi không làm bạn thất vọng.
 
-                    //                Chi tiết đơn hàng:
-                    //                Thời gian thanh toán {updateOrder.CreateDate}
-                    //                Tổng hóa đơn: {updateOrder.FinalAmount}
-                    //                Trân trọng,
-                    //                SMMMS
-                    //            ";
-                    //subject = "Thanh toán thất bại";
-                    //await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
+                                    Chi tiết đơn hàng:
+                                    Thời gian thanh toán {updateOrder.CreateDate}
+                                    Tổng hóa đơn: {updateOrder.FinalAmount}
+                                    Trân trọng,
+                                    SMMMS
+                                ";
+                    subject = "Thanh toán thất bại";
+                    await _sendMailService.SendMail(updateOrder.Account.Email, subject, body);
                     break;
                 default:
                     return false;
