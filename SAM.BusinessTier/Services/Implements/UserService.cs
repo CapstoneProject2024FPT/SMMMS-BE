@@ -28,6 +28,7 @@ namespace SAM.BusinessTier.Services.Implements
         readonly private INotificationService _notificationService;
         public UserService(IUnitOfWork<SamDevContext> unitOfWork, ILogger<UserService> logger, IMapper mapper, IHttpContextAccessor httpContextAccessor, INotificationService notificationService) : base(unitOfWork, logger, mapper, httpContextAccessor)
         {
+            _notificationService = notificationService;
         }
 
         //public async Task<bool> AddRankToAccount(Guid id, List<Guid> request)
@@ -310,7 +311,6 @@ namespace SAM.BusinessTier.Services.Implements
 
             return user;
         }
-
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
             // Tìm kiếm tài khoản dựa trên username
@@ -321,29 +321,6 @@ namespace SAM.BusinessTier.Services.Implements
             if (user == null || !PasswordUtil.VerifyHashedPassword(user.Password, loginRequest.Password))
             {
                 return null;
-            }
-
-            if (user.Role == RoleEnum.Technical.GetDescriptionFromEnum())
-            {
-                var processingTasks = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
-                    predicate: x => x.AccountId == user.Id && x.Status == TaskManagerStatus.Process.GetDescriptionFromEnum());
-
-                if (processingTasks != null)
-                {
-                    var title = "Nhiệm vụ đang xử lý";
-                    var body = $"Bạn còn nhiệm vụ chưa hoàn thành. Hãy nhanh chóng đến hoàn thành.";
-                    await _notificationService.SendPushNotificationAsync(title, body, user.Id);
-
-                    var newNotification = new Notification
-                    {
-                        Id = Guid.NewGuid(),
-                        Title = title,
-                        Message = body,
-                        AccountId = user.Id,
-                        CreatedDate = DateTime.Now
-                    };
-                    await _unitOfWork.GetRepository<Notification>().InsertAsync(newNotification);
-                }
             }
 
             // Tạo JWT token cho người dùng
@@ -360,8 +337,45 @@ namespace SAM.BusinessTier.Services.Implements
                 TokenModel = tokenModel,
             };
 
+            // Kiểm tra nếu vai trò của người dùng là "Technical"
+            if (loginResponse.Role == RoleEnum.Technical)
+            {
+                var processingTasks = await _unitOfWork.GetRepository<TaskManager>().SingleOrDefaultAsync(
+                    predicate: x => x.AccountId == user.Id && x.Status == TaskManagerStatus.Process.GetDescriptionFromEnum());
+
+                if (processingTasks != null)
+                {
+                    var title = "Nhiệm vụ đang xử lý";
+                    var body = $"Bạn còn nhiệm vụ chưa hoàn thành. Hãy nhanh chóng đến hoàn thành.";
+
+                    // Kiểm tra nếu _notificationService không phải là null trước khi gửi thông báo
+                    if (_notificationService != null)
+                    {
+                        await _notificationService.SendPushNotificationAsync(title, body, loginResponse.Id);
+                    }
+
+                    // Tạo và lưu thông báo mới
+                    var newNotification = new Notification
+                    {
+                        Id = Guid.NewGuid(),
+                        Title = title,
+                        Message = body,
+                        AccountId = loginResponse.Id,
+                        CreatedDate = DateTime.Now
+                    };
+
+                    // Kiểm tra nếu repository của Notification không phải là null
+                    var notificationRepo = _unitOfWork.GetRepository<Notification>();
+                    if (notificationRepo != null)
+                    {
+                        await notificationRepo.InsertAsync(newNotification);
+                    }
+                }
+            }
+
             return loginResponse;
         }
+
 
 
         public async Task<bool> RemoveUserStatus(Guid id)
