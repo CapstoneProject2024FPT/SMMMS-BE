@@ -42,7 +42,6 @@ namespace SAM.BusinessTier.Services.Implements
         {
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
             Guid? addressId = null;
-            // Lấy danh sách task trong ngày của nhân viên
             var tasksForToday = await _unitOfWork.GetRepository<TaskManager>().GetListAsync(
                 predicate: t => t.AccountId == request.AccountId && t.ExcutionDate.HasValue && t.ExcutionDate.Value.Date == request.ExcutionDate.Value.Date);
             int taskCountForToday = tasksForToday.Count();
@@ -202,7 +201,7 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         }
                     },
-                    orderBy: null, // Replace with your desired order by expression if needed
+                    orderBy: null, 
                     include: x => x.Include(x => x.WarrantyDetail)
                                    .Include(x => x.Order)
                                        .ThenInclude(o => o.Account)
@@ -292,7 +291,7 @@ namespace SAM.BusinessTier.Services.Implements
                         }
                     },
                     filter: filter,
-                    orderBy: null, // Replace with your desired order by expression if needed
+                    orderBy: null, 
                     include: x => x.Include(x => x.WarrantyDetail)
                                    .Include(x => x.Order)
                                        .ThenInclude(o => o.Account)

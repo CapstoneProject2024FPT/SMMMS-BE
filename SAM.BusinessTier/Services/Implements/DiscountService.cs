@@ -91,16 +91,12 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<GetDiscountResponse> GetDiscountById(Guid id)
         {
-            // Lấy thông tin discount
             var discount = await _unitOfWork.GetRepository<Discount>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id))
                 ?? throw new BadHttpRequestException(MessageConstant.Discount.DiscountNotFoundMessage);
 
-            // Lấy các DiscountCategory liên quan đến discount này
             var discountCategories = await _unitOfWork.GetRepository<DiscountCategory>().GetListAsync(
                 predicate: x => x.DiscountId.Equals(id));
-
-            // Tạo danh sách CategoriesResponse để lưu các rank tương ứng
             List<CategoriesResponse> rankResponses = new List<CategoriesResponse>();
 
             foreach (var discountCategory in discountCategories)
@@ -119,7 +115,6 @@ namespace SAM.BusinessTier.Services.Implements
                 }
             }
 
-            // Tạo đối tượng response và gán danh sách rankResponses
             var response = _mapper.Map<GetDiscountResponse>(discount);
             response.Categories = rankResponses;
 
@@ -129,26 +124,21 @@ namespace SAM.BusinessTier.Services.Implements
 
         public async Task<ICollection<GetDiscountResponse>> GetDiscountList(DiscountFilter filter)
         {
-            // Lấy danh sách Discount theo filter
             var discounts = await _unitOfWork.GetRepository<Discount>().GetListAsync(
                 selector: x => _mapper.Map<GetDiscountResponse>(x),
                 filter: filter);
 
-            // Tạo danh sách response
             var responseList = new List<GetDiscountResponse>();
 
             foreach (var discount in discounts)
             {
-                // Lấy danh sách DiscountCategory liên quan đến Discount này
                 var discountCategories = await _unitOfWork.GetRepository<DiscountCategory>().GetListAsync(
                     predicate: x => x.DiscountId.Equals(discount.Id));
 
-                // Tạo danh sách CategoriesResponse để lưu các hạng mục tương ứng
                 var categoriesResponses = new List<CategoriesResponse>();
 
                 foreach (var discountCategory in discountCategories)
                 {
-                    // Lấy thông tin Category
                     var category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
                         predicate: x => x.Id.Equals(discountCategory.CategoryId));
 
@@ -162,10 +152,8 @@ namespace SAM.BusinessTier.Services.Implements
                     }
                 }
 
-                // Gán danh sách CategoriesResponse vào đối tượng GetDiscountResponse
                 discount.Categories = categoriesResponses;
 
-                // Thêm đối tượng vào danh sách response
                 responseList.Add(discount);
             }
 
@@ -181,7 +169,6 @@ namespace SAM.BusinessTier.Services.Implements
 
             discount.Status = DiscountStatus.InActive.GetDescriptionFromEnum();
 
-            // Gọi phương thức với mảng rỗng
             await AddDiscountToCategories(id, new List<Guid>());
 
             _unitOfWork.GetRepository<Discount>().UpdateAsync(discount);

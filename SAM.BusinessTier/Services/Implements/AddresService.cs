@@ -34,8 +34,6 @@ namespace SAM.BusinessTier.Services.Implements
 
             if (account == null)
                 throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
-
-            // Kiểm tra trùng lặp địa chỉ chỉ đối với người dùng hiện tại
             var existingAddress = await _unitOfWork.GetRepository<Address>().SingleOrDefaultAsync(
                 predicate: x => x.Name.Equals(createNewAddressRequest.Name) && x.AccountId == account.Id);
 

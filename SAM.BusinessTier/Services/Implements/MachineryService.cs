@@ -86,7 +86,6 @@ namespace SAM.BusinessTier.Services.Implements
                 predicate: x => x.Username.Equals(currentUser));
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
-            // Validate the CategoryId
             if (request.CategoryId.HasValue)
             {
                 var category = await _unitOfWork.GetRepository<Category>().SingleOrDefaultAsync(
@@ -158,7 +157,6 @@ namespace SAM.BusinessTier.Services.Implements
                 });
             };
 
-            // Insert the new machinery and its specifications into the database
             await _unitOfWork.GetRepository<Machinery>().InsertAsync(newMachinery);
             await _unitOfWork.GetRepository<Specification>().InsertRangeAsync(specification);
             await _unitOfWork.GetRepository<ImagesAll>().InsertRangeAsync(imagesUrl);
@@ -472,7 +470,6 @@ namespace SAM.BusinessTier.Services.Implements
                 }).ToList(),
                 Quantity = machinery.Inventories.CountInventoryEachStatus(),
 
-                // Map the component parts to the response
                 Component = machinery.MachineryComponentParts.Select(part => new ComponentResponse
                 {
                     Id = part.MachineComponents.Id,

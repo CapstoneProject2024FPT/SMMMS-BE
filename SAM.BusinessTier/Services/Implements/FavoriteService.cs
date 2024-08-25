@@ -37,14 +37,12 @@ namespace SAM.BusinessTier.Services.Implements
 
             DateTime currentTime = TimeUtils.GetCurrentSEATime();
 
-            // Check if the favorite already exists for this user and machinery
             var existingFavorite = await _unitOfWork.GetRepository<Favorite>().SingleOrDefaultAsync(
                  predicate: f => f.AccountId == account.Id && f.MachineryId == createNewFavoriteRequest.MachineryId);
 
             if (existingFavorite != null)
                 throw new BadHttpRequestException(MessageConstant.Favorite.FavoriteExistedMessage);
 
-            // Create the new favorite
             Favorite favorite = _mapper.Map<Favorite>(createNewFavoriteRequest);
             favorite.Id = Guid.NewGuid();
             favorite.AccountId = account.Id;
@@ -111,7 +109,6 @@ namespace SAM.BusinessTier.Services.Implements
         {
             var currentUser = GetUsernameFromJwt();
 
-            // Lấy thông tin người dùng hiện tại
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(currentUser));
 
@@ -119,11 +116,8 @@ namespace SAM.BusinessTier.Services.Implements
             {
                 throw new BadHttpRequestException(MessageConstant.User.UserNotFoundMessage);
             }
-
-            // Lấy repository cho bảng Favorite
             var favoriteRepository = _unitOfWork.GetRepository<Favorite>();
 
-            // Tìm mục yêu thích theo accountId và machineryId
             var favorite = await favoriteRepository.SingleOrDefaultAsync(
                 predicate: f => f.AccountId == account.Id && f.MachineryId == machineryId);
 
@@ -132,13 +126,8 @@ namespace SAM.BusinessTier.Services.Implements
                 throw new BadHttpRequestException(MessageConstant.Favorite.NotFoundFailedMessage);
             }
 
-            // Xóa mục yêu thích
-            favoriteRepository.DeleteAsync(favorite); // Sử dụng Delete thay vì DeleteAsync
-
-            // Cam kết các thay đổi vào cơ sở dữ liệu
+            favoriteRepository.DeleteAsync(favorite);
             var isSuccessful = await _unitOfWork.CommitAsync() > 0;
-
-            // Trả về kết quả thành công hoặc thất bại
             return isSuccessful;
         }
 

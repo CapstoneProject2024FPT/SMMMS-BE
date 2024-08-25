@@ -180,7 +180,6 @@ namespace SAM.BusinessTier.Services.Implements
         }
         public async Task<ICollection<StaffTaskStatusResponse>> GetStaffTaskStatusesByRole(DateTime targetDate)
         {
-            // Lấy danh sách tất cả nhân viên theo vai trò
             var staffList = await _unitOfWork.GetRepository<Account>()
                 .GetListAsync(predicate: a => a.Role.Equals(RoleEnum.Technical.GetDescriptionFromEnum()));
 
@@ -284,7 +283,6 @@ namespace SAM.BusinessTier.Services.Implements
             if (id == Guid.Empty)
                 throw new BadHttpRequestException(MessageConstant.User.EmptyUserIdMessage);
 
-            // Retrieve the user or throw an exception if not found
             var user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Id.Equals(id),
                 selector: x => new GetUsersResponse
@@ -313,11 +311,9 @@ namespace SAM.BusinessTier.Services.Implements
         }
         public async Task<LoginResponse> Login(LoginRequest loginRequest)
         {
-            // Tìm kiếm tài khoản dựa trên username
             Account user = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: x => x.Username.Equals(loginRequest.Username));
 
-            // Kiểm tra nếu tài khoản không tồn tại hoặc mật khẩu không khớp
             if (user == null || !PasswordUtil.VerifyHashedPassword(user.Password, loginRequest.Password))
             {
                 return null;
@@ -348,13 +344,10 @@ namespace SAM.BusinessTier.Services.Implements
                     var title = "Nhiệm vụ đang xử lý";
                     var body = $"Bạn còn nhiệm vụ chưa hoàn thành. Hãy nhanh chóng đến hoàn thành.";
 
-                    // Kiểm tra nếu _notificationService không phải là null trước khi gửi thông báo
                     if (_notificationService != null)
                     {
                         await _notificationService.SendPushNotificationAsync(title, body, loginResponse.Id);
                     }
-
-                    // Tạo và lưu thông báo mới
                     var newNotification = new Notification
                     {
                         Id = Guid.NewGuid(),
@@ -364,7 +357,6 @@ namespace SAM.BusinessTier.Services.Implements
                         CreatedDate = DateTime.Now
                     };
 
-                    // Kiểm tra nếu repository của Notification không phải là null
                     var notificationRepo = _unitOfWork.GetRepository<Notification>();
                     if (notificationRepo != null)
                     {

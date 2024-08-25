@@ -612,10 +612,8 @@ namespace SAM.BusinessTier.Services.Implements
 
                                 if (warrantyDetail != null && warrantyDetail.Comments != null)
                                 {
-                                    // Kiểm tra nếu Comments chứa OrderId của đơn hàng bị hủy
                                     if (warrantyDetail.Comments.Contains($"OrderId: {updateOrder.Id}"))
                                     {
-                                        // Cập nhật Comments thành null
                                         warrantyDetail.Comments = null;
                                         _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
                                     }
