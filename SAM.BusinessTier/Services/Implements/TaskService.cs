@@ -53,11 +53,11 @@ namespace SAM.BusinessTier.Services.Implements
             int processTaskCount = processTasks.Count();
 
 
-            // Kiểm tra số lượng task trong ngày của nhân viên
-            //if (taskCountForToday >= 4)
-            //{
-            //    throw new BadHttpRequestException(MessageConstant.TaskManager.FullTaskMessage);
-            //}
+             //Kiểm tra số lượng task trong ngày của nhân viên
+            if (taskCountForToday >= 3)
+            {
+                throw new BadHttpRequestException(MessageConstant.TaskManager.FullTaskMessage);
+            }
 
             if (request.WarrantyDetailId.HasValue)
             {

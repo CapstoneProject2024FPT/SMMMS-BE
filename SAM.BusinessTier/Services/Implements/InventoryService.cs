@@ -58,6 +58,7 @@ namespace SAM.BusinessTier.Services.Implements
                     await _unitOfWork.GetRepository<Inventory>().InsertAsync(inventory);
                     inventoryIds.Add(inventory.Id);
                 }
+                machinery.Status = MachineryStatus.Available.GetDescriptionFromEnum();
             }
             else
             {

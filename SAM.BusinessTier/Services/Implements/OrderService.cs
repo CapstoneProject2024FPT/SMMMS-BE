@@ -102,7 +102,6 @@ namespace SAM.BusinessTier.Services.Implements
                     orderDetails.Add(orderDetail);
                 }
             }
-
             await _unitOfWork.GetRepository<Order>().InsertAsync(newOrder);
             await _unitOfWork.GetRepository<OrderDetail>().InsertRangeAsync(orderDetails);
             await _unitOfWork.CommitAsync();

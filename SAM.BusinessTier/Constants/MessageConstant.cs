@@ -137,7 +137,7 @@ public static class MessageConstant
         public const string DeleteInventoryFailedMessage = "Mã sản phẩm xóa thất bại";
         public const string InventoryExistedMessage = "Mã sản phẩm đã tồn tại";
         public const string InventoryEmptyMessage = "Mã sản phẩm không hợp lệ";
-        public const string NotAvaliable = "Không còn Machinery nào sẵn sàng để bán";
+        public const string NotAvaliable = "Không còn máy nào sẵn sàng để bán";
         
     }
     public static class Machinery
