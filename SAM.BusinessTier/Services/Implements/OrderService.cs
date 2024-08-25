@@ -578,20 +578,20 @@ namespace SAM.BusinessTier.Services.Implements
                             }
                         }
                     }
-                    string body1 = $@"
-                                    Kính gửi {updateOrder.Account.FullName},
+                    //string body1 = $@"
+                    //                Kính gửi {updateOrder.Account.FullName},
 
-                                    Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã được xử lý thành công.
+                    //                Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi vui mừng thông báo rằng đơn hàng của bạn đã được xử lý thành công.
 
-                                    Chi tiết đơn hàng:
-                                    Thời gian thanh toán {updateOrder.CreateDate}
-                                    Tổng hóa đơn: {updateOrder.FinalAmount}
-                                    Trân trọng,
-                                    SMMMS
-                                ";
-                    string subject1 = "Thanh toán thành công";
+                    //                Chi tiết đơn hàng:
+                    //                Thời gian thanh toán {updateOrder.CreateDate}
+                    //                Tổng hóa đơn: {updateOrder.FinalAmount}
+                    //                Trân trọng,
+                    //                SMMMS
+                    //            ";
+                    //string subject1 = "Thanh toán thành công";
 
-                    await _sendMailService.SendMail(to: updateOrder.Account.Email, subject1, body1);
+                    //await _sendMailService.SendMail(to: updateOrder.Account.Email, subject1, body1);
                     break;
                 case OrderStatus.Canceled:
                     if (updateOrder.Status == OrderStatus.Paid.GetDescriptionFromEnum())
