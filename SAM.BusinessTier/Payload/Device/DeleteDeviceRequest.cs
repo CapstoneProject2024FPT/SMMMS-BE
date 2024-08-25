@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAM.BusinessTier.Services.Interfaces
+namespace SAM.BusinessTier.Payload.Device
 {
-    public interface ICetificateService
+    public class DeleteDeviceRequest
     {
+       public string FcmToken {  get; set; }
     }
 }

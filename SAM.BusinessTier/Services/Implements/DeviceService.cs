@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SAM.BusinessTier.Constants;
+using SAM.BusinessTier.Payload.Device;
 using SAM.BusinessTier.Payload.Notification;
 using SAM.BusinessTier.Services.Interfaces;
 using SAM.BusinessTier.Utils;
@@ -56,10 +57,10 @@ namespace SAM.BusinessTier.Services.Implements
             return isSuccess;
         }
 
-        public async Task<bool> RemoveDevice(string token)
+        public async Task<bool> RemoveDevice(DeleteDeviceRequest deleteDeviceRequest)
         {
             var device = await _unitOfWork.GetRepository<Device>().SingleOrDefaultAsync(
-                predicate: x => x.Fcmtoken.Equals(token));
+                predicate: x => x.Fcmtoken.Equals(deleteDeviceRequest));
             if (device == null) throw new BadHttpRequestException(MessageConstant.Device.EmptyMessage);
 
             _unitOfWork.GetRepository<Device>().DeleteAsync(device);

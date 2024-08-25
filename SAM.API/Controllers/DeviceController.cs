@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SAM.BusinessTier.Constants;
 using SAM.BusinessTier.Payload.Category;
+using SAM.BusinessTier.Payload.Device;
 using SAM.BusinessTier.Payload.Notification;
 using SAM.BusinessTier.Services.Interfaces;
 
@@ -25,9 +26,9 @@ namespace SAM.API.Controllers
         }
 
         [HttpDelete(ApiEndPointConstant.Device.DevicesEndPoint)]
-        public async Task<IActionResult> RemoveDevice([FromBody]string token)
+        public async Task<IActionResult> RemoveDevice(DeleteDeviceRequest deleteDeviceRequest)
         {
-            var isSuccessful = await _deviceService.RemoveDevice(token);
+            var isSuccessful = await _deviceService.RemoveDevice(deleteDeviceRequest);
             if (!isSuccessful) return Ok(MessageConstant.Device.UpdateStatusFailedMessage);
             return Ok(MessageConstant.Device.UpdateStatusSuccessMessage);
         }

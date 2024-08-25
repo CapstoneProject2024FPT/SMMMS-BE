@@ -1,4 +1,5 @@
-﻿using SAM.BusinessTier.Payload.Notification;
+﻿using SAM.BusinessTier.Payload.Device;
+using SAM.BusinessTier.Payload.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace SAM.BusinessTier.Services.Interfaces
     {
         Task<Guid> RegisterDevice(DeviceRegistrationRequest request);
         Task<bool> UpdateDevice(Guid id, DeviceRegistrationRequest request);
-        Task<bool> RemoveDevice(string token);
+        Task<bool> RemoveDevice(DeleteDeviceRequest deleteDeviceRequest);
     }
 }
