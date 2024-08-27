@@ -631,14 +631,14 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                             predicate: x => x.Id == detail.InventoryId);
-                        var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                            predicate: x => x.Id == inventory.MachineryId);
+                        //var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                        //    predicate: x => x.Id == inventory.MachineryId);
                         if (inventory != null)
                         {
                             inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-                            machinery.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                            //machinery.Status = MachineryStatus.Available.GetDescriptionFromEnum();
                             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
-                            _unitOfWork.GetRepository<Machinery>().UpdateAsync(machinery);
+                            //_unitOfWork.GetRepository<Machinery>().UpdateAsync(machinery);
                         }
                     }
                     note = new Note()
@@ -658,19 +658,6 @@ namespace SAM.BusinessTier.Services.Implements
 
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
-                    //body = $@"
-                    //                Kính gửi {updateOrder.Account.FullName},
-
-                    //                Cảm ơn bạn đã đặt hàng tại SMMMS! Chúng tôi rất tiếc khi đơn hàng bị hủy. Hi vọng dịch vụ của chúng tôi không làm bạn thất vọng.
-
-                    //                Chi tiết đơn hàng:
-                    //                Thời gian thanh toán {updateOrder.CreateDate}
-                    //                Tổng hóa đơn: {updateOrder.FinalAmount}
-                    //                Trân trọng,
-                    //                SMMMS
-                    //            ";
-                    //subject = "Thanh toán thất bại";
-                    //await _sendMailService.SendMail(to: updateOrder.Account.Email, subject, body);
                     break;
                 default:
                     return false;

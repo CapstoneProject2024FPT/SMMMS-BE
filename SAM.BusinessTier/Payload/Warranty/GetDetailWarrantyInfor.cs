@@ -48,6 +48,7 @@ namespace SAM.BusinessTier.Payload.Warranty
         public WarrantyDetailStatus? Status { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? StartDate { get; set; }
+        public DateTime? NextMaintenanceDate { get; set; }
         public string? Description { get; set; }
         public string? Comments { get; set; }
         public Guid? WarrantyId { get; set; }

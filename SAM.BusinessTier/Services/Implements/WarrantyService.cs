@@ -322,6 +322,7 @@ namespace SAM.BusinessTier.Services.Implements
                             Status = EnumUtil.ParseEnum<WarrantyDetailStatus>(detail.Status),
                             CreateDate = detail.CreateDate,
                             StartDate = detail.StartDate,
+                            NextMaintenanceDate = detail.NextMaintenanceDate,
                             Description = detail.Description,
                             Comments = detail.Comments,
                             WarrantyId = detail.WarrantyId,
