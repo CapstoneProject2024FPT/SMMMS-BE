@@ -398,7 +398,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                     // Lấy danh sách các rank
                     var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync(
-                        predicate: x => points >= x.Range,
+                        predicate: x => account.Point >= x.Range,
                         orderBy: x => x.OrderByDescending(x => x.Range)
                         );
 
