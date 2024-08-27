@@ -52,6 +52,12 @@ namespace SAM.BusinessTier.Payload.News
         public Guid? Id { get; set; }
         public string? FullName { get; set; }
         public RoleEnum? Role { get; set; }
+    }
+    public class AccountPhoneNumberResponse
+    {
+        public Guid? Id { get; set; }
+        public string? FullName { get; set; }
+        public RoleEnum? Role { get; set; }
         public string? PhoneNumber { get; set; }
     }
 

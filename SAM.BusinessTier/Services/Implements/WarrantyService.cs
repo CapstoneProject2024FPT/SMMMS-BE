@@ -179,7 +179,7 @@ namespace SAM.BusinessTier.Services.Implements
                         },
                         Customer = warranty.Inventory.OrderDetails
                             .Where(detail => detail.MachineryId == warranty.Inventory.Machinery.Id)
-                            .Select(detail => new AccountResponse
+                            .Select(detail => new AccountPhoneNumberResponse
                             {
                                 Id = detail.Order.Account.Id,
                                 FullName = detail.Order.Account.FullName,
@@ -333,7 +333,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Customer = warranty.Inventory.OrderDetails
                             .Select(detail => detail.Order.Account)
                             .Where(account => account != null)
-                            .Select(account => new AccountResponse
+                            .Select(account => new AccountPhoneNumberResponse
                             {
                                 Id = account.Id,
                                 FullName = account.FullName,

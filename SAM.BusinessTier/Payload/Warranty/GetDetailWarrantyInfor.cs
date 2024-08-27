@@ -37,7 +37,7 @@ namespace SAM.BusinessTier.Payload.Warranty
 
         public InventoryResponse? Inventory { get; set; }
 
-        public AccountResponse? Customer { get; set; }
+        public AccountPhoneNumberResponse? Customer { get; set; }
         public GetAddressResponse? Address { get; set; }
 
 
