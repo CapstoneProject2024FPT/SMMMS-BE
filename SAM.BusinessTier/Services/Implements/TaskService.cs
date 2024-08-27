@@ -117,6 +117,18 @@ namespace SAM.BusinessTier.Services.Implements
                 AccountId = request.AccountId,
                 CreatedDate = currentTime
             };
+            if (!string.IsNullOrWhiteSpace(request.Note))
+            {
+                var warrantyNote = new WarrantyNote
+                {
+                    Id = Guid.NewGuid(),
+                    Description = request.Note,
+                    CreateDate = currentTime,
+                    WarrantyDetailId = request.WarrantyDetailId,
+                };
+
+                await _unitOfWork.GetRepository<WarrantyNote>().InsertAsync(warrantyNote);
+            }
             await _unitOfWork.GetRepository<Notification>().InsertAsync(newNotifications);
             await _unitOfWork.GetRepository<TaskManager>().InsertAsync(newTask);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;

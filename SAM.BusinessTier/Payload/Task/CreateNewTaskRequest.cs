@@ -18,6 +18,7 @@ namespace SAM.BusinessTier.Payload.Task
         public Guid? OrderId { get; set; }
 
         public Guid AccountId { get; set; }
+        public string? Note { get; set; }
 
     }
 }

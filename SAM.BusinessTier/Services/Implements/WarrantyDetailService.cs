@@ -266,7 +266,7 @@ namespace SAM.BusinessTier.Services.Implements
             // Update warranty detail properties
             warrantyDetail.Description = !string.IsNullOrEmpty(updateDetailRequest.Description) ? updateDetailRequest.Description : warrantyDetail.Description;
             warrantyDetail.Comments = !string.IsNullOrEmpty(updateDetailRequest.Comments) ? updateDetailRequest.Comments : warrantyDetail.Comments;
-            warrantyDetail.NextMaintenanceDate = updateDetailRequest.NextMaintenanceDate.HasValue ? updateDetailRequest.NextMaintenanceDate.Value : warrantyDetail.NextMaintenanceDate;
+            warrantyDetail.NextMaintenanceDate = updateDetailRequest.NextMaintenanceDate.HasValue ? updateDetailRequest.NextMaintenanceDate.Value : warrantyDetail.NextMaintenanceDate;;
 
             if (!updateDetailRequest.Status.HasValue)
             {
@@ -350,7 +350,6 @@ namespace SAM.BusinessTier.Services.Implements
 
                 _unitOfWork.GetRepository<Warranty>().UpdateAsync(warranty);
 
-                // Append completion info to the note description
             }
 
             // Handle status "Canceled" scenario with note entry
@@ -361,19 +360,18 @@ namespace SAM.BusinessTier.Services.Implements
                     throw new BadHttpRequestException(MessageConstant.Canceled.CanceledNote);
                 }
 
-                // Create a note with the cancellation reason
             }
 
-                var warrantyNote = new WarrantyNote
-                {
-                    Id = Guid.NewGuid(),
-                    Description = updateDetailRequest.Note,
-                    CreateDate = currentTime,
-                    WarrantyDetailId = warrantyDetail.Id,
-                    Image = updateDetailRequest.Image
-                };
+            var warrantyNote = new WarrantyNote
+            {
+                Id = Guid.NewGuid(),
+                Description = updateDetailRequest.Note,
+                CreateDate = currentTime,
+                WarrantyDetailId = warrantyDetail.Id,
+                Image = updateDetailRequest.Image
+            };
 
-                await _unitOfWork.GetRepository<WarrantyNote>().InsertAsync(warrantyNote);
+            await _unitOfWork.GetRepository<WarrantyNote>().InsertAsync(warrantyNote);
 
             _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
             bool isSuccess = await _unitOfWork.CommitAsync() > 0;
@@ -442,7 +440,7 @@ namespace SAM.BusinessTier.Services.Implements
 
                 newOrder.FinalAmount = totalAmount;
                 newOrder.TotalAmount = totalAmount;
-                if(newOrder.FinalAmount == 0)
+                if (newOrder.FinalAmount == 0)
                 {
                     newOrder.Status = OrderStatus.Completed.GetDescriptionFromEnum();
                     newOrder.CompletedDate = currentTime;
