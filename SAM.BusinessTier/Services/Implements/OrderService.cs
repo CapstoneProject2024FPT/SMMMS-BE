@@ -399,7 +399,7 @@ namespace SAM.BusinessTier.Services.Implements
                     // Lấy danh sách các rank
                     var ranks = await _unitOfWork.GetRepository<Rank>().GetListAsync(
                         predicate: x => points >= x.Range,
-                        orderBy: x => x.OrderBy(x => x.Range)
+                        orderBy: x => x.OrderByDescending(x => x.Range)
                         );
 
                     var rankCheck = ranks.FirstOrDefault();
@@ -631,16 +631,23 @@ namespace SAM.BusinessTier.Services.Implements
                     {
                         var inventory = await _unitOfWork.GetRepository<Inventory>().SingleOrDefaultAsync(
                             predicate: x => x.Id == detail.InventoryId);
-                        //var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
-                        //    predicate: x => x.Id == inventory.MachineryId);
+
                         if (inventory != null)
                         {
+                            var machinery = await _unitOfWork.GetRepository<Machinery>().SingleOrDefaultAsync(
+                                predicate: m => m.Id == inventory.MachineryId);
+
                             inventory.Status = InventoryStatus.Available.GetDescriptionFromEnum();
-                            //machinery.Status = MachineryStatus.Available.GetDescriptionFromEnum();
                             _unitOfWork.GetRepository<Inventory>().UpdateAsync(inventory);
-                            //_unitOfWork.GetRepository<Machinery>().UpdateAsync(machinery);
+
+                            if (machinery != null)
+                            {
+                                machinery.Status = MachineryStatus.Available.GetDescriptionFromEnum();
+                                _unitOfWork.GetRepository<Machinery>().UpdateAsync(machinery);
+                            }
                         }
                     }
+
                     note = new Note()
                     {
                         Id = Guid.NewGuid(),
@@ -649,8 +656,8 @@ namespace SAM.BusinessTier.Services.Implements
                         Image = request.Image,
                         Description = request.Note,
                         OrderId = updateOrder.Id
-
                     };
+
                     if (note != null)
                     {
                         await _unitOfWork.GetRepository<Note>().InsertAsync(note);
@@ -659,6 +666,7 @@ namespace SAM.BusinessTier.Services.Implements
                     updateOrder.Status = OrderStatus.Canceled.GetDescriptionFromEnum();
                     updateOrder.CompletedDate = currentTime;
                     break;
+
                 default:
                     return false;
             }

@@ -445,6 +445,7 @@ namespace SAM.BusinessTier.Services.Implements
                 if(newOrder.FinalAmount == 0)
                 {
                     newOrder.Status = OrderStatus.Completed.GetDescriptionFromEnum();
+                    newOrder.CompletedDate = currentTime;
                 }
                 warrantyDetail.Comments = $"Đã tạo đơn hàng với OrderId: {newOrder.Id}";
                 _unitOfWork.GetRepository<WarrantyDetail>().UpdateAsync(warrantyDetail);
