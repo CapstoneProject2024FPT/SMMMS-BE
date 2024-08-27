@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace SAM.BusinessTier.Services.Implements
 {
@@ -183,6 +184,7 @@ namespace SAM.BusinessTier.Services.Implements
                                 Id = detail.Order.Account.Id,
                                 FullName = detail.Order.Account.FullName,
                                 Role = EnumUtil.ParseEnum<RoleEnum>(detail.Order.Account.Role),
+                                PhoneNumber = detail.Order.Account.PhoneNumber
                             }).FirstOrDefault(),
                         Address = warranty.Inventory.OrderDetails
                             .Select(detail => detail.Order.Address)
@@ -336,6 +338,7 @@ namespace SAM.BusinessTier.Services.Implements
                                 Id = account.Id,
                                 FullName = account.FullName,
                                 Role = EnumUtil.ParseEnum<RoleEnum>(account.Role),
+                                PhoneNumber = account.PhoneNumber
                             }).FirstOrDefault(),
                         Address = warranty.Inventory.OrderDetails
                             .Select(detail => detail.Order.Address)
