@@ -277,7 +277,7 @@ namespace SAM.BusinessTier.Services.Implements
                         Image = note.Image,
                         Description = note.Description,
                         CreateDate = note.CreateDate.Value,
-                    }).ToList(),
+                    }).OrderBy(note => note.CreateDate).ToList(),
                     UserInfo = x.Account == null ? null : new OrderUserResponse
                     {
                         Id = x.Account.Id,
